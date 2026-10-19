@@ -1,0 +1,24 @@
+package uptime:mod@0.1.0;
+
+interface host {
+    /// Writes one log line. `level` runs from 0 (trace) to 4 (error). The host
+    /// keeps the line in a capped ring buffer for the mod.
+    log: func(level: u8, msg: string);
+}
+
+world uptime-mod {
+    import host;
+    record quantum { index: u64, sim-time-ns: u64, seed: u64 }
+    record step-output {
+        /// One named-msgpack ModCommand per element.
+        commands: list<list<u8>>,
+        /// Panel updates, each a panel id and its named-msgpack update.
+        panels: list<tuple<string, list<u8>>>,
+        state: option<list<u8>>,
+    }
+    export init: func(config: list<u8>, saved-state: option<list<u8>>) -> result<_, string>;
+    /// `snapshot` is a named-msgpack ModSnapshot from the latest refresh, and
+    /// `events` is a named-msgpack ModEventBatch.
+    export step: func(q: quantum, snapshot: list<u8>, events: list<u8>) -> result<step-output, string>;
+    export migrate: func(from-schema: u32, state: list<u8>) -> result<list<u8>, string>;
+}

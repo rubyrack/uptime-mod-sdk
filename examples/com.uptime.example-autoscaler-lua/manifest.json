@@ -1,0 +1,17 @@
+{
+  "manifest_version": 1,
+  "id": "com.uptime.example-autoscaler-lua",
+  "version": "1.0.0",
+  "api_version": "v1alpha1",
+  "api_minor": 0,
+  "game_version": ">=0.1.0, <0.3.0",
+  "kind": ["script"],
+  "script": { "runtime": "lua", "entry": "logic/main.lua" },
+  "affects_gameplay": true,
+  "commands": ["finance", "customers"],
+  "events": ["receipts", "customers"],
+  "reads": ["topbar", "prospects", "capacity"],
+  "state_schema": 1,
+  "config_schema": "config.schema.json",
+  "panels": ["ui/panels.json"]
+}

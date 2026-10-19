@@ -1,0 +1,40 @@
+// Homelab Rush: a garage start. Buy the pack hardware from the shop, sign
+// customers onto it and keep them online for a week.
+ScenarioFile(
+    id: "com.uptime.example-scenario:homelab-rush",
+    released: true,
+    title: "Homelab Rush",
+    description: "A garage, a consumer fibre line and a shop stocked with homelab hardware. Sign customers and keep them online for a week.",
+    coop: true,
+    starting_site: Some("garage"),
+    include_standard_sites: true,
+    starting_cash_dollars: 25000.0,
+    config: (
+        // Keys are SKU names. The pack switch is gated to the garage, the starting
+        // site. The pack hosts carry no gate, so both are on sale from the start.
+        sku_gates: (
+            switches: {
+                "com.uptime.example-hardware:homelab-switch": "garage",
+            },
+            hosts: {},
+        ),
+    ),
+    pre_built: [
+        Edd(sku: "Residential ONT", uplinks: ["Consumer Fibre"]),
+    ],
+    include_milestone1_customers: true,
+    archetype_pack: Some("canon"),
+    rules: (
+        wins: [
+            SustainedFor(
+                inner: CustomerCountAtLeast(4),
+                duration: (604_800_000_000_000), // 7 days
+            ),
+        ],
+        loses: [
+            Bankruptcy,
+        ],
+        triggers: [],
+    ),
+    include_standard_triggers: true,
+)

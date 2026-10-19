@@ -1,0 +1,5 @@
+# What an editor or a build creates in the SDK tree.
+target/
+/rust/uptime-mod/Cargo.lock
+/examples/*/Cargo.lock
+/book/

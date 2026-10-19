@@ -1,0 +1,8 @@
+[book]
+title = "Uptime mod SDK"
+src = "docs"
+language = "en"
+
+[build]
+build-dir = "book"
+create-missing = false

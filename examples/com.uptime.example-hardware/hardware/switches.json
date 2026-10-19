@@ -1,0 +1,11 @@
+{
+  "switches": [
+    {
+      "id": "homelab-switch",
+      "model": "16-port Access GbE",
+      "capex": 24000000000,
+      "hourly_cost": 500000,
+      "power_w": 18
+    }
+  ]
+}

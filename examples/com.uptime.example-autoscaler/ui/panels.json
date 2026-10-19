@@ -1,0 +1,35 @@
+{
+  "panels": [
+    {
+      "id": "policy",
+      "title": "Autoscaler policy",
+      "point": "dashboard",
+      "widgets": [
+        { "id": "sku", "label": "SKU", "kind": "stat_tile" },
+        { "id": "low_pct", "label": "Buy under free", "kind": "stat_tile" },
+        { "id": "cash_reserve", "label": "Cash reserve", "kind": "stat_tile" },
+        { "id": "cooldown", "label": "Cooldown", "kind": "stat_tile" },
+        { "id": "next_buy", "label": "Next buy allowed at quantum", "kind": "stat_tile" },
+        { "id": "paused", "label": "Pause the autoscaler", "kind": "toggle" }
+      ]
+    },
+    {
+      "id": "decisions",
+      "title": "Recent decisions",
+      "point": "dashboard",
+      "widgets": [
+        {
+          "id": "recent",
+          "label": "Last 10 decisions",
+          "kind": "table",
+          "columns": [
+            { "id": "quantum", "label": "Quantum", "numeric": true },
+            { "id": "action", "label": "Action" },
+            { "id": "target", "label": "Target" },
+            { "id": "result", "label": "Result" }
+          ]
+        }
+      ]
+    }
+  ]
+}

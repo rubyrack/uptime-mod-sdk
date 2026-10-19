@@ -1,0 +1,46 @@
+{
+  "type": "object",
+  "title": "Autoscaler",
+  "additionalProperties": false,
+  "properties": {
+    "sku": {
+      "type": "string",
+      "title": "SKU to buy",
+      "enum": [
+        "balanced_x86_1u",
+        "balanced_x86_2u",
+        "arm_1u",
+        "arm_2u",
+        "compute_1u",
+        "compute_2u",
+        "memory_1u",
+        "memory_2u",
+        "storage_1u",
+        "storage_2u"
+      ],
+      "default": "balanced_x86_1u"
+    },
+    "low_pct": {
+      "type": "integer",
+      "title": "Buy under this free percent",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 20
+    },
+    "cash_reserve": {
+      "type": "number",
+      "title": "Cash to keep",
+      "minimum": 0,
+      "maximum": 1000000,
+      "multipleOf": 100,
+      "default": 5000
+    },
+    "cooldown_quanta": {
+      "type": "integer",
+      "title": "Quanta between purchases",
+      "minimum": 0,
+      "maximum": 240,
+      "default": 8
+    }
+  }
+}

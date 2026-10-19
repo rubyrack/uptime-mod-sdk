@@ -1,0 +1,31 @@
+{
+  "archetypes": [
+    {
+      "id": "night-shift-coder",
+      "model": "freelance_dev",
+      "name": "Night Shift Coder",
+      "tier": "bronze",
+      "growth_chance_per_check": 0.08,
+      "plateau_at_allocation": 4,
+      "signup_bonus_min": 20,
+      "signup_bonus_max": 60,
+      "outage_tolerance_minutes": 90,
+      "referral_chance_when_happy": 0.1
+    },
+    {
+      "id": "weekend-webshop",
+      "model": "local_business",
+      "name": "Weekend Webshop",
+      "workload_from": "etsy_seller",
+      "extra_workloads_from": [],
+      "competitor_poach_chance": 0.05,
+      "min_rep": 0.2
+    },
+    {
+      "id": "patient-student",
+      "model": "student_dev",
+      "overrides": "base:student_dev",
+      "outage_tolerance_minutes": 240
+    }
+  ]
+}

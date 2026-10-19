@@ -1,0 +1,28 @@
+{
+  "hosts": [
+    {
+      "id": "homelab-1u",
+      "model": "Balanced x86 1U",
+      "vcpu": 12,
+      "mem_mb": 49152,
+      "ssd_gb": 1000,
+      "power_w": 220,
+      "capex": 220000000000,
+      "hourly_cost": 9000000
+    },
+    {
+      "id": "tinker-gpu",
+      "model": "GPU 2× 2U",
+      "power_w": 1200,
+      "capex": 4800000000000,
+      "hourly_cost": 200000000,
+      "gpu_mem_mb_per_gpu": 16384
+    },
+    {
+      "overrides": "base:Compute 1U",
+      "id": "compute-1u-discount",
+      "model": "Compute 1U",
+      "capex": 520000000000
+    }
+  ]
+}

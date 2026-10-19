@@ -1,0 +1,1073 @@
+{
+  "$defs": {
+    "ChoiceRow": {
+      "additionalProperties": false,
+      "description": "One option of a select.",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "type": "object"
+    },
+    "ColumnRow": {
+      "additionalProperties": false,
+      "description": "One table column.",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "numeric": {
+          "description": "Right-aligned and sorted as a number.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "type": "object"
+    },
+    "ConfigPropertyRow": {
+      "additionalProperties": false,
+      "description": "One config property. `minimum` and `maximum` bound an integer or number;\n`enum` lists the values of a string; `default` is required of every\nproperty and is checked against the rest by the loader.",
+      "properties": {
+        "default": {
+          "description": "A boolean, number or string matching `type`."
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "enum": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "maximum": {
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "minimum": {
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "multipleOf": {
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "type": {
+          "$ref": "#/$defs/PropertyType"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "ConfigSchemaFile": {
+      "additionalProperties": false,
+      "description": "A mod's config schema file.",
+      "properties": {
+        "additionalProperties": {
+          "description": "Required, and `false`.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "properties": {
+          "additionalProperties": {
+            "$ref": "#/$defs/ConfigPropertyRow"
+          },
+          "propertyNames": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "type": {
+          "$ref": "#/$defs/RootType"
+        }
+      },
+      "required": [
+        "type",
+        "properties"
+      ],
+      "type": "object"
+    },
+    "CustomerPackRow": {
+      "additionalProperties": false,
+      "description": "One customer archetype entry in a pack's `archetypes` file.",
+      "properties": {
+        "attack_event_chance_per_month": {
+          "description": "Chance per month the customer draws a targeted attack.",
+          "format": "double",
+          "maximum": 1,
+          "minimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "competitor_poach_chance": {
+          "description": "Chance per month a competitor poaches the customer.",
+          "format": "float",
+          "maximum": 1,
+          "minimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "exposure_weight": {
+          "description": "The customer's share of the facility's ambient threat.",
+          "format": "double",
+          "maximum": 10,
+          "minimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "extra_workloads_from": {
+          "description": "Built-in archetypes whose primary workloads this one adds as extra\nservices, replacing the model's extras. New rows only.",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 4,
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "growth_chance_per_check": {
+          "description": "Chance per growth check that the customer asks for more, at full satisfaction.",
+          "format": "float",
+          "maximum": 1,
+          "minimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "id": {
+          "description": "The item name inside the pack; the archetype is stored as `<mod_id>:<id>`.",
+          "type": "string"
+        },
+        "min_rep": {
+          "description": "The reputation (0 to 1) at which prospects of a new archetype start to\narrive. New rows only.",
+          "format": "double",
+          "maximum": 1,
+          "minimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "model": {
+          "description": "The built-in archetype this row starts from.",
+          "type": "string"
+        },
+        "name": {
+          "description": "The display name, shown as plain text. New rows only, where it is\nrequired; no other archetype may carry it and it may not be an id.",
+          "maxLength": 48,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "outage_tolerance_minutes": {
+          "description": "Outage minutes the customer sits through before it starts to leave.",
+          "format": "int32",
+          "maximum": 525600,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "overrides": {
+          "description": "A built-in archetype this row replaces, as `base:<id>`. Absent adds a new archetype.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "payload_ceiling_mult": {
+          "description": "The most the bytes per request may grow by over the customer's life.",
+          "format": "float",
+          "maximum": 32,
+          "minimum": 1,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "payload_growth_per_30_days": {
+          "description": "Payload growth per 30 days at full satisfaction, as a fraction.",
+          "format": "float",
+          "maximum": 1,
+          "minimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "plateau_at_allocation": {
+          "description": "The allocation the customer stops growing at.",
+          "format": "int32",
+          "maximum": 1000,
+          "minimum": 1,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "referral_chance_when_happy": {
+          "description": "Chance per month a happy customer refers a new prospect.",
+          "format": "float",
+          "maximum": 1,
+          "minimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "requires_multi_az": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "service": {
+          "description": "A service offering, as `<mod_id>:<item>`, that the archetype's workload\nof that offering's kind is sold as. The offering must be in a selected\npack. New rows only.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "signup_bonus_max": {
+          "description": "Highest signup bonus, in whole dollars.",
+          "format": "int32",
+          "maximum": 1000000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "signup_bonus_min": {
+          "description": "Lowest signup bonus, in whole dollars.",
+          "format": "int32",
+          "maximum": 1000000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "site_share": {
+          "description": "The largest share of the site's line capacity the customer grows to.",
+          "format": "float",
+          "maximum": 1,
+          "minimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "tier": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/TierRow",
+              "description": "The SLA tier the archetype signs at, replacing the model's tier band."
+            }
+          ]
+        },
+        "viral_spike_chance_per_check": {
+          "format": "float",
+          "maximum": 1,
+          "minimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "workload_from": {
+          "description": "A built-in archetype whose primary workload this one asks for. New rows only.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "model"
+      ],
+      "type": "object"
+    },
+    "CustomersFile": {
+      "additionalProperties": false,
+      "description": "A pack's `archetypes` file.",
+      "properties": {
+        "archetypes": {
+          "items": {
+            "$ref": "#/$defs/CustomerPackRow"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "archetypes"
+      ],
+      "type": "object"
+    },
+    "EntityRow": {
+      "description": "The entity an entity tab belongs to.",
+      "enum": [
+        "host",
+        "rack",
+        "service"
+      ],
+      "type": "string"
+    },
+    "EventModel": {
+      "description": "A built-in macro event kind as a pack file writes it.",
+      "enum": [
+        "nand_shortage",
+        "gpu_allocation_crisis",
+        "regional_power_crisis",
+        "data_residency_law",
+        "submarine_cable_cut",
+        "major_cve",
+        "rival_price_war",
+        "acquisition_offer",
+        "zero_day_worm",
+        "ai_runaway_job"
+      ],
+      "type": "string"
+    },
+    "EventPackRow": {
+      "additionalProperties": false,
+      "description": "One macro event entry in a pack's `templates` file.",
+      "properties": {
+        "duration_hours_max": {
+          "format": "int32",
+          "maximum": 2160,
+          "minimum": 1,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "duration_hours_min": {
+          "description": "Shortest duration in hours. With neither bound set the scenario's range applies.",
+          "format": "int32",
+          "maximum": 2160,
+          "minimum": 1,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "end_text": {
+          "description": "The pack locale key posted to `#news` when the event ends.",
+          "type": "string"
+        },
+        "id": {
+          "description": "The item name inside the pack; the event is stored as `<mod_id>:<id>`.",
+          "type": "string"
+        },
+        "model": {
+          "$ref": "#/$defs/EventModel",
+          "description": "The built-in macro event whose consequences this one applies."
+        },
+        "start_text": {
+          "description": "The pack locale key posted to `#news` when the event starts.",
+          "type": "string"
+        },
+        "weight": {
+          "description": "Weight in a scenario's pool draw; every built-in event weighs 10.",
+          "format": "int32",
+          "maximum": 100,
+          "minimum": 1,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "when": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/EventWhenRow"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "model",
+        "start_text",
+        "end_text"
+      ],
+      "type": "object"
+    },
+    "EventWhenRow": {
+      "additionalProperties": false,
+      "description": "The world facts an event waits for, all of them.",
+      "properties": {
+        "after_day": {
+          "description": "Days since the run started.",
+          "format": "int32",
+          "maximum": 3650,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "min_cash_dollars": {
+          "format": "double",
+          "maximum": 1000000000000,
+          "minimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "min_customers": {
+          "format": "int32",
+          "maximum": 100000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "min_progression_step": {
+          "description": "The campaign step the player has reached.",
+          "format": "int32",
+          "maximum": 64,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "min_reputation": {
+          "description": "Reputation, 0 to 1.",
+          "format": "double",
+          "maximum": 1,
+          "minimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "EventsFile": {
+      "additionalProperties": false,
+      "description": "A pack's `templates` file.",
+      "properties": {
+        "events": {
+          "items": {
+            "$ref": "#/$defs/EventPackRow"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "events"
+      ],
+      "type": "object"
+    },
+    "HostPackRow": {
+      "additionalProperties": false,
+      "description": "One host SKU entry in a pack's `hosts` file.",
+      "properties": {
+        "accel_count": {
+          "description": "Number of physical accelerators. The loader allows more than 0 only when\nthe base model carries an accelerator.",
+          "format": "int32",
+          "maximum": 64,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "capex": {
+          "description": "Purchase price, in the engine's money minor units.",
+          "format": "int64",
+          "maximum": 1000000000000000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "generation_year": {
+          "description": "The hardware generation's year.",
+          "format": "int32",
+          "maximum": 2100,
+          "minimum": 1970,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "gpu_mem_mb_per_gpu": {
+          "description": "Frame-buffer memory per accelerator, in MB. The loader allows it only when\nthe base model carries an accelerator.",
+          "format": "int32",
+          "maximum": 1048576,
+          "minimum": 1,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "hourly_cost": {
+          "description": "Running cost per hour, in the engine's money minor units.",
+          "format": "int64",
+          "maximum": 1000000000000000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "id": {
+          "description": "The item name inside the pack; the SKU is stored as `<mod_id>:<id>`.",
+          "type": "string"
+        },
+        "mem_mb": {
+          "format": "int32",
+          "maximum": 16777216,
+          "minimum": 1,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "model": {
+          "description": "The base host SKU this row starts from.",
+          "type": "string"
+        },
+        "mtbf_hours": {
+          "format": "int32",
+          "maximum": 1000000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "overrides": {
+          "description": "A base SKU this row replaces, as `base:<name>`. Absent adds a new SKU.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "power_w": {
+          "format": "int32",
+          "maximum": 20000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "ssd_gb": {
+          "format": "int32",
+          "maximum": 1048576,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "ssd_iops": {
+          "format": "int32",
+          "maximum": 100000000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "vcpu": {
+          "format": "int32",
+          "maximum": 4096,
+          "minimum": 1,
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "model"
+      ],
+      "type": "object"
+    },
+    "HostsFile": {
+      "additionalProperties": false,
+      "description": "A pack's `hosts` file.",
+      "properties": {
+        "hosts": {
+          "items": {
+            "$ref": "#/$defs/HostPackRow"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "hosts"
+      ],
+      "type": "object"
+    },
+    "PanelRow": {
+      "additionalProperties": false,
+      "description": "One panel.",
+      "properties": {
+        "entity": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/EntityRow",
+              "description": "Required when `point` is `entity_tab`, absent otherwise."
+            }
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "point": {
+          "$ref": "#/$defs/PointRow"
+        },
+        "title": {
+          "type": "string"
+        },
+        "widgets": {
+          "items": {
+            "$ref": "#/$defs/WidgetRow"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "point",
+        "widgets"
+      ],
+      "type": "object"
+    },
+    "PanelsFile": {
+      "additionalProperties": false,
+      "description": "A mod's panel file.",
+      "properties": {
+        "panels": {
+          "items": {
+            "$ref": "#/$defs/PanelRow"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "panels"
+      ],
+      "type": "object"
+    },
+    "PointRow": {
+      "description": "Where a panel is mounted.",
+      "enum": [
+        "dashboard",
+        "entity_tab",
+        "settings"
+      ],
+      "type": "string"
+    },
+    "PropertyType": {
+      "description": "The type of one config property.",
+      "enum": [
+        "boolean",
+        "integer",
+        "number",
+        "string"
+      ],
+      "type": "string"
+    },
+    "RootType": {
+      "description": "The type of the schema's root.",
+      "enum": [
+        "object"
+      ],
+      "type": "string"
+    },
+    "ServicePackRow": {
+      "additionalProperties": false,
+      "description": "One service entry in a pack's `services` file.",
+      "properties": {
+        "enabled_by_default": {
+          "description": "Sellable from the start. A new offering without it is.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "id": {
+          "description": "The item name inside the pack; the offering is stored as `<mod_id>:<id>`.",
+          "type": "string"
+        },
+        "model": {
+          "description": "The built-in service kind the offering runs as, by tag: `vm`, `fn`,\n`obj`, `db`, `cdn`, `k8s` or `lb`.",
+          "type": "string"
+        },
+        "name": {
+          "description": "The shop name, shown as plain text. Required on a new row, and no other\nservice may carry it. New rows only.",
+          "maxLength": 48,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "overrides": {
+          "description": "A built-in kind whose values this row replaces, as `base:<tag>`. Absent\nadds a new offering.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "price_multiplier": {
+          "description": "Scales every billed line of the kind.",
+          "format": "double",
+          "maximum": 10,
+          "minimum": 0.1,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "spread_grain": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/SpreadGrainRow",
+              "description": "The grain the kind's own spread is held at. Only for kinds that spread\ntheir units: `obj`, `db`, `cdn`, `k8s` and `lb`."
+            }
+          ]
+        },
+        "unlock_cost": {
+          "description": "One-time cost to sell the offering while it is locked, in the engine's\nmoney minor units.",
+          "format": "int64",
+          "maximum": 1000000000000000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "model"
+      ],
+      "type": "object"
+    },
+    "ServicesFile": {
+      "additionalProperties": false,
+      "description": "A pack's `services` file.",
+      "properties": {
+        "services": {
+          "items": {
+            "$ref": "#/$defs/ServicePackRow"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "services"
+      ],
+      "type": "object"
+    },
+    "SpreadGrainRow": {
+      "description": "A spread grain as a pack file writes it.",
+      "enum": [
+        "host",
+        "switch",
+        "az",
+        "region",
+        "power",
+        "router"
+      ],
+      "type": "string"
+    },
+    "SwitchPackRow": {
+      "additionalProperties": false,
+      "description": "One switch SKU entry in a pack's `switches` file.",
+      "properties": {
+        "capex": {
+          "description": "Purchase price, in the engine's money minor units.",
+          "format": "int64",
+          "maximum": 1000000000000000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "fabric_capacity_gbps": {
+          "description": "Backplane capacity in Gbps.",
+          "format": "int32",
+          "maximum": 1000000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "hourly_cost": {
+          "description": "Running cost per hour, in the engine's money minor units.",
+          "format": "int64",
+          "maximum": 1000000000000000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "id": {
+          "description": "The item name inside the pack; the SKU is stored as `<mod_id>:<id>`.",
+          "type": "string"
+        },
+        "model": {
+          "description": "The base switch SKU this row starts from.",
+          "type": "string"
+        },
+        "mtbf_hours": {
+          "format": "int32",
+          "maximum": 1000000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "overrides": {
+          "description": "A base SKU this row replaces, as `base:<name>`. Absent adds a new SKU.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "power_w": {
+          "format": "int32",
+          "maximum": 20000,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "pps_ceiling": {
+          "description": "Packet-forwarding ceiling in packets per second.",
+          "format": "int64",
+          "maximum": 1000000000000,
+          "minimum": 1,
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "model"
+      ],
+      "type": "object"
+    },
+    "SwitchesFile": {
+      "additionalProperties": false,
+      "description": "A pack's `switches` file.",
+      "properties": {
+        "switches": {
+          "items": {
+            "$ref": "#/$defs/SwitchPackRow"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "switches"
+      ],
+      "type": "object"
+    },
+    "TierRow": {
+      "description": "An SLA tier as a pack file writes it.",
+      "enum": [
+        "bronze",
+        "silver",
+        "gold",
+        "platinum"
+      ],
+      "type": "string"
+    },
+    "ToneRow": {
+      "description": "A severity tone.",
+      "enum": [
+        "neutral",
+        "info",
+        "good",
+        "warn",
+        "danger"
+      ],
+      "type": "string"
+    },
+    "WidgetKindRow": {
+      "description": "What a widget is.",
+      "enum": [
+        "stat_tile",
+        "table",
+        "line_chart",
+        "bar_chart",
+        "text",
+        "toggle",
+        "slider",
+        "select",
+        "button"
+      ],
+      "type": "string"
+    },
+    "WidgetRow": {
+      "additionalProperties": false,
+      "description": "One widget of a panel. The optional fields apply to one kind each:\n`columns` to a table, `tone` to a chart, `min`/`max`/`step` to a slider and\n`options` to a select.",
+      "properties": {
+        "columns": {
+          "items": {
+            "$ref": "#/$defs/ColumnRow"
+          },
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/WidgetKindRow"
+        },
+        "label": {
+          "type": "string"
+        },
+        "max": {
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "min": {
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/ChoiceRow"
+          },
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "step": {
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "tone": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/ToneRow"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "kind"
+      ],
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "generation": "v1alpha1",
+  "title": "Uptime content pack files"
+}

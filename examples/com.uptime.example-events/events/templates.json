@@ -1,0 +1,22 @@
+{
+  "events": [
+    {
+      "id": "heatwave",
+      "model": "regional_power_crisis",
+      "start_text": "mod-com-uptime-example--events-heatwave_start",
+      "end_text": "mod-com-uptime-example--events-heatwave_end",
+      "duration_hours_min": 48,
+      "duration_hours_max": 96,
+      "weight": 40,
+      "when": { "after_day": 10, "min_customers": 2 }
+    },
+    {
+      "id": "memory_recall",
+      "model": "nand_shortage",
+      "start_text": "mod-com-uptime-example--events-recall_start",
+      "end_text": "mod-com-uptime-example--events-recall_end",
+      "weight": 20,
+      "when": { "min_reputation": 0.3, "min_cash_dollars": 20000 }
+    }
+  ]
+}

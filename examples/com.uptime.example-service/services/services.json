@@ -1,0 +1,12 @@
+{
+  "services": [
+    {
+      "id": "cold-storage",
+      "model": "obj",
+      "name": "Cold Storage",
+      "enabled_by_default": false,
+      "unlock_cost": 50000000000,
+      "price_multiplier": 0.6
+    }
+  ]
+}

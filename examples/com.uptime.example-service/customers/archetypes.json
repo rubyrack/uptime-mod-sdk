@@ -1,0 +1,10 @@
+{
+  "archetypes": [
+    {
+      "id": "photo-archivist",
+      "model": "photographer",
+      "name": "Photo Archivist",
+      "service": "com.uptime.example-service:cold-storage"
+    }
+  ]
+}

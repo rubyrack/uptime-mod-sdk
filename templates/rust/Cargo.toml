@@ -1,0 +1,29 @@
+[package]
+name = "uptime-pack"
+version = "1.0.0"
+edition = "2021"
+publish = false
+description = "{{title}}: the {{id}} script mod."
+
+# Build: cargo build --release --target wasm32-wasip2
+# then copy target/wasm32-wasip2/release/uptime_pack.wasm to bin/mod.wasm.
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# The SDK crate, in your ModSDK folder.
+uptime-mod = { path = "{{sdk_path}}" }
+serde = { version = "=1.0.229", default-features = false, features = ["derive", "std"] }
+rmp-serde = "=1.3.1"
+
+# Keeps this pack its own workspace, wherever the folder sits.
+[workspace]
+
+# Release builds are tuned for size: no unwinding and no debug symbols.
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
