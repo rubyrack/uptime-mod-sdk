@@ -1,0 +1,442 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Script mods - Uptime mod SDK</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-e96d0476.css">
+        <link rel="stylesheet" href="css/chrome-d279d366.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-1bf1f387.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-b5213056.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Uptime mod SDK</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="script-mods"><a class="header" href="#script-mods">Script mods</a></h1>
+<p>A script mod is code that plays the game for the player. It runs once per quantum, reads a slice of the world and issues commands. This page covers what Lua mods and Rust mods share: the manifest fields, the quantum, declared reads, commands and receipts, limits, faults and the cost to a run.</p>
+<p>Language details are in <a href="LUA.html">Lua mods</a> and <a href="RUST.html">Rust mods</a>. To make a mod in any other language, see <a href="OTHER_LANGUAGES.html">Other languages</a>. The manifest rules that all packs share are in <a href="CONTENT_PACKS.html">Content packs</a>.</p>
+<h2 id="the-manifest"><a class="header" href="#the-manifest">The manifest</a></h2>
+<p>A script mod sets <code>kind</code> to <code>["script"]</code> and adds a <code>script</code> block. A mod may be both a script mod and a content pack: <code>kind</code> can list <code>content</code> and <code>script</code> together.</p>
+<pre><code class="language-json">{
+  "manifest_version": 1,
+  "id": "com.example.my-mod",
+  "version": "1.0.0",
+  "api_version": "v1alpha1",
+  "api_minor": 0,
+  "game_version": "&gt;=0.1.0, &lt;0.3.0",
+  "kind": ["script"],
+  "script": { "runtime": "lua", "entry": "logic/main.lua" },
+  "affects_gameplay": true,
+  "commands": ["finance", "customers"],
+  "events": ["receipts", "customers"],
+  "reads": ["topbar", "prospects", "capacity"]
+}
+</code></pre>
+<ul>
+<li><code>script.runtime</code> is <code>lua</code> or <code>component</code>. A <code>lua</code> entry ends in <code>.lua</code>. A <code>component</code> entry ends in <code>.wasm</code>.</li>
+<li><code>commands</code> lists the command categories the mod may issue: <code>infrastructure</code>, <code>finance</code>, <code>customers</code>, <code>incidents</code>. The gate refuses a command outside them.</li>
+<li><code>events</code> lists the event categories the mod is told about. An unlisted category is never encoded for the mod.</li>
+<li><code>reads</code> lists the snapshot sections the mod sees. See the next section.</li>
+<li><code>state_schema</code> is a number that versions the mod’s saved state. The game migrates a saved state of another schema before the mod sees it. A mod that changes its state shape sets a new number and handles the old one in <code>migrate</code>.</li>
+<li>A script mod with no <code>commands</code> does not affect gameplay. <code>affects_gameplay</code> must then be <code>false</code>, unless the same mod also carries hardware, scenarios or customers.</li>
+</ul>
+<p>Set <code>api_minor</code> to the minor of the SDK you built against. The Rust SDK exports it as <code>uptime_mod::snapshot::API_MINOR</code>, currently <code>0</code>. The Lua types come from the same ledgers.</p>
+<h2 id="the-quantum"><a class="header" href="#the-quantum">The quantum</a></h2>
+<p>A mod runs on a grid of sim time. One quantum is 15 seconds of sim time. Boundary <code>k</code> sits at <code>k</code> times 15 seconds. At each boundary the game runs one step of every script mod. Pausing the game stops the grid, because the grid is sim time.</p>
+<p>At boundary <code>k</code> the game does these things in order:</p>
+<ol>
+<li>It lands the commands the mods returned from step <code>k - 2</code>.</li>
+<li>It closes the event batch for <code>k</code>: the engine events since the last boundary, the receipts from step 1 and, on the first boundary of a world, a lifecycle marker.</li>
+<li>On every fourth boundary, and on the first boundary of a world, it projects a fresh snapshot of the sections the mods declared.</li>
+<li>It hands step <code>k</code> to the mod worker.</li>
+</ol>
+<p>The mod worker runs on its own thread and never touches the engine. The game waits for step <code>k - 2</code> to come back before landing it, so a command lands exactly two quanta after its step, whatever the step cost. Two quanta is 30 seconds of sim time.</p>
+<p>Player commands apply as they arrive, so they are already in when a boundary runs.</p>
+<h2 id="declared-reads"><a class="header" href="#declared-reads">Declared reads</a></h2>
+<p>A mod sees only the sections its <code>reads</code> list names. Any other section is absent: <code>nil</code> in Lua and <code>None</code> in Rust. A section that exists and is empty is an empty list. A mod with no <code>reads</code> gets only the envelope.</p>
+<p>The envelope always carries three fields: <code>mod_api</code> (the generation and the minor), <code>quantum</code> (the quantum the snapshot was projected at) and <code>sim_time_ns</code>.</p>
+<p>The sections a mod may name are these. A name outside the list makes the pack invalid, with the rule <code>manifest</code> at <code>/reads/&lt;index&gt;</code>.</p>
+<p><code>status</code>, <code>topbar</code>, <code>cage_offer</code>, <code>regions</code>, <code>az_trunks</code>, <code>azs</code>, <code>racks</code>, <code>hosts</code>, <code>switches</code>, <code>appliances</code>, <code>cables</code>, <code>edds</code>, <code>gateways</code>, <code>patch_panels</code>, <code>active_attack</code>, <code>flood_protection</code>, <code>cable_trays</code>, <code>lags</code>, <code>switch_pairs</code>, <code>host_pools</code>, <code>segments</code>, <code>subnets</code>, <code>reservations</code>, <code>device_transit</code>, <code>deliveries</code>, <code>sale_history</code>, <code>active_incidents</code>, <code>active_macro_events</code>, <code>spares</code>, <code>pending_growth_requests</code>, <code>pending_customer_requests</code>, <code>service_gates</code>, <code>service_planes</code>, <code>function_pool</code>, <code>difficulty</code>, <code>min_difficulty</code>, <code>hostility</code>, <code>relocation</code>, <code>migration</code>, <code>degraded_control_planes</code>, <code>stranded_vms</code>, <code>customers</code>, <code>prospects</code>, <code>customers_summary</code>, <code>staff</code>, <code>hire_pool</code>, <code>staff_auto_evacuate</code>, <code>cost_breakdown</code>, <code>cost_rates</code>, <code>financing_breakdown</code>, <code>revenue_breakdown</code>, <code>capacity</code>, <code>service_settings</code>, <code>business_policy</code>, <code>port_flows</code>, <code>workloads</code> and <code>parts</code>.</p>
+<p>Each section has the shape of the matching view in <code>snapshot.v1alpha1.fields</code>. A section that is not on the list, such as the cart, haulers, loose items or teaching UI, is never given to a mod.</p>
+<p>Two sections carry the ids that some commands need and no other section lists:</p>
+<ul>
+<li><code>workloads</code> has one row for each workload that can be moved to another host, with <code>unit_id</code>, <code>kind_tag</code>, <code>id</code>, <code>customer_id</code> and <code>host_id</code>. <code>MigrateWorkload</code> and <code>MigrateWorkloadToAz</code> take <code>kind_tag</code>, <code>id</code> and <code>unit_id</code> back unchanged, with <code>host_id</code> as <code>source_host_id</code>. This works for every service, not only VMs.</li>
+<li><code>parts</code> has one row for each device with a part that is not healthy or that has an order, a spare or a swap in progress. The row lists all of that device’s parts. <code>OrderPart</code>, <code>CancelPartOrder</code> and <code>RepairPart</code> take its <code>owner_kind</code> and <code>owner_id</code> and a part’s <code>component_id</code>. A device whose parts are all healthy, with nothing ordered, is not listed, because those commands refuse a healthy part.</li>
+</ul>
+<p>The game builds neither section unless a loaded mod declares it.</p>
+<p>Rules for <code>reads</code>:</p>
+<ul>
+<li>No name twice, and at most 64 names.</li>
+<li>Declare the least you need. The game projects only the union of what the loaded mods declare, and hands each mod only its own sections.</li>
+<li>The snapshot is copied into the mod and decoded there, and both come out of the step’s fuel. A large section such as <code>hosts</code> costs real fuel on a big fleet.</li>
+<li>The snapshot refreshes every fourth quantum, which is 60 seconds of sim time. In between, a step sees the same snapshot as before. The envelope’s <code>quantum</code> tells you which quantum it came from.</li>
+</ul>
+<h2 id="events"><a class="header" href="#events">Events</a></h2>
+<p>Each step gets a batch of events: <code>quantum</code>, a <code>dropped</code> count and an <code>events</code> list. <code>dropped</code> counts events the engine’s ring had already trimmed. A mod that sees a gap can resynchronise from the snapshot.</p>
+<p>An entry of the list is one of these:</p>
+<ul>
+<li>A lifecycle marker, <code>save_loaded</code> or <code>run_started</code>.</li>
+<li>A receipt for a command that landed. See below.</li>
+<li>An engine event with the time it happened (<code>at_ns</code>), its category and the event itself.</li>
+</ul>
+<p>The engine event categories are <code>incidents</code>, <code>customers</code>, <code>finance</code> and <code>builds</code>. Which category carries which event is in <code>events.v1alpha1.fields</code>.</p>
+<h2 id="commands-and-receipts"><a class="header" href="#commands-and-receipts">Commands and receipts</a></h2>
+<p>A command is an externally tagged value, such as <code>AcceptProspect</code> with a <code>prospect_id</code>. The set of commands a mod may issue is the mod subset of the player’s commands. <code>commands.v1alpha1.fields</code> lists every command and field. The game refuses a command a mod may not use.</p>
+<p>Rules for commands:</p>
+<ul>
+<li>A step may return up to 32 commands. The game drops the rest. The mod gets one <code>rate_limited</code> receipt whose <code>index</code> is 32, the first dropped position. The receipt carries no count, so work it out as the number you queued minus 32.</li>
+<li>One encoded command may be at most 16 KiB. A step’s commands and panels together may be at most 256 KiB. The game discards a step over either cap whole and counts a strike.</li>
+<li>The game drops a command it cannot decode. The mod gets an <code>invalid_command</code> receipt that carries only the command’s position. The decoder’s message reaches neither the mod nor the log.</li>
+<li>Commands land in a fixed order: mod by mod, and each mod’s commands in the order the step returned them.</li>
+<li>A landed command goes through the same handler as a player command, with the mod as the actor. The gate refuses a command whose category the manifest did not list, or one the game does not publish to mods. The receipt then carries the code <code>permission_denied</code>.</li>
+</ul>
+<p>A receipt tells the mod what happened. It arrives in the batch for the boundary where the command landed, which is two quanta after the step. A receipt has these fields:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>quantum</code></td><td>The quantum whose step issued the command.</td></tr>
+<tr><td><code>index</code></td><td>The position of the command in that step’s output.</td></tr>
+<tr><td><code>ok</code></td><td>Whether the command succeeded.</td></tr>
+<tr><td><code>code</code></td><td>A stable machine code. It is empty on success and never empty on a failure.</td></tr>
+<tr><td><code>msg_key</code></td><td>A localization key for the failure, or empty.</td></tr>
+<tr><td><code>created</code></td><td>Every entity the command created, in creation order.</td></tr>
+</tbody>
+</table>
+</div>
+<p>On a failure the code is the engine’s code, or else the message key, or else <code>refused</code>.</p>
+<p>A command takes effect at the landing, but a snapshot shows it only once a snapshot is projected at or after that boundary. Do not repeat an order while the first one is in flight. The example autoscaler tracks each order by the quantum it issued and keeps that list in saved state.</p>
+<h2 id="state-and-migration"><a class="header" href="#state-and-migration">State and migration</a></h2>
+<p>A step may save state. The host keeps the last state a step returned, and the save file keeps it too. State is bytes in the Rust SDK and a Lua table in the Lua guest. A state may be at most 1 MiB. The game refuses a larger one with a warning and keeps the previous state.</p>
+<p>Saved state is the only thing that survives a load or a fault. After an out-of-fuel or trap strike, a reload or a load, the game builds the mod again and runs <code>init</code> with the config and the last saved state. A local, a global or a field that you did not save is gone. A mod whose behaviour depends only on its config, its saved state and what each step hands it plays the same after a load as it would have without one.</p>
+<p>Two cases skip that rebuild. A mod the save recorded as off stays off, and the load shows a <code>mod_off_in_save</code> warning, unless the mod’s version is newer than the one the save ran. A newer version clears the off flag and the strike counters and resumes. A saved state over 1 MiB is dropped at load, before any migration, and the mod is rebuilt with no state.</p>
+<p>The first step after a load gets the whole snapshot again, and the extra fuel that decoding it takes. The next section covers that fuel.</p>
+<h3 id="the-state-schema"><a class="header" href="#the-state-schema">The state schema</a></h3>
+<p><code>state_schema</code> in the manifest is a whole number that names the shape of your saved state. It defaults to 0. Raise it when you change that shape. The save records the schema next to the state.</p>
+<p>When a save loads and its schema differs from the manifest’s, the game migrates the state before the mod sees it:</p>
+<ol>
+<li>It builds a throwaway instance of your mod and runs <code>init</code> on it with your config and no state.</li>
+<li>It calls <code>migrate(from_schema, state)</code> on that instance. <code>from_schema</code> is the schema in the save, and <code>state</code> is the saved state.</li>
+<li>What <code>migrate</code> returns becomes the state, and the save records the manifest’s schema.</li>
+</ol>
+<p>In Lua, <code>migrate</code> is the <code>M.migrate</code> function of the entry table. In Rust, override <code>Mod::migrate</code>. Without one, in either language, a raised <code>state_schema</code> fails the migration and the mod stays off for that save.</p>
+<p><code>migrate</code> receives two values and has no <code>ctx</code>. It cannot read the snapshot, issue a command or save state. It runs on its own fuel, 100,000,000, and its result must fit the 1 MiB state cap.</p>
+<p>A migration fails when <code>migrate</code> returns an error, runs out of fuel, traps or returns too much. It also fails when the save’s schema is newer than the manifest’s, because the game cannot turn a newer shape back. A failed migration keeps the old state, schema and version as saved, turns the mod off for that save and shows a warning. The rest of the world loads.</p>
+<h3 id="decode-fuel"><a class="header" href="#decode-fuel">Decode fuel</a></h3>
+<p>A step that receives a new snapshot gets extra fuel to decode it, 180 for each byte of the snapshot, up to the allowance of a snapshot as large as a mod’s memory, 64 MiB. That extra fuel is on top of the 20,000,000 a step has, and it is why a snapshot refresh step can run longer than other steps. A snapshot cannot be larger than the memory limit, so the allowance stops there. Declare the least you need in <code>reads</code> so the allowance covers the decode with room to spare.</p>
+<h2 id="limits"><a class="header" href="#limits">Limits</a></h2>
+<p>These limits hold for every script mod. Fuel is the deciding limit for time. It counts wasm operations plus a fixed charge for each call into the host, so the same mod hits the same limit on every machine.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Limit</th><th>Value</th></tr>
+</thead>
+<tbody>
+<tr><td>Fuel per <code>step</code></td><td>20,000,000</td></tr>
+<tr><td>Fuel per <code>init</code></td><td>200,000,000</td></tr>
+<tr><td>Fuel for the <code>init</code> that rebuilds an instance after a strike</td><td>20,000,000 for a component, 200,000,000 for Lua</td></tr>
+<tr><td>Fuel per call into the host</td><td>2,000, plus 4 per byte moved</td></tr>
+<tr><td>Memory per mod</td><td>64 MiB for the linear memory and the GC heap together</td></tr>
+<tr><td>Commands per quantum</td><td>32</td></tr>
+<tr><td>Bytes in one command</td><td>16 KiB</td></tr>
+<tr><td>Bytes in commands plus panels per step</td><td>256 KiB</td></tr>
+<tr><td>Bytes of saved state</td><td>1 MiB</td></tr>
+<tr><td>Live host handles</td><td>64</td></tr>
+<tr><td>Bytes one random call may ask for</td><td>64 KiB</td></tr>
+<tr><td>Log lines per call</td><td>64</td></tr>
+<tr><td>Bytes kept of one log message</td><td>512</td></tr>
+<tr><td>Lines in a mod’s log ring</td><td>256</td></tr>
+</tbody>
+</table>
+</div>
+<p>A wall-clock backstop also guards each call. It is set far past the fuel limit and never under one second. It exists for a failure of the metering and fuel decides first, even on a loaded machine. If it ever fires, the mod is disabled and the run is not replayable.</p>
+<h2 id="faults-strikes-and-rebuilds"><a class="header" href="#faults-strikes-and-rebuilds">Faults, strikes and rebuilds</a></h2>
+<p>Each step ends in one of these ways:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Outcome</th><th>What happens</th></tr>
+</thead>
+<tbody>
+<tr><td>Ok</td><td>The commands and state are applied.</td></tr>
+<tr><td>The mod returns an error</td><td>In Lua, an <code>error()</code> in <code>step</code>. In Rust, an <code>Err</code> from <code>step</code>. The game drops the step’s commands and state. It is not a strike, and the mod runs again next quantum.</td></tr>
+<tr><td>Out of fuel</td><td>A strike.</td></tr>
+<tr><td>A trap</td><td>A strike.</td></tr>
+<tr><td>An output over a cap</td><td>A strike. The instance stays.</td></tr>
+<tr><td>Memory limit</td><td>The mod is disabled at once.</td></tr>
+<tr><td>Wall-clock backstop</td><td>The mod is disabled at once.</td></tr>
+<tr><td>Stack overflow</td><td>The mod is disabled at once.</td></tr>
+<tr><td>A panic in the host</td><td>The mod is disabled at once.</td></tr>
+</tbody>
+</table>
+</div>
+<p>After an out-of-fuel or trap strike the game drops the instance. The next step builds a fresh instance and runs <code>init</code> again with the mod’s config and its last accepted state. That <code>init</code> runs on its own fuel, which the step is charged for, and it uses up one rebuild.</p>
+<p>After an over-cap output strike the instance stays. The game discards that step’s output, builds nothing and uses no rebuild.</p>
+<p>The counters:</p>
+<ul>
+<li>Three strikes disable the mod. Three clean steps in a row clear the strikes.</li>
+<li>A mod gets three rebuilds per session. A strike that needs a fourth disables the mod.</li>
+<li>If <code>init</code> fails when the world loads, or when the instance is rebuilt, the mod is disabled.</li>
+</ul>
+<p>A disabled mod runs nothing for the rest of that world’s session. It stays loaded and off. The game logs why, with a line for each strike. It does not stop the world.</p>
+<p>A world refuses to start when the script host cannot load a component, or when a Lua script does not compile.</p>
+<h2 id="determinism"><a class="header" href="#determinism">Determinism</a></h2>
+<p>A run must replay: the same inputs must give the same commands. The host removes the usual sources of drift.</p>
+<ul>
+<li>The clocks a mod can read return the quantum’s sim time. Nothing reads the wall clock.</li>
+<li>Random numbers come from a stream seeded by the quantum’s seed. The seed is a fixed hash of the world’s mod seed, the quantum and the mod’s id.</li>
+<li>The engine runs with fuel metering and canonical NaN values, and with no threads and no relaxed SIMD.</li>
+<li>Fuel counts operations, so a limit breach is the same breach on every run.</li>
+</ul>
+<p>What stays with you: do not let an unordered walk decide the order of commands. Sort first. The language pages give the details.</p>
+<h2 id="testing-a-mod"><a class="header" href="#testing-a-mod">Testing a mod</a></h2>
+<p>The runner has a batch mode for mods. It builds a scenario world with your pack selected, steps it for a number of quanta and prints one JSON line for each command that landed. The line has <code>issued</code>, <code>landed</code>, <code>mod</code>, <code>ok</code> and <code>code</code>. The run is the same every time for the same seed, and the seed is <code>1</code> unless you pass one. A golden file holds the expected output. The runner exits <code>1</code> and names the first differing line when the output does not match. A bad command line exits <code>2</code>.</p>
+<pre><code>sim-runner --mod-run PACKDIR (--scenario ID | --world SAVE) --quanta N [--seed N] [--golden FILE] [--watch]
+</code></pre>
+<p>Your mod’s log lines go to stderr as <code>[mod-log] &lt;id&gt; k=&lt;quantum&gt; &lt;level&gt;: &lt;text&gt;</code>, so they never change the JSON lines a golden file compares. <code>--watch</code> reloads the pack when its files change, as developer mode does in the game. <code>uptime-mod run</code> wraps this; see <a href="CLI.html#run">the CLI</a>.</p>
+<h2 id="developer-mode"><a class="header" href="#developer-mode">Developer mode</a></h2>
+<p>Developer mode reloads your mod into a running single-player game when you change its files, without a restart. Turn it on with the Developer mode toggle on the title screen’s Mods panel, then start or load a run. The laptop’s Mods page then shows the mod log, the last reload and what a change needs. It is off in multiplayer and in the demo.</p>
+<p>The game looks at your pack folder every half second and sorts each change:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>You changed</th><th>What happens</th></tr>
+</thead>
+<tbody>
+<tr><td>A Lua script</td><td>The scripts reload between two steps.</td></tr>
+<tr><td>A component, the manifest’s script <code>entry</code></td><td>The new component is compiled and reloaded between two steps.</td></tr>
+<tr><td>A panel file</td><td>The panels are checked again and swapped in at the next quantum.</td></tr>
+<tr><td>A file under <code>art/</code></td><td>The game redraws the art.</td></tr>
+<tr><td>A scenario</td><td>Start a new run to play it.</td></tr>
+<tr><td>Anything else: the manifest, hardware rows, the config schema</td><td>Save, then load the save.</td></tr>
+</tbody>
+</table>
+</div>
+<p>A reload builds a fresh instance and runs <code>init</code> with the mod’s config and its last saved state, as a rebuild does. It is not a strike and uses no rebuild. The two steps the old code had in flight still land; the new code’s commands land from the quantum after. A reload that fails keeps the old code running and writes <code>reload failed</code> to the log.</p>
+<p>A mod the game disabled (strikes, rebuilds, a failed <code>init</code>, a fault) runs again after a reload that comes up, with its counters cleared. A mod that a save keeps off stays off.</p>
+<p>A save made after a reload records that developer mode changed the run. Loading it later says the pack changed since the save, as any edited pack does.</p>
+<h2 id="what-a-modded-run-costs-the-player"><a class="header" href="#what-a-modded-run-costs-the-player">What a modded run costs the player</a></h2>
+<p>A run that has had a pack that affects gameplay active earns no achievements, posts no leaderboard scores and feeds no Steam stats. The flag stays set for the life of the save, including after a recovery that strips the mod. A pack that does not affect gameplay never sets it. Packs that only carry <code>locale</code> or <code>art</code>, and script mods that declare no <code>commands</code>, are in that group.</p>
+<p>Tell players before they install the mod. The flag cannot be cleared once it is set.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="OTHER_LANGUAGES.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="PANELS.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="OTHER_LANGUAGES.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="PANELS.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>
