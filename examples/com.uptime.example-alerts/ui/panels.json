@@ -1,0 +1,24 @@
+{
+  "panels": [
+    {
+      "id": "hud",
+      "title": "Incidents",
+      "point": "hud",
+      "widgets": [
+        { "id": "open", "label": "Open incidents", "kind": "stat_tile" }
+      ]
+    },
+    {
+      "id": "board",
+      "title": "Alert board",
+      "point": "dashboard",
+      "key": "F6",
+      "widgets": [
+        { "id": "open", "label": "Open incidents", "kind": "stat_tile" },
+        { "id": "attacks", "label": "Attacks seen", "kind": "stat_tile" },
+        { "id": "last", "label": "Last attack", "kind": "text" },
+        { "id": "ack", "label": "Acknowledge", "kind": "button", "key": "F7" }
+      ]
+    }
+  ]
+}

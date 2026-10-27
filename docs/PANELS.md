@@ -53,7 +53,10 @@ A panel has these fields:
 | `title` | The heading, at most 64 bytes. |
 | `point` | Where the panel appears. See the next section. |
 | `entity` | Required for `entity_tab` and refused for other points. |
-| `widgets` | 1 to 24 widgets. |
+| `key` | Optional. A default key that opens the panel. `dashboard` panels only. See [Keys](#keys). |
+| `widgets` | 1 to 24 widgets. A `hud` panel has 1 to 3. |
+
+A `button` widget may also carry a `key`, which presses it. See [Keys](#keys).
 
 An id matches `[a-z0-9_]{1,32}`. Panel ids are unique per mod. Widget ids are unique per panel. Column ids are unique per table, and option ids are unique per select.
 
@@ -64,8 +67,9 @@ An id matches `[a-z0-9_]{1,32}`. Panel ids are unique per mod. Widget ids are un
 - `dashboard` adds a panel to the dashboard.
 - `entity_tab` adds a tab to one kind of entity. Set `entity` to `host`, `rack` or `service`.
 - `settings` adds a panel to the settings screen.
+- `hud` adds a small card to the player's view, outside the ops console. See [The HUD point](#the-hud-point).
 
-A control (toggle, slider, select or button) sits only on a `dashboard` or `settings` panel. An `entity_tab` panel displays values and takes no input.
+A control (toggle, slider, select or button) sits only on a `dashboard` or `settings` panel. An `entity_tab` panel and a `hud` panel display values and take no input.
 
 ## Widget kinds
 
@@ -148,9 +152,10 @@ The game refuses an update that goes over a cap below. It never trims one.
 | Entity rows in one update | 256 |
 | Bytes of one panel update | 16 KiB |
 | Bytes of panel data the world holds for one mod | 64 KiB |
-| Commands plus panels in one step | 256 KiB |
+| Bytes of one update to a `hud` panel | 2 KiB |
+| Commands, panels and toasts in one step | 256 KiB |
 
-An update that would take your mod past 64 KiB of held panel data is refused, and that panel keeps its previous data. A step that goes over 256 KiB in total is discarded whole and counts as a strike. See [Script mods](SCRIPTS.md).
+An update that would take your mod past 64 KiB of held panel data is refused, and that panel keeps its previous data. A step that goes over 256 KiB in total is discarded whole and counts as a strike. See [Script mods](SCRIPTS.md). The caps on a `hud` panel are in [The HUD point](#the-hud-point), and the caps on keys in [Keys](#keys).
 
 ## Text rules
 
@@ -185,6 +190,52 @@ The rules differ for files and data:
 
 - In a panel file, a title or label that holds a control character or an invisible formatting character (bidirectional marks, overrides and isolates, zero-width spaces, the byte order mark) makes the pack invalid. The zero-width joiner and non-joiner are allowed, since Persian and Indic text need them. The game does not fix it. What you wrote is what shows. A config schema's titles follow the same rule.
 - In data, the game drops those same characters and normalises the rest to NFC. A text widget keeps its newlines. Every other string is one line. The text must still fit its cap after cleaning, or the update is refused.
+
+## The HUD point
+
+A `hud` panel is a small card on the player's view. The player sees it while walking the datacenter, with no console open. Use it for one number or one short line that a player should be able to glance at, such as a count of open incidents. A card shows values only. The HUD has no cursor, so it takes no input.
+
+```json
+{
+  "panels": [
+    {
+      "id": "hud",
+      "title": "Incidents",
+      "point": "hud",
+      "widgets": [
+        { "id": "open", "label": "Open incidents", "kind": "stat_tile" }
+      ]
+    }
+  ]
+}
+```
+
+You fill it with `ctx:panel` or `step.panel`, like any panel. The update lands two quanta after the step, as [When data arrives](#when-data-arrives) says, and every player in the world sees the same card. Each player can switch a mod's card off with "Show on HUD" on the Mods page, and the HUD shows at most 4 cards across all mods.
+
+The pack check refuses a `hud` panel that breaks one of these rules. Each message starts with the code:
+
+| Code | When |
+|---|---|
+| `hud_point_twice` | The mod declares a second `hud` panel, in any of its panel files. |
+| `hud_widget_count` | The panel has more than 3 widgets. |
+| `hud_widget_kind` | A widget is anything but a `stat_tile` or a `text`. |
+| `key_not_allowed` | The panel carries a `key`. A card cannot be opened. |
+
+A `hud` panel also refuses `entity`, as every panel that is not an `entity_tab` does.
+
+The caps are tighter than for other panels:
+
+| What | Cap |
+|---|---|
+| `hud` panels per mod | 1 |
+| Widgets in the panel | 3 |
+| Bytes of one update | 2 KiB |
+| Values in one update | 3 |
+| A `text` value | 128 bytes, on one line |
+
+An update over a HUD cap is refused whole, like any other: one line in the host log, and the previous data stands. A line break in a `text` value on the HUD refuses the update. The card's data counts against the same 64 KiB of held panel data as the mod's other panels.
+
+An update with an empty `values` clears the card, in Lua (`values = {}`) and in Rust (an empty map) alike. A mod uses it to take an alert down when there is nothing to show.
 
 ## Player input
 
@@ -231,3 +282,72 @@ A dedicated server has no host player, so its panels show values and take no inp
 A mod cannot press its own controls. Input comes from player requests only, and no mod command presses a control.
 
 The demo has no mods, and a demo build refuses panel input.
+
+## Keys
+
+A mod can ask for a key. A key does one of two things:
+
+- A `key` on a `dashboard` panel opens that panel in an overlay, from anywhere in the world. The player does not walk to the laptop.
+- A `key` on a `button` widget of a `dashboard` panel presses the button, from anywhere. The panel does not need to be open.
+
+Both are for the mod's own panels. A mod key never opens a panel that belongs to the game or to another mod.
+
+```json
+{
+  "id": "board",
+  "title": "Alert board",
+  "point": "dashboard",
+  "key": "F6",
+  "widgets": [
+    { "id": "ack", "label": "Acknowledge", "kind": "button", "key": "F7" }
+  ]
+}
+```
+
+A key on any other panel or widget is refused with `key_not_allowed`: a `settings`, `entity_tab` or `hud` panel, or a widget that is not a button.
+
+A press key gives your mod the same `UiInput` event as a click on the button: the `panel`, the `widget`, the value `"Press"` and the `player` who pressed. The same checks apply, including the input limits in [Player input](#player-input). A dedicated server takes no input, so a press key does nothing there.
+
+### What a key looks like
+
+`key` is a default. It is one base key with optional modifiers, written in this order and each at most once:
+
+```text
+ctrl+  alt+  shift+  BASE
+```
+
+`BASE` is one of `A` to `Z`, `0` to `9` or `F1` to `F12`, in capitals. `F6`, `shift+F7` and `ctrl+alt+J` are keys. `f6`, `Ctrl+F6`, `alt+ctrl+J` and `Space` are not.
+
+### Caps and refusals
+
+A mod declares at most 4 keys in all its panel files. The pack check refuses these, and each message starts with the code:
+
+| Code | When |
+|---|---|
+| `key_not_allowed` | The key is not on a `dashboard` panel or on a button of one. |
+| `key_bad_chord` | The key does not follow the grammar above. |
+| `key_reserved` | The base key is one the game binds. |
+| `key_twice` | Another key of this mod has the same default. |
+| `key_cap` | This would be the mod's fifth key. |
+
+The game binds these base keys, and a mod default on one is refused whatever its modifiers, so `ctrl+F` is refused as well as `F`:
+
+`A`, `B`, `D`, `E`, `F`, `G`, `K`, `M`, `O`, `Q`, `R`, `S`, `U`, `W`, `1`, `2`, `3`, `4`, `F1`, `F2`, `F4`, `F8`, `F10`, `F12`, and the keys Escape, Tab and Shift.
+
+That list can grow with the game. The source of truth is `RESERVED_BASE_KEYS` in `sim_core::mod_ui`, and `uptime-mod validate` reports a refused key with the code `key_reserved`.
+
+The game matches its own keys by the physical key and ignores modifiers, which is why a modifier does not free a reserved key. Among a mod's own keys a modifier does count: `F6` and `ctrl+F6` are two separate keys and a press of one never fires the other.
+
+### What the player controls
+
+Only the default travels with the world. The binding is the player's own, kept in their settings, so two players in one world can use different keys.
+
+- A player can rebind a mod key, or turn it off, in Controls. The pane lists each mod's keys under the mod.
+- A default that the game already uses, or that an earlier mod in the world's load order has taken, does not bind. The key starts unbound and the player picks one in Controls. A mod cannot take a key from the game or from another mod.
+- A player's own choice wins over another mod's key: binding a chord to a mod key takes it from any other mod key. A key the game itself uses cannot be given to a mod key, whatever the modifiers.
+
+So write your panel and your button so they work without the key, and say nothing in the UI that depends on a particular key. The `alerts` example's card says "open the board" and not "press F6".
+
+### The example
+
+`ModSDK/examples/com.uptime.example-alerts` declares a `hud` card, a dashboard panel that opens on `F6`, and an Acknowledge button on `F7`. It raises a toast too. See [Toasts](TOASTS.md).

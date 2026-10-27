@@ -2,6 +2,8 @@
 
 A script mod is code that plays the game for the player. It runs once per quantum, reads a slice of the world and issues commands. This page covers what Lua mods and Rust mods share: the manifest fields, the quantum, declared reads, commands and receipts, limits, faults and the cost to a run.
 
+A script mod can also draw [panels, a HUD card and keys](PANELS.md) and raise [toasts](TOASTS.md).
+
 Language details are in [Lua mods](LUA.md) and [Rust mods](RUST.md). To make a mod in any other language, see [Other languages](OTHER_LANGUAGES.md). The manifest rules that all packs share are in [Content packs](CONTENT_PACKS.md).
 
 ## The manifest
@@ -14,7 +16,7 @@ A script mod sets `kind` to `["script"]` and adds a `script` block. A mod may be
   "id": "com.example.my-mod",
   "version": "1.0.0",
   "api_version": "v1alpha1",
-  "api_minor": 0,
+  "api_minor": 1,
   "game_version": ">=0.1.0, <0.3.0",
   "kind": ["script"],
   "script": { "runtime": "lua", "entry": "logic/main.lua" },
@@ -32,7 +34,7 @@ A script mod sets `kind` to `["script"]` and adds a `script` block. A mod may be
 - `state_schema` is a number that versions the mod's saved state. The game migrates a saved state of another schema before the mod sees it. A mod that changes its state shape sets a new number and handles the old one in `migrate`.
 - A script mod with no `commands` does not affect gameplay. `affects_gameplay` must then be `false`, unless the same mod also carries hardware, scenarios or customers.
 
-Set `api_minor` to the minor of the SDK you built against. The Rust SDK exports it as `uptime_mod::snapshot::API_MINOR`, currently `0`. The Lua types come from the same ledgers.
+Set `api_minor` to the minor of the SDK you built against. The Rust SDK exports it as `uptime_mod::snapshot::API_MINOR`, currently `1`. The Lua types come from the same ledgers. A mod built against an older minor keeps loading unless a later minor broke a section its `reads` names; [Reference](REFERENCE.md) lists the breaks.
 
 ## The quantum
 
@@ -94,7 +96,7 @@ A command is an externally tagged value, such as `AcceptProspect` with a `prospe
 Rules for commands:
 
 - A step may return up to 32 commands. The game drops the rest. The mod gets one `rate_limited` receipt whose `index` is 32, the first dropped position. The receipt carries no count, so work it out as the number you queued minus 32.
-- One encoded command may be at most 16 KiB. A step's commands and panels together may be at most 256 KiB. The game discards a step over either cap whole and counts a strike.
+- One encoded command may be at most 16 KiB. A step's commands, panels and toasts together may be at most 256 KiB. The game discards a step over either cap whole and counts a strike.
 - The game drops a command it cannot decode. The mod gets an `invalid_command` receipt that carries only the command's position. The decoder's message reaches neither the mod nor the log.
 - Commands land in a fixed order: mod by mod, and each mod's commands in the order the step returned them.
 - A landed command goes through the same handler as a player command, with the mod as the actor. The gate refuses a command whose category the manifest did not list, or one the game does not publish to mods. The receipt then carries the code `permission_denied`.
@@ -157,7 +159,9 @@ These limits hold for every script mod. Fuel is the deciding limit for time. It 
 | Memory per mod | 64 MiB for the linear memory and the GC heap together |
 | Commands per quantum | 32 |
 | Bytes in one command | 16 KiB |
-| Bytes in commands plus panels per step | 256 KiB |
+| Bytes in commands, panels and toasts per step | 256 KiB |
+| Toasts per step | 2 |
+| Bytes of one toast's text | 160 |
 | Bytes of saved state | 1 MiB |
 | Live host handles | 64 |
 | Bytes one random call may ask for | 64 KiB |
@@ -178,6 +182,7 @@ Each step ends in one of these ways:
 | Out of fuel | A strike. |
 | A trap | A strike. |
 | An output over a cap | A strike. The instance stays. |
+| A toast or a panel update over its own cap | Not a strike. The game refuses that toast or update and logs one line. The rest of the step lands. |
 | Memory limit | The mod is disabled at once. |
 | Wall-clock backstop | The mod is disabled at once. |
 | Stack overflow | The mod is disabled at once. |

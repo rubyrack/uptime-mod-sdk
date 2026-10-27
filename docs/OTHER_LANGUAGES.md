@@ -20,10 +20,11 @@ The component imports one interface, `host`, with `log(level: u8, msg: string)`.
 | `step` | `quantum` (`index`, `sim-time-ns`, `seed`), `snapshot: list<u8>`, `events: list<u8>` | a `step-output`, or an error string |
 | `migrate` | `from-schema: u32`, `state: list<u8>` | the new state bytes, or an error string |
 
-A `step-output` has three fields:
+A `step-output` has four fields:
 
 - `commands`: a list of byte lists. Each one is one command.
 - `panels`: a list of a panel id and the bytes of one panel update. Leave it empty if you draw no panels. [Panels](PANELS.md) has the format.
+- `toasts`: a list of byte lists. Each one is a toast, a named-msgpack map of `tone` (`"Neutral"`, `"Info"`, `"Good"`, `"Warn"` or `"Danger"`) and `text`. Leave it empty if you raise none. [Toasts](TOASTS.md) has the caps. The field is part of the WIT record, so a component built from an older copy of the WIT file needs rebuilding.
 - `state`: the bytes to save, or none.
 
 A component may import only `uptime:mod/host` and the WASI 0.2 interfaces a standard toolchain emits: clocks, random, io, cli (stdin, stdout, stderr, environment, exit) and terminal. The game serves them as stubs. The clocks return the quantum's sim time, random comes from the quantum's seed, stdout and stderr go to the mod's log, and `exit` traps. Any other import, such as the filesystem or sockets, fails to link, and the error names it. [Script mods](SCRIPTS.md) has the rule for determinism.

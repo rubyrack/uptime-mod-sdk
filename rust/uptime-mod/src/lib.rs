@@ -68,7 +68,9 @@ pub mod testing;
 mod units;
 
 pub use generated::commands::{self, CableEndpoint, ModCommand};
-pub use generated::panels::{self, EntityUpdate, PanelUpdate, Tone, UiValue, WidgetValue};
+pub use generated::panels::{
+    self, EntityUpdate, ModToast, PanelUpdate, Tone, UiValue, WidgetValue,
+};
 pub use generated::snapshot::{self, ModSnapshot};
 pub use rng::Rng;
 pub use runtime::{Init, Mod, Quantum, Runtime, Step};

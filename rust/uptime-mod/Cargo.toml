@@ -1,6 +1,6 @@
 [package]
 name = "uptime-mod"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 rust-version = "1.88"
 license = "MIT"
@@ -8,10 +8,8 @@ license = "MIT"
 # follows the mod API: mod-sdk/docs/RUST.md#versions.
 publish = ["crates-io"]
 description = "Guest SDK for Uptime script mods: the Mod trait, typed snapshot and commands, a seeded Rng."
-# OWNER-FILL-IN: the public SDK repository and its docs site. The publish
-# check refuses to print the publish command while either still says so.
-repository = "https://github.com/OWNER-FILL-IN/uptime-mod-sdk"
-documentation = "https://OWNER-FILL-IN.github.io/uptime-mod-sdk/"
+repository = "https://github.com/rubyrack/uptime-mod-sdk"
+documentation = "https://rubyrack.github.io/uptime-mod-sdk/"
 readme = "README.md"
 keywords = ["uptime", "mod", "wasm", "component-model", "gamedev"]
 categories = ["game-development", "wasm", "api-bindings"]

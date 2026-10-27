@@ -36,10 +36,18 @@ function Ctx:save_state(tbl) end
 
 --- Sets the values of panel `id`, a panel the pack's panels file declares.
 --- They land with this step's commands, two quanta later. The last call for
---- an `id` in a step wins. `values` must name at least one widget.
+--- an `id` in a step wins. An empty `values` clears the panel, which hides a
+--- HUD card.
 ---@param id string
 ---@param update uptime.PanelUpdate
 function Ctx:panel(id, update) end
+
+--- Raises a toast: a short notice every player sees for a few seconds. It
+--- lands with this step's commands, two quanta later. At most 2 per step;
+--- `text` is 1 to 160 bytes of UTF-8. The game picks the colour from `tone`.
+---@param tone uptime.Tone
+---@param text string
+function Ctx:toast(tone, text) end
 
 --- Writes a log line.
 ---@param level uptime.LogLevel

@@ -697,6 +697,13 @@
         "id": {
           "type": "string"
         },
+        "key": {
+          "description": "A default key (`F6`, `ctrl+F6`) that opens this panel. Dashboard panels\nonly.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "point": {
           "$ref": "#/$defs/PointRow"
         },
@@ -739,7 +746,8 @@
       "enum": [
         "dashboard",
         "entity_tab",
-        "settings"
+        "settings",
+        "hud"
       ],
       "type": "string"
     },
@@ -1011,6 +1019,13 @@
         },
         "id": {
           "type": "string"
+        },
+        "key": {
+          "description": "A default key (`F6`, `ctrl+F6`) that presses this button. Buttons of a\ndashboard panel only.",
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "kind": {
           "$ref": "#/$defs/WidgetKindRow"

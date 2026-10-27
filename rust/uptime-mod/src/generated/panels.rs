@@ -16,6 +16,12 @@ pub struct EntityUpdate {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct ModToast {
+    pub text: String,
+    pub tone: Tone,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct PanelUpdate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entities: Option<Vec<EntityUpdate>>,

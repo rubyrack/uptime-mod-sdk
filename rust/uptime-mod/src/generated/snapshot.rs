@@ -8,7 +8,7 @@ use serde::Deserialize;
 /// The mod API generation this module was generated from.
 pub const API_GENERATION: &str = "v1alpha1";
 /// The snapshot schema minor this module was generated from.
-pub const API_MINOR: u32 = 0;
+pub const API_MINOR: u32 = 1;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct ActiveAttackView {
@@ -439,7 +439,7 @@ pub struct CageOfferView {
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct CandidateCauseView {
-    pub articles: Vec<IncidentArticleView>,
+    pub article_ids: Vec<String>,
     #[serde(default)]
     pub cleared: bool,
     pub confidence: u32,
@@ -1305,13 +1305,6 @@ pub struct HostilityView {
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
-pub struct IncidentArticleView {
-    pub id: String,
-    pub title: String,
-    pub title_plain: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct IncidentPartsView {
     pub arrived: u32,
     pub failed: u32,
@@ -1336,7 +1329,7 @@ pub struct IncidentView {
     #[serde(default)]
     pub affected_host_total: u32,
     #[serde(default)]
-    pub articles: Vec<IncidentArticleView>,
+    pub article_ids: Vec<String>,
     #[serde(default)]
     pub az_id: u32,
     pub band: String,

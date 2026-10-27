@@ -1,0 +1,15 @@
+{
+  "manifest_version": 1,
+  "id": "com.uptime.example-alerts",
+  "version": "1.0.0",
+  "api_version": "v1alpha1",
+  "api_minor": 1,
+  "game_version": ">=0.1.0, <0.3.0",
+  "kind": ["script"],
+  "script": { "runtime": "lua", "entry": "logic/main.lua" },
+  "affects_gameplay": false,
+  "events": ["incidents"],
+  "reads": ["active_incidents"],
+  "state_schema": 1,
+  "panels": ["ui/panels.json"]
+}

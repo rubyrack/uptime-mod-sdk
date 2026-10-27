@@ -56,4 +56,5 @@ The command packages the mod again, then prints what it would send to the Steam 
 - [Lua mods](LUA.md) and [Rust mods](RUST.md) cover each language.
 - [Script mods](SCRIPTS.md) covers what every script mod shares.
 - [Panels](PANELS.md) and [Config](CONFIG.md) add screens and settings.
+- [Content packs](CONTENT_PACKS.md) add hardware, scenarios, customers and text with no code, and [Equipment models](MODELS.md) gives a new host or switch its own 3D model.
 - [Workshop](WORKSHOP.md) covers sharing a mod, and [Multiplayer](MULTIPLAYER.md) covers what other players need to join a world that uses it.

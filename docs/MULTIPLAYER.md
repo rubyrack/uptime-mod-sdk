@@ -10,10 +10,10 @@ A joiner needs only the packs that change what their own screen draws: packs tha
 |---|---|
 | Hardware, scenarios or both | No. The world carries the catalog. |
 | A script mod | No. The script runs on the host. |
-| A script mod with panels | No. The panels travel in the world's data. |
+| A script mod with panels, a HUD card, keys or toasts | No. They travel in the world's data. |
 | Anything with `art` or `locale` content | Yes, at the same version as the host. |
 
-Today the game loads one kind of art file, a pack icon under `art/icons/`, and Fluent text under `locale/`. See [Content packs](CONTENT_PACKS.md).
+The game loads two kinds of art file, a pack icon under `art/icons/` and an equipment model under `art/models/`, and Fluent text under `locale/`. See [Content packs](CONTENT_PACKS.md) and [Equipment models](MODELS.md).
 
 The host's world records each client-required pack with its version and hash. A joiner's game states which of these packs it holds when it connects, and the host's game compares. A copy that differs in a single file has a different hash and is refused.
 
@@ -54,7 +54,7 @@ If the host loads a different world while guests are connected, the game checks 
 
 ## Script mods run on the host only
 
-A script mod runs once, in the host's game, or in the server process on a dedicated server. Guests do not run it, do not need its files and cannot see its code. They see what it does: the commands it issues change the shared world like any other command, and its panels appear on their screens.
+A script mod runs once, in the host's game, or in the server process on a dedicated server. Guests do not run it, do not need its files and cannot see its code. They see what it does: the commands it issues change the shared world like any other command, and its panels, HUD card and toasts appear on their screens.
 
 This has two results for you:
 
@@ -92,3 +92,15 @@ A control that every player may use, such as a toggle that changes a panel's own
 The game refuses a press from a connection that has not finished joining (`not_joined`) and any press on a dedicated server (`dedicated`). Your mod sees neither. The limits that apply to each connection are the ones in [Panels](PANELS.md#player-input): a burst of 8 inputs, 4 a second over time, and 32 waiting for your mod in one quantum across all players. A press from a guest therefore counts against the same 32 as the host's.
 
 On a dedicated server a player's panel shows its controls disabled, with the tooltip "Mod panels on this server are view-only."
+
+## HUD, toasts and keys in multiplayer
+
+A `hud` panel and a toast are part of the world, like a panel. Every joined player gets the same ones, the host and the guests alike, with no pack installed. A dedicated server shows them to its players too. Nothing is aimed at one player: a mod cannot show a toast to only the guest who pressed a button, and it cannot give one player a different HUD card.
+
+Each player chooses for themselves what to see. A player can mute a mod's toasts and switch its HUD card off ("Show on HUD" on the Mods page), and both choices are on their own screen. They change nothing for anyone else. The HUD shows at most 4 cards across all mods.
+
+A key is a setting of the player's own client. The world carries only the key a mod asks for as a default. Each player binds, rebinds or turns off a mod's key in their own Controls, so two players can use different keys for the same mod, and a key one player turned off still works for the other. A key opens the panel on the player's own screen. A press key sends the press as that player, so `UiInput.player` is their seat, and your mod must check it when a press is host business, as [Panels in multiplayer](#panels-in-multiplayer) says.
+
+On a dedicated server the overlay's controls are disabled, as in the laptop, so a press key sends nothing there.
+
+A player who joins mid-session sees the HUD card at once. They see only the toasts that land after they join, not the ones that landed before.

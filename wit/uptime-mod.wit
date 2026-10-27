@@ -14,6 +14,9 @@ world uptime-mod {
         commands: list<list<u8>>,
         /// Panel updates, each a panel id and its named-msgpack update.
         panels: list<tuple<string, list<u8>>>,
+        /// Toasts, each a named-msgpack ModToast `{tone, text}`: at most
+        /// TOASTS_PER_STEP per step, text at most TOAST_TEXT_BYTES.
+        toasts: list<list<u8>>,
         state: option<list<u8>>,
     }
     export init: func(config: list<u8>, saved-state: option<list<u8>>) -> result<_, string>;

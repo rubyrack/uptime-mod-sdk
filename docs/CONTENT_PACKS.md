@@ -37,7 +37,7 @@ Each subfolder is one pack. If the folder does not exist, create it. Restart the
   "id": "com.example.my-hardware",
   "version": "1.0.0",
   "api_version": "v1alpha1",
-  "api_minor": 0,
+  "api_minor": 1,
   "game_version": ">=0.1.0, <0.3.0",
   "kind": ["content"],
   "content": ["hardware"],
@@ -77,9 +77,9 @@ Packs that affect play mark the run. See [Script mods](SCRIPTS.md) for what that
 
 `api_version` names a generation. `api_minor` names the minor within it. Every part of the mod API shares one minor: the snapshot, the events, the commands, the hardware, customer and service files, the scenario files and the manifest.
 
-The game accepts an `api_minor` between two limits. The low limit is the latest minor that declared a break on a part of the API your pack uses. The high limit is the minor this build serves. A pack outside that range is incompatible and the game says so by name. A pack built against an older minor still loads while no break has landed since.
+The game accepts an `api_minor` between two limits. The low limit is the latest minor that declared a break on data your pack uses: a scenario field its scenario files set, or any break on the hardware, customer and service files or the manifest. The high limit is the minor this build serves. A pack outside that range is incompatible and the game says so by name. A pack built against an older minor still loads while no break on its data has landed since.
 
-The current minor is `0`, and no minor has shipped yet. While `v1alpha1` is a preview, a minor may contain a break. The ledgers in [Reference](REFERENCE.md) record every change.
+The current minor is `1`; minor `0` has shipped. Minor 1 removed two scenario fields, `pricing.load_balancer.per_million_requests_microcents` and `tuning.eviction_refund_cap_months`. A minor-0 scenario pack that sets either one must be rebuilt against minor 1. While `v1alpha1` is a preview, a minor may contain a break. The ledgers in [Reference](REFERENCE.md) record every change.
 
 ## Hardware packs
 
@@ -92,7 +92,7 @@ The game refuses any other file under `hardware/` with the rule `content_categor
 
 ### The base-model rule
 
-A row names a built-in SKU in `model` and sets scalar stats only. It cannot set shape. Rack units, ports, NIC and PSU counts, bays, architecture, accelerator, category and switch role all come from the base model. Every row rejects unknown keys. The game ships no way to import new geometry, so a pack SKU always draws as its base model.
+A row names a built-in SKU in `model` and sets scalar stats only. It cannot set shape. Rack units, ports, NIC and PSU counts, bays, architecture, accelerator, category and switch role all come from the base model. Every row rejects unknown keys. A new SKU draws as its base model unless the pack ships a model for it, see [Equipment models](MODELS.md). An override always draws as the SKU it overrides.
 
 Copy base SKU names exactly from the built-in catalog, for example `Balanced x86 1U`, `Compute 1U` and `16-port Access GbE`. The GPU host is `GPU 2× 2U` and the name contains the character `×`.
 
@@ -367,9 +367,17 @@ The game reads the text again when the set of installed packs changes, such as a
 
 ## Art
 
-The manifest accepts `art`. This build loads one kind of art file: a pack icon, a PNG at `art/icons/<item>.png` where `<item>` is the id of one of the pack's own hardware items. An icon is at most 64 KiB and at most 256 by 256 pixels. The shop shows it on that item's row. A pack with `art` content is client-required: a player who joins a multiplayer world that uses it must have it installed. See [Multiplayer](MULTIPLAYER.md).
+Declare `"content": ["art"]`. Art belongs to the pack's own new hardware items, so the pack also carries those rows. The game loads two kinds of art file, icons and models. Every other file under `art/` fails with the rule `content_category_unsupported`.
 
-Every other file under `art/` fails with the rule `content_category_unsupported`.
+A pack with `art` content is client-required: a player who joins a multiplayer world that uses it must have it installed. See [Multiplayer](MULTIPLAYER.md). It cannot also carry a script.
+
+### Icons
+
+An icon is a PNG at `art/icons/<item>.png`, where `<item>` is the id of one of the pack's own hardware items. It is at most 64 KiB and at most 256 by 256 pixels. The shop shows it on that item's row.
+
+### Models
+
+A new host or switch can ship its own 3D model, drawn in the rack in place of its base model. A model is three files in `art/models/` named after the item: `<item>_render.glb`, `<item>_proxy.glb` and `<item>.pips.json`. A model that breaks any rule makes the whole pack invalid. [Equipment models](MODELS.md) covers how to make the files, every limit and the `.pips.json` fields.
 
 ## Dependencies
 
@@ -425,9 +433,12 @@ An invalid pack has bad files. Nothing from it loads. These rule codes mark it:
 | `service_name_taken`, `service_spread_unsupported`, `unknown_service` | A service rule failed. See [Service packs](#service-packs). |
 | `content_outside_declared_category`, `content_category_unsupported` | A file is in the wrong place, or in a category this build does not load. |
 | `locale_syntax`, `locale_key_not_namespaced`, `locale_key_missing_en` | A locale rule failed. See [Locale packs](#locale-packs). |
+| `model_orphan_item`, `model_missing_file`, `model_malformed`, `model_out_of_bounds`, `model_over_limit`, `model_external_uri`, `model_unsupported_feature`, `model_material_forbidden`, `model_bad_image`, `model_outside_envelope` | A model's GLB broke a rule. See [Limits and rules](MODELS.md#limits-and-rules). |
+| `pips_malformed`, `pips_over_limit`, `pips_port_mismatch`, `pips_iec_mismatch`, `pips_bay_mismatch`, `pips_bad_xform` | A model's `.pips.json` is malformed, too large, or does not match its base model. See [The .pips.json sidecar](MODELS.md#the-pipsjson-sidecar). |
+| `client_pack_has_script` | A pack with `art` or `locale` content also carries a script. |
 
 An incompatible pack is well formed but cannot load here. The game marks it when its id is installed twice, its `game_version` range excludes this build, its `api_minor` is out of range, a dependency is missing or at the wrong version, or it sits on a cycle. The rule code is `incompatible`. The related selection errors are `mod_unavailable`, when a selected id is not installed or is invalid, and `runtime_unavailable`, when this build has no runtime for a script mod.
 
 ## The example packs
 
-`ModSDK/examples/com.uptime.example-hardware` carries two new host SKUs, one new switch SKU and one override. `ModSDK/examples/com.uptime.example-scenario` carries one scenario and depends on the hardware pack. `ModSDK/examples/com.uptime.example-locale` carries English and German text. `ModSDK/examples/com.uptime.example-customers` carries two new archetypes and one override. `ModSDK/examples/com.uptime.example-service` carries a locked `Cold Storage` offering over object storage and an archetype that buys it. `ModSDK/examples/com.uptime.example-events` carries two macro events and their English text. Copy any of them as a starting point.
+`ModSDK/examples/com.uptime.example-hardware` carries two new host SKUs, one new switch SKU and one override. `ModSDK/examples/com.uptime.example-scenario` carries one scenario and depends on the hardware pack. `ModSDK/examples/com.uptime.example-locale` carries English and German text. `ModSDK/examples/com.uptime.example-customers` carries two new archetypes and one override. `ModSDK/examples/com.uptime.example-service` carries a locked `Cold Storage` offering over object storage and an archetype that buys it. `ModSDK/examples/com.uptime.example-events` carries two macro events and their English text. `ModSDK/examples/com.uptime.example-model` carries one switch SKU with its own model, the three files `uptime-mod model` writes. See [Equipment models](MODELS.md). Copy any of them as a starting point. The model files in that pack are game art and are not MIT: see `TERMS.md` in the SDK folder.

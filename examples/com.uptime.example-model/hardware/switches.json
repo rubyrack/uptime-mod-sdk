@@ -1,0 +1,10 @@
+{
+  "switches": [
+    {
+      "id": "lab-16",
+      "model": "16-port Access GbE",
+      "capex": 30000000000,
+      "power_w": 15
+    }
+  ]
+}

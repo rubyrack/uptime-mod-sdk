@@ -319,7 +319,7 @@ LoadBalancerPricing {..} required
 LoadBalancerPricing.egress_cost_microcents_per_gb i64 required
 LoadBalancerPricing.egress_revenue_microcents_per_gb i64 required
 LoadBalancerPricing.per_hour_microcents i64 required
-LoadBalancerPricing.per_million_requests_microcents i64 required
+LoadBalancerPricing.per_lcu_hour_microcents i64 optional
 LoseCondition::AuditFailure unit optional
 LoseCondition::Bankruptcy unit optional
 LoseCondition::Custom String optional
@@ -1036,7 +1036,6 @@ TuningParams.early_growth_step_vms u32 optional
 TuningParams.early_growth_trust_floor f32 optional
 TuningParams.east_west EastWestParams optional
 TuningParams.eviction_penalty_frac (f64,f64,f64,f64) optional
-TuningParams.eviction_refund_cap_months f64 optional
 TuningParams.exposure_fame_factor f64 optional
 TuningParams.fabric_per_hop_us f64 optional
 TuningParams.function_cold_start_ms f64 optional

@@ -1,8 +1,10 @@
 //! The glue between the component exports and a mod's [`Mod`] implementation.
 
 use crate::bindings::StepOutput;
-use crate::limits::{COMMAND_BYTES, OUTPUT_BYTES, PANEL_BYTES, STATE_BYTES};
-use crate::{ModCommand, ModSnapshot, PanelUpdate, Rng};
+use crate::limits::{
+    COMMAND_BYTES, OUTPUT_BYTES, PANEL_BYTES, STATE_BYTES, TOASTS_PER_STEP, TOAST_TEXT_BYTES,
+};
+use crate::{ModCommand, ModSnapshot, ModToast, PanelUpdate, Rng, Tone};
 
 pub use crate::bindings::Quantum;
 
@@ -53,9 +55,10 @@ pub struct Step<'a> {
     pub rng: Rng,
     commands: Vec<Vec<u8>>,
     panels: Vec<(String, Vec<u8>)>,
+    toasts: Vec<Vec<u8>>,
     state: Option<Vec<u8>>,
-    /// Bytes of commands and panels so far, panel ids included, as the host
-    /// counts them against [`OUTPUT_BYTES`].
+    /// Bytes of commands, panels and toasts so far, panel ids included, as
+    /// the host counts them against [`OUTPUT_BYTES`].
     output_bytes: usize,
 }
 
@@ -64,8 +67,8 @@ impl Step<'_> {
     ///
     /// # Errors
     /// The command could not be encoded, its encoding is over
-    /// [`COMMAND_BYTES`], or it would take this step's commands and panels
-    /// past [`OUTPUT_BYTES`]. Nothing is queued then.
+    /// [`COMMAND_BYTES`], or it would take this step's output past
+    /// [`OUTPUT_BYTES`]. Nothing is queued then.
     pub fn issue(&mut self, command: &ModCommand) -> Result<(), String> {
         let bytes = rmp_serde::to_vec_named(command).map_err(|e| e.to_string())?;
         if bytes.len() > COMMAND_BYTES {
@@ -85,8 +88,8 @@ impl Step<'_> {
     ///
     /// # Errors
     /// The update could not be encoded, its encoding is over [`PANEL_BYTES`],
-    /// or it would take this step's commands and panels past
-    /// [`OUTPUT_BYTES`]. The panel keeps its earlier value then.
+    /// or it would take this step's output past [`OUTPUT_BYTES`]. The panel
+    /// keeps its earlier value then.
     pub fn panel(&mut self, id: &str, update: &PanelUpdate) -> Result<(), String> {
         let bytes = rmp_serde::to_vec_named(update).map_err(|e| e.to_string())?;
         if bytes.len() > PANEL_BYTES {
@@ -105,6 +108,39 @@ impl Step<'_> {
                 self.panels.push((id.to_owned(), bytes));
             }
         }
+        Ok(())
+    }
+
+    /// Raises a toast: a short notice every player sees for a few seconds. It
+    /// lands with this step's commands, two quanta later. The mod picks the
+    /// tone; the game picks the colour and how long it shows.
+    ///
+    /// # Errors
+    /// This step already raised [`TOASTS_PER_STEP`] toasts, `text` is empty or
+    /// only whitespace, `text` is over [`TOAST_TEXT_BYTES`], or the toast would
+    /// take this step's output past [`OUTPUT_BYTES`]. Nothing is raised then.
+    pub fn toast(&mut self, tone: Tone, text: &str) -> Result<(), String> {
+        if self.toasts.len() >= TOASTS_PER_STEP {
+            return Err(format!(
+                "this step already raised {TOASTS_PER_STEP} toasts; the cap is {TOASTS_PER_STEP}"
+            ));
+        }
+        if text.trim().is_empty() {
+            return Err("a toast's text is empty".to_owned());
+        }
+        if text.len() > TOAST_TEXT_BYTES {
+            return Err(format!(
+                "a toast's text is {} bytes; the cap is {TOAST_TEXT_BYTES}",
+                text.len()
+            ));
+        }
+        let toast = ModToast {
+            text: text.to_owned(),
+            tone,
+        };
+        let bytes = rmp_serde::to_vec_named(&toast).map_err(|e| e.to_string())?;
+        self.output_bytes = self.output_after(bytes.len(), 0)?;
+        self.toasts.push(bytes);
         Ok(())
     }
 
@@ -129,7 +165,7 @@ impl Step<'_> {
         let total = self.output_bytes - freed + added;
         if total > OUTPUT_BYTES {
             return Err(format!(
-                "this step's commands and panels would be {total} bytes; the cap is {OUTPUT_BYTES}"
+                "this step's output would be {total} bytes; the cap is {OUTPUT_BYTES}"
             ));
         }
         Ok(total)
@@ -219,6 +255,7 @@ impl<M: Mod> Runtime<M> {
             rng: Rng::new(quantum.seed),
             commands: Vec::new(),
             panels: Vec::new(),
+            toasts: Vec::new(),
             state: None,
             output_bytes: 0,
         };
@@ -226,6 +263,7 @@ impl<M: Mod> Runtime<M> {
         Ok(StepOutput {
             commands: step.commands,
             panels: step.panels,
+            toasts: step.toasts,
             state: step.state,
         })
     }
@@ -236,8 +274,10 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::{Quantum, Step};
-    use crate::limits::{COMMAND_BYTES, OUTPUT_BYTES, PANEL_BYTES, STATE_BYTES};
-    use crate::{ModCommand, ModSnapshot, PanelUpdate, Rng, WidgetValue};
+    use crate::limits::{
+        COMMAND_BYTES, OUTPUT_BYTES, PANEL_BYTES, STATE_BYTES, TOASTS_PER_STEP, TOAST_TEXT_BYTES,
+    };
+    use crate::{ModCommand, ModSnapshot, PanelUpdate, Rng, Tone, WidgetValue};
 
     fn envelope() -> ModSnapshot {
         let value = serde_json::json!({
@@ -261,9 +301,66 @@ mod tests {
             rng: Rng::new(0),
             commands: Vec::new(),
             panels: Vec::new(),
+            toasts: Vec::new(),
             state: None,
             output_bytes: 0,
         }
+    }
+
+    #[test]
+    fn toasts_past_the_per_step_cap_are_refused_at_the_call() {
+        let snapshot = envelope();
+        let mut s = step(&snapshot);
+        for _ in 0..TOASTS_PER_STEP {
+            s.toast(Tone::Info, "fine")
+                .expect("within the per-step cap");
+        }
+        let err = s.toast(Tone::Info, "one more").expect_err("past the cap");
+        assert!(
+            err.contains(&format!("the cap is {TOASTS_PER_STEP}")),
+            "{err}"
+        );
+        assert_eq!(s.toasts.len(), TOASTS_PER_STEP);
+    }
+
+    #[test]
+    fn a_toast_text_must_be_one_to_the_cap_bytes() {
+        let snapshot = envelope();
+        let mut s = step(&snapshot);
+        let err = s.toast(Tone::Good, "").expect_err("empty");
+        assert!(err.contains("empty"), "{err}");
+        for blank in [" ", "\t\n", "\u{a0}", "\u{2003} \u{3000}"] {
+            let err = s.toast(Tone::Good, blank).expect_err("whitespace only");
+            assert!(err.contains("empty"), "{blank:?}: {err}");
+        }
+        let err = s
+            .toast(Tone::Good, &"x".repeat(TOAST_TEXT_BYTES + 1))
+            .expect_err("over the cap");
+        assert!(
+            err.contains(&format!("the cap is {TOAST_TEXT_BYTES}")),
+            "{err}"
+        );
+        assert!(s.toasts.is_empty());
+        s.toast(Tone::Good, &"x".repeat(TOAST_TEXT_BYTES))
+            .expect("exactly the cap fits");
+        assert_eq!(s.toasts.len(), 1);
+    }
+
+    #[test]
+    fn toast_bytes_count_toward_the_output_cap() {
+        let snapshot = envelope();
+        let mut s = step(&snapshot);
+        let per = 16_000;
+        let fit = OUTPUT_BYTES / (per + 64);
+        for _ in 0..fit {
+            s.issue(&buy_rack(per)).expect("within the output cap");
+        }
+        let before = s.output_bytes;
+        s.toast(Tone::Warn, "x").expect("a small toast fits");
+        assert!(s.output_bytes > before, "the toast's bytes are counted");
+        s.output_bytes = OUTPUT_BYTES - 1;
+        let err = s.toast(Tone::Warn, "y").expect_err("past the output cap");
+        assert!(err.contains(&format!("the cap is {OUTPUT_BYTES}")), "{err}");
     }
 
     /// A command whose encoding is `pad` bytes plus a few of framing.

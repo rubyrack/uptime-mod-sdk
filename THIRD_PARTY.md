@@ -25,7 +25,7 @@ script host includes, are in NOTICES.
 
 - cmov 0.5.4
 - const-oid 0.10.2
-- ctutils 0.4.2
+- ctutils 0.4.6
 - equivalent 1.0.2
 - fluent-syntax 0.12.0
 - fnv 1.0.7
@@ -37,29 +37,29 @@ script host includes, are in NOTICES.
 
 ### Apache-2.0 WITH LLVM-exception
 
-- cranelift-assembler-x64 0.136.3
-- cranelift-bforest 0.136.3
-- cranelift-bitset 0.136.3
-- cranelift-codegen 0.136.3
-- cranelift-codegen-shared 0.136.3
-- cranelift-control 0.136.3
-- cranelift-entity 0.136.3
-- cranelift-frontend 0.136.3
-- cranelift-native 0.136.3
-- pulley-interpreter 49.0.3
-- pulley-macros 49.0.3
+- cranelift-assembler-x64 0.136.4
+- cranelift-bforest 0.136.4
+- cranelift-bitset 0.136.4
+- cranelift-codegen 0.136.4
+- cranelift-codegen-shared 0.136.4
+- cranelift-control 0.136.4
+- cranelift-entity 0.136.4
+- cranelift-frontend 0.136.4
+- cranelift-native 0.136.4
+- pulley-interpreter 49.0.4
+- pulley-macros 49.0.4
 - regalloc2 0.15.2
 - target-lexicon 0.13.5
-- wasmtime 49.0.3
-- wasmtime-environ 49.0.3
-- wasmtime-internal-component-macro 49.0.3
-- wasmtime-internal-component-util 49.0.3
-- wasmtime-internal-core 49.0.3
-- wasmtime-internal-cranelift 49.0.3
-- wasmtime-internal-jit-icache-coherence 49.0.3
-- wasmtime-internal-unwinder 49.0.3
-- wasmtime-internal-versioned-export-macros 49.0.3
-- wasmtime-internal-wit-bindgen 49.0.3
+- wasmtime 49.0.4
+- wasmtime-environ 49.0.4
+- wasmtime-internal-component-macro 49.0.4
+- wasmtime-internal-component-util 49.0.4
+- wasmtime-internal-core 49.0.4
+- wasmtime-internal-cranelift 49.0.4
+- wasmtime-internal-jit-icache-coherence 49.0.4
+- wasmtime-internal-unwinder 49.0.4
+- wasmtime-internal-versioned-export-macros 49.0.4
+- wasmtime-internal-wit-bindgen 49.0.4
 
 ### Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT
 
@@ -84,9 +84,9 @@ script host includes, are in NOTICES.
 
 ### BSD-3-Clause
 
-- zstd 0.14.0
-- zstd-safe 8.0.0
-- zstd-sys 2.1.0+zstd.1.5.7
+- zstd 0.14.3
+- zstd-safe 8.2.0
+- zstd-sys 2.1.2+zstd.1.5.7
 
 ### MIT
 
@@ -403,7 +403,7 @@ END OF TERMS AND CONDITIONS
 
 ### Apache-2.0 WITH LLVM-exception
 
-From cranelift-bforest-0.136.3.
+From cranelift-bforest-0.136.4.
 
 ```text
 
@@ -2839,7 +2839,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-### zstd 0.14.0 (BSD-3-Clause): LICENSE
+### zstd 0.14.3 (BSD-3-Clause): LICENSE
 
 ```text
 BSD 3-Clause License
@@ -2872,7 +2872,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
-### zstd-safe 8.0.0 (BSD-3-Clause): LICENSE
+### zstd-safe 8.2.0 (BSD-3-Clause): LICENSE
 
 ```text
 BSD 3-Clause License
@@ -2905,7 +2905,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
-### zstd-sys 2.1.0+zstd.1.5.7 (BSD-3-Clause): LICENSE
+### zstd-sys 2.1.2+zstd.1.5.7 (BSD-3-Clause): LICENSE
 
 ```text
 BSD 3-Clause License
@@ -2938,7 +2938,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
-### zstd-sys 2.1.0+zstd.1.5.7 (BSD-3-Clause): LICENSE.BSD-3-Clause
+### zstd-sys 2.1.2+zstd.1.5.7 (BSD-3-Clause): LICENSE.BSD-3-Clause
 
 ```text
 The auto-generated bindings are under the 3-clause BSD license:

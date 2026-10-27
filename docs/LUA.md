@@ -21,7 +21,7 @@ The manifest names the runtime and the entry file:
   "id": "com.example.my-mod",
   "version": "1.0.0",
   "api_version": "v1alpha1",
-  "api_minor": 0,
+  "api_minor": 1,
   "game_version": ">=0.1.0, <0.3.0",
   "kind": ["script"],
   "script": { "runtime": "lua", "entry": "logic/main.lua" },
@@ -77,6 +77,7 @@ The game reads `step` from the table with a raw lookup, so a metatable cannot ch
 | `ctx:issue(cmd)` | Queues a command and returns its index, counted from 0. The command lands two quanta later. |
 | `ctx:save_state(tbl)` | Saves the mod's state. The last call in a step wins. |
 | `ctx:panel(id, update)` | Sets the values of a panel the pack declares. See [Panels](PANELS.md). |
+| `ctx:toast(tone, text)` | Raises a toast every player sees. `tone` is `"Neutral"`, `"Info"`, `"Good"`, `"Warn"` or `"Danger"`. `text` is 1 to 160 bytes. At most 2 a step. See [Toasts](TOASTS.md). |
 | `ctx:log(level, msg)` | Writes a log line. `level` is 0 to 4. |
 | `ctx:queued()` | The number of commands queued so far in this step. |
 
@@ -181,6 +182,8 @@ The shared limits table is in [Script mods](SCRIPTS.md). The ones that matter mo
 - A step may issue 32 commands. The game drops the rest and sends a `rate_limited` receipt.
 - Saved state may be 1 MiB. The game refuses a larger state and keeps the old one.
 
+`ctx:toast` and `ctx:panel` raise a Lua error for a bad argument or a value over a cap, such as a third toast in one step or a toast text over 160 bytes. The error keeps nothing from that call, so a step that catches it with `pcall` still lands.
+
 ## Editor support
 
 `ModSDK/lua/types/` holds LuaLS definition files, and `ModSDK/lua/.luarc.json` points the language server at them. The config sets Lua 5.4, turns off `io`, `os`, `debug` and `package`, and loads the library folder `types`. Copy both next to your pack, or point `workspace.library` at the folder.
@@ -216,5 +219,7 @@ Hot reload works only in a debug build of the runner, and only in a single-playe
 ## The example
 
 `ModSDK/examples/com.uptime.example-autoscaler-lua` is a full Lua mod: a manifest, a `main.lua` that builds the policy in `init` and calls it every step, and a `policy.lua` that holds the logic. It accepts the prospects the fleet can serve and buys a host when free capacity runs low. It declares `reads` of `topbar`, `prospects` and `capacity`, the three sections its policy uses. It also has a config schema, two panels (the policy and the decisions, with a pause toggle) and `state_schema` 1.
+
+`ModSDK/examples/com.uptime.example-alerts` is a small Lua mod that shows the mod UI hooks. It issues no command, so it never affects a run. It counts the open incidents on a HUD card, raises a toast when a DDoS attack starts, and has a dashboard panel that opens on a key with an Acknowledge button on another. See [Panels](PANELS.md#the-hud-point) and [Toasts](TOASTS.md).
 
 The Rust autoscaler in `ModSDK/examples/example-autoscaler` follows the same policy line for line, with the same defaults and the same saved state. The game's own tests run both and require equal commands and state. See [Rust mods](RUST.md).

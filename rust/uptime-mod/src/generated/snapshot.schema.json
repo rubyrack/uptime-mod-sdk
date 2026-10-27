@@ -1026,10 +1026,10 @@
     "CandidateCauseView": {
       "description": "One ranked candidate cause on an incident: the specific fault hypothesis\n(the failing hop the forwarding graph names), how confident the engine is,\nwhether it's confirmed, and its own per-cause guidance + codex links.",
       "properties": {
-        "articles": {
-          "description": "Codex articles for this cause's mechanic.",
+        "article_ids": {
+          "description": "Codex article ids for this cause's mechanic; titles resolve\nclient-side, as for `IncidentView::article_ids`.",
           "items": {
-            "$ref": "#/components/schemas/IncidentArticleView"
+            "type": "string"
           },
           "type": "array"
         },
@@ -1081,7 +1081,7 @@
         "rack_id",
         "confidence",
         "confirmed",
-        "articles"
+        "article_ids"
       ],
       "type": "object"
     },
@@ -3744,26 +3744,6 @@
       ],
       "type": "object"
     },
-    "IncidentArticleView": {
-      "description": "One codex deep link on an incident detail pane: article id (for the\n`open_codex:<id>` action tag) plus both voice titles.",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        },
-        "title_plain": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "id",
-        "title",
-        "title_plain"
-      ],
-      "type": "object"
-    },
     "IncidentPartsView": {
       "description": "See `IncidentView::parts`. Buckets are mutually exclusive per part\n(repairing > arrived > ordered), so `ordered + arrived + repairing <=\nfailed` always holds.",
       "properties": {
@@ -3856,10 +3836,10 @@
           "minimum": 0,
           "type": "integer"
         },
-        "articles": {
-          "description": "Knowledge-base articles covering this root's mechanic, the\ndetail pane renders them as codex deep links. May be empty.",
+        "article_ids": {
+          "description": "Ids of the knowledge-base articles covering this root's mechanic, for\n`open_codex:<id>` deep links. The client resolves the titles from the\n`article-<id>-title` catalog key. May be empty.",
           "items": {
-            "$ref": "#/components/schemas/IncidentArticleView"
+            "type": "string"
           },
           "type": "array"
         },
@@ -3870,11 +3850,11 @@
           "type": "integer"
         },
         "band": {
-          "description": "Computed gravity band, \"cosmetic\" / \"annoying\" / \"serious\" / \"existential\".",
+          "description": "Computed gravity band, \"cosmetic\" / \"annoying\" / \"serious\" / \"existential\",\nweighed over the harmed tenants: duration alone never raises it past\n\"annoying\" while nobody is harmed.",
           "type": "string"
         },
         "causes": {
-          "description": "Ranked candidate causes, best-first. In Phase 2 exactly one confirmed\ncandidate; full ranking is Phase 4.",
+          "description": "Ranked candidate causes, best-first, WITHOUT the lead cause when the\nlead is the root itself (confirmed, live, confidence 100). That lead is\nfully described by the `root_*` fields, `rack_id` and `article_ids`, so\na reader rebuilds it from them whenever `causes[0]` does not name\n`root_kind` + `root_entity_id`.",
           "items": {
             "$ref": "#/components/schemas/CandidateCauseView"
           },
@@ -3887,7 +3867,7 @@
           "type": "integer"
         },
         "compliance_at_risk": {
-          "description": "Worst compliance tier in the affected set: a dash placeholder / \"SOC2\" / \"HIPAA\" / \"PCI\".",
+          "description": "Worst compliance tier among the harmed tenants: a dash placeholder / \"SOC2\" / \"HIPAA\" / \"PCI\".",
           "type": "string"
         },
         "confirmed": {
@@ -3922,7 +3902,7 @@
           "type": "integer"
         },
         "max_sla_tier": {
-          "description": "Worst SLA tier in the affected set, \"Bronze\" / \"Silver\" / \"Gold\" / \"Platinum\".",
+          "description": "Worst SLA tier among the harmed tenants, \"Bronze\" / \"Silver\" / \"Gold\" / \"Platinum\".",
           "type": "string"
         },
         "parts": {
@@ -3945,7 +3925,7 @@
           "type": "integer"
         },
         "revenue_at_risk_per_hour_dollars": {
-          "description": "Sum of monthly recurring run-rate across the affected set.",
+          "description": "Hourly run-rate of the tenants the incident HARMED. A tenant in\n`affected_customer_ids` whose workload failed over cleanly adds nothing.",
           "format": "double",
           "type": "number"
         },
@@ -3986,7 +3966,7 @@
           "type": "string"
         },
         "symptom_msg_args": {
-          "description": "Facts for `symptom_msg_key`.",
+          "description": "Facts for `symptom_msg_key`. Empty when they are the same facts as\n`root_msg_args`; a reader then resolves the symptom with `root_msg_args`.",
           "items": {
             "$ref": "#/components/schemas/MsgArgView"
           },
@@ -8008,6 +7988,6 @@
     }
   },
   "generation": "v1alpha1",
-  "minor": 0,
+  "minor": 1,
   "root": "ModSnapshot"
 }

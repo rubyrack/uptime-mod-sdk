@@ -5,7 +5,7 @@ A Rust mod is a WebAssembly component. You write it against the `uptime-mod` SDK
 ## What you need
 
 - A Rust toolchain with the `wasm32-wasip2` target: `rustup target add wasm32-wasip2`.
-- The SDK crate, `uptime-mod`. It ships in `ModSDK/rust/uptime-mod` and is published on crates.io under the same name. `uptime-mod new --template rust` writes a path dependency on the `ModSDK` copy into your `Cargo.toml`; pass `--sdk <ModSDK folder>` if the command cannot find the folder. To use crates.io instead, write `uptime-mod = "0.1"` with the version from [Versions](#versions).
+- The SDK crate, `uptime-mod`. It ships in `ModSDK/rust/uptime-mod` and is published on crates.io under the same name. `uptime-mod new --template rust` writes a path dependency on the `ModSDK` copy into your `Cargo.toml`; pass `--sdk <ModSDK folder>` if the command cannot find the folder. To use crates.io instead, write `uptime-mod = "0.2"` with the version from [Versions](#versions).
 - The WIT file `ModSDK/wit/uptime-mod.wit`. The crate carries its own copy in `wit/` and reads it for you.
 
 ## The WIT world
@@ -17,7 +17,7 @@ It exports three functions:
 | Export | Does |
 |---|---|
 | `init(config, saved-state)` | Builds the mod. `config` is bytes. `saved-state` is the last state, when there is one. Returns ok or an error message. |
-| `step(quantum, snapshot, events)` | Runs one quantum. `quantum` is `{index, sim-time-ns, seed}`. `snapshot` and `events` are named msgpack. Returns commands, panels and an optional new state. |
+| `step(quantum, snapshot, events)` | Runs one quantum. `quantum` is `{index, sim-time-ns, seed}`. `snapshot` and `events` are named msgpack. Returns commands, panels, toasts and an optional new state. |
 | `migrate(from-schema, state)` | Rewrites state saved under an older `state_schema`. |
 
 The SDK hides all of this. You implement a trait and call one macro.
@@ -67,6 +67,8 @@ Call `export_mod!` once per crate. The crate type is `cdylib`.
 | `events` | The event batch as raw named msgpack bytes. Typed events are not generated yet. The shape is in `events.v1alpha1.fields`. |
 | `rng` | A stream seeded from `quantum.seed`. |
 | `issue(&ModCommand)` | Queues a command. It lands two quanta later. |
+| `panel(id, &PanelUpdate)` | Sets the values of a panel the pack declares. See [Panels](PANELS.md). |
+| `toast(Tone, &str) -> Result<(), String>` | Raises a toast every player sees. The text is 1 to 160 bytes and a step raises at most 2. The call returns an error for a toast that breaks a cap, and the step may carry on. See [Toasts](TOASTS.md). |
 | `save_state(Vec<u8>)` | Returns your state. The last call in a step wins. You choose the encoding. |
 | `log(level, msg)` | Writes a log line. |
 | `queued()` | The number of commands queued so far in this step. |
@@ -97,7 +99,7 @@ The crate's version follows the mod API it reads. Each crate release reads exact
 
 The last number, `x`, moves for an SDK fix that leaves the mod API alone.
 
-Under an alpha generation every minor may break, and cargo treats each `0.y` as incompatible with the one before, so `uptime-mod = "0.1"` never moves you to a new minor by itself. To move to a new minor, raise the crate version and `api_minor` together. From `v1` on, a minor only adds, so `uptime-mod = "N.M"` picks up the later minors of `N`. When it does, set `api_minor` to the new `uptime_mod::snapshot::API_MINOR`.
+Under an alpha generation every minor may break, and cargo treats each `0.y` as incompatible with the one before, so `uptime-mod = "0.2"` never moves you to a new minor by itself. To move to a new minor, raise the crate version and `api_minor` together. From `v1` on, a minor only adds, so `uptime-mod = "N.M"` picks up the later minors of `N`. When it does, set `api_minor` to the new `uptime_mod::snapshot::API_MINOR`.
 
 The SDK in `ModSDK/rust/uptime-mod` and the crate on crates.io for the same game release are the same code.
 
@@ -109,7 +111,7 @@ The SDK in `ModSDK/rust/uptime-mod` and the crate on crates.io for the same game
   "id": "com.example.my-mod",
   "version": "1.0.0",
   "api_version": "v1alpha1",
-  "api_minor": 0,
+  "api_minor": 1,
   "game_version": ">=0.1.0, <0.3.0",
   "kind": ["script"],
   "script": { "runtime": "component", "entry": "bin/mod.wasm" },

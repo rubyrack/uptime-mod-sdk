@@ -131,7 +131,7 @@ The item id is kept in `workshop.json` in your pack folder, so each later upload
 
 ## model
 
-`model` builds the three files of a new host or switch model from the GLB you export from your modelling tool, writes them into the pack, then checks them the way the game does.
+`model` builds the three files of a new host or switch model from the GLB you export from your modelling tool, writes them into the pack, then checks them the way the game does. [Equipment models](MODELS.md) covers the conventions and limits.
 
 ```
 uptime-mod model work/box.glb --proxy work/box_proxy.glb --pack com.example.my-mod --item box
@@ -146,7 +146,7 @@ It writes:
 
 | File | What it holds |
 |---|---|
-| `art/models/<item>_render.glb` | The near model. Every drawn node is placed in model space and merged into one primitive per material, under one mesh node. The command leaves out LED lenses, empties and every extension but `KHR_texture_transform`. |
+| `art/models/<item>_render.glb` | The near model. Every drawn node is placed in model space and merged into one primitive per material, under one mesh node. The command leaves out LED lenses, empties and every extension the game does not load, and prints a warning for each extension it drops. It keeps `KHR_texture_transform`, `KHR_materials_specular` and `KHR_materials_ior`. |
 | `art/models/<item>.pips.json` | Where the port lights, ports, fans, power inlets, module bays and nameplate sit, read from your node names. |
 | `art/models/<item>_proxy.glb` | The copy of `--proxy`. |
 
@@ -157,11 +157,11 @@ The sidecar comes from the node names alone, so name them the way the base model
 | Node name | Read as |
 |---|---|
 | `Port_1`, `Port_2`, ... | A cabled data port, numbered from 1. Its position is the cable anchor. |
-| `Port_<name>`, such as `Port_BMC` | A named port. `Port_Console`, `Port_USB_Mgmt`, `Port_Mgmt` and `Port_iDRAC` are management pins and carry no lights. |
+| `Port_<name>`, such as `Port_BMC` | A named port. `Port_Console`, `Port_USB_Mgmt`, `Port_Mgmt` and `Port_iDRAC` are management pins and carry no lights: the command drops an `LED_Link` or `LED_Activity` light nearest to one, a light nearest to `Port_0`, and every such light in a source with no `Port_` node at all, and prints a `warning:` line naming each light it drops. The game lights a named port's light from the device port whose label is the name after `Port_`, so `Port_BMC` follows a port labelled `BMC`. `Port_MlagKeepalive` follows the keepalive port. A name no device port carries stays dark. `Port_PSU`, `Port_Mgmt` and `Port_Out` are refused, because their labels repeat on one device and the game would bind the light to the first match: the command drops a light nearest to one with a `warning:` line, and `.pips.json` validation refuses it. |
 | A mesh named `LED_Link...` or `LED_Activity...` | The link or activity light of the port it sits under (a `Port_<N>` or `PortSlot_<N>` parent), or else of the nearest port. |
 | A mesh with `LED` and `PSU` in its name or material | A PSU light. The command numbers PSU lights from the rightmost, as it numbers the inlets. |
 | A mesh with `LED` and `power` or `_PWR` in its name, or `_PWR` in its material | The power light. |
-| A mesh `StatusLED_SYS`, `StatusLED_ALM` or `StatusLED_FAN` | The system, alarm or fan status light. Any other mesh with `LED` in its name is a status light with no role. |
+| A mesh `StatusLED_SYS`, `StatusLED_ALM` or `StatusLED_FAN` | The system, alarm or fan status light. The command writes the role to the sidecar and the game paints the light by it: the alarm light shows a fault and is dark otherwise, the fan light never shows a fault, and the system light follows the device's indicator. Any other mesh with `LED` in its name is a status light with no role. |
 | A node ending `_IEC` or `AcInlet`, or `_RearIEC_<n>` | A power inlet, one per PSU. |
 | `Bay_1`, `Bay_2`, ... | A module bay frame. |
 | `FanRotor...` | A spinning fan blade. |
@@ -175,14 +175,14 @@ After writing, the command runs the game's pack scan and prints what it refuses 
 
 ```
 refused [model_over_limit]:
-  art/models/box_render.glb /materials the list has more than 8 entries
+  art/models/box_render.glb /materials the list has more than 32 entries
 box: 1 model problem(s)
 ```
 
-A clean model prints `ok: the game's checks pass box's model`. The counts must match the base model the row names: the same number of cabled ports, one inlet per PSU, and no bays or the base model's bays. The model must fit the base model's rack slot, with at most 8 materials. A default export usually needs work before it passes:
+A clean model prints `ok: the game's checks pass box's model`. The counts must match the base model the row names: the same number of cabled ports, one inlet per PSU, and no bays or the base model's bays. The model must fit the base model's rack slot, with at most 32 materials. [Equipment models](MODELS.md) lists every limit and the `.pips.json` fields. A default export usually needs work before it passes:
 
-- Join or reuse materials until there are 8 or fewer. The command merges by material, so the material count is the primitive count.
-- The game draws the lights from the sidecar, so no material needs to glow. The game refuses a material that emits light.
+- Join or reuse materials until there are 32 or fewer. The command merges by material, so the material count is the primitive count.
+- The game draws the lights from the sidecar, so no material needs to glow. The game refuses a material that emits light or blends its alpha.
 - A texture is a PNG inside the GLB, at most 2048 by 2048.
 
 The command counts problems elsewhere in the pack but does not list them. Run `validate` for those. The exit code is 0 when the model passes, 1 when the game refuses it or a step failed, and 2 for a wrong command line.
