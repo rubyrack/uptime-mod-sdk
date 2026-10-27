@@ -14,10 +14,10 @@ uptime-mod upload <dir> [--visibility private|friends|public]
 - The upload needs Steam running and signed in to an account that owns Uptime. The `uptime-mod` in the game's `ModSDK/bin` folder can reach Steam. A copy built without Steam stops with a message and still runs `--dry-run`.
 - `--dry-run` prints the plan and sends nothing. It also writes nothing into your folder. Run it first. The [quickstart](QUICKSTART.md) does.
 - `--change-note` is the text Steam shows for this version. It may hold line breaks and is at most 8000 bytes.
-- `--preview` is the item's picture. It must be a file of at most 1 MiB.
+- `--preview` is the item's picture. It must be a JPG, PNG or GIF image of at most 1 MiB. Steam keeps the picture between uploads, so pass `--preview` again only to change it. An item uploaded without one has no picture until you add one.
 - The exit code is 0 for a finished upload or dry run, 1 when the pack or Steam refuses it, and 2 when the command line is wrong. Nothing is sent when the pack has problems.
 
-Steam sets the item's title and description on the first upload only. The title is your pack id and the description is the id and version. Edit them on the item's Workshop page. Later uploads leave them alone.
+Steam sets the item's title and description on the first upload only. The title is your pack id and the description is the id and version. Edit them on the item's Workshop page. Later uploads leave them alone. Add more screenshots or a video on the item's page too; the upload sets only the main picture.
 
 The item carries tags that come from your manifest: its kinds (for example `content` or `script`), its content categories, and `lua` or `rust` for a script mod. It also carries the key-value tags `mod_id` and `version`, so an item can be found by its pack id.
 
@@ -28,6 +28,21 @@ A new item is private. Only you can see it. Pass `--visibility friends` or `--vi
 ## The legal agreement
 
 Steam keeps a new item hidden from everyone but you until you accept the Workshop legal agreement. When Steam says you have not, the upload still finishes and prints a warning with the link. Accept the agreement once for your account, and your items become visible at the setting you chose.
+
+## Rules for shared mods
+
+Anyone can share a mod on the Workshop. These rules apply to every mod you upload, on top of Steam's Subscriber Agreement and the Workshop legal agreement.
+
+- **Share only what you have the right to share.** Your mod must be your own work, or work its owner lets you share. Don't include art, models, music or code from other games or sites without permission. The Uptime art in the SDK examples may go into Uptime mods, as the SDK's [Terms](https://github.com/rubyrack/uptime-mod-sdk/blob/main/TERMS.md) say.
+- **Your mod stays yours.** By uploading it you let RubyRackGames load and run it for every player who subscribes. You also let us show its name, picture and description, with your name, when we talk about Uptime mods.
+- **Keep it safe.** A script mod runs in a sandbox. Don't try to get out of it, read or send a player's data, or slow down or crash the game on purpose.
+- **Keep it decent.** No illegal content, hate, harassment, sexual content, or other people's private details.
+- **Don't pass a mod off as official.** Don't use the Uptime or RubyRackGames name or logo in a way that makes a mod look like ours. "A mod for Uptime" is fine.
+- **Mods are made by players.** RubyRackGames doesn't check or vouch for them and gives no warranty for them. Each player turns a mod on themselves.
+
+To report a mod, use the Report button on its Workshop page. If a mod breaks these rules, or someone shows that it uses their work without permission, we can remove it from the Uptime Workshop. We tell the author why when we can.
+
+We may change these rules. The version on this page is the one that applies.
 
 ## Updates
 
