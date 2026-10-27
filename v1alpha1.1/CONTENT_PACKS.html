@@ -1,0 +1,603 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Content packs - Uptime mod SDK</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-e96d0476.css">
+        <link rel="stylesheet" href="css/chrome-d279d366.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-13b5f828.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-5112729b.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Uptime mod SDK</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="content-packs"><a class="header" href="#content-packs">Content packs</a></h1>
+<p>A content pack adds hardware, scenarios, customers, services, events or text to the game. It holds data files and no code. This page covers the manifest, the hardware, scenario, customer, service, event and locale files, the archive rules and what makes the game refuse a pack.</p>
+<p>Script mods use the same manifest. The script fields are in <a href="SCRIPTS.html">Script mods</a>.</p>
+<h2 id="what-a-pack-is"><a class="header" href="#what-a-pack-is">What a pack is</a></h2>
+<p>A pack is a folder. The game scans a mods folder, and each subfolder is one pack. <code>manifest.json</code> sits at the root of the pack folder.</p>
+<pre><code>com.example.my-hardware/
+  manifest.json
+  hardware/hosts.json
+  hardware/switches.json
+</code></pre>
+<p>The game reads a pack where it lies. It does not unpack or copy anything. It never follows a link inside a pack.</p>
+<h2 id="where-the-mods-folder-is"><a class="header" href="#where-the-mods-folder-is">Where the mods folder is</a></h2>
+<p>The game keeps its mods folder in its user data folder. Find it here:</p>
+<ul>
+<li>macOS: <code>~/Library/Application Support/Uptime/mods/</code></li>
+<li>Windows: <code>%APPDATA%\Uptime\mods\</code></li>
+<li>Linux: <code>~/.local/share/Uptime/mods/</code>, or <code>$XDG_DATA_HOME/Uptime/mods/</code> when <code>XDG_DATA_HOME</code> is set.</li>
+</ul>
+<p>Each subfolder is one pack. If the folder does not exist, create it. Restart the game, or reopen Mods, to see a new pack.</p>
+<h2 id="the-manifest"><a class="header" href="#the-manifest">The manifest</a></h2>
+<p><code>manifest.json</code> is strict. A field the game does not know is an error, and so is an unknown value in a list. The file may not exceed 64 KiB.</p>
+<pre><code class="language-json">{
+  "manifest_version": 1,
+  "id": "com.example.my-hardware",
+  "version": "1.0.0",
+  "api_version": "v1alpha1",
+  "api_minor": 1,
+  "game_version": "&gt;=0.1.0, &lt;0.3.0",
+  "kind": ["content"],
+  "content": ["hardware"],
+  "affects_gameplay": true
+}
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Required</th><th>What it holds</th></tr>
+</thead>
+<tbody>
+<tr><td><code>manifest_version</code></td><td>yes</td><td>The manifest format. It must be <code>1</code>. The game checks it before any other field.</td></tr>
+<tr><td><code>id</code></td><td>yes</td><td>The pack’s name. Two or more dot-separated segments, each <code>[a-z][a-z0-9_-]*</code>, at most 128 bytes in all.</td></tr>
+<tr><td><code>version</code></td><td>yes</td><td>A semver version of the pack.</td></tr>
+<tr><td><code>api_version</code></td><td>yes</td><td>The mod API generation. The only word accepted is <code>v1alpha1</code>.</td></tr>
+<tr><td><code>api_minor</code></td><td>no</td><td>The mod API minor the pack was built against. It defaults to <code>0</code>.</td></tr>
+<tr><td><code>game_version</code></td><td>yes</td><td>A semver range of game versions the pack works with.</td></tr>
+<tr><td><code>kind</code></td><td>yes</td><td>A non-empty list of <code>content</code> and <code>script</code>.</td></tr>
+<tr><td><code>content</code></td><td>with <code>kind</code> content</td><td>The categories the pack carries: <code>hardware</code>, <code>scenarios</code>, <code>customers</code>, <code>services</code>, <code>events</code>, <code>locale</code>, <code>art</code>. It must be non-empty when <code>kind</code> has <code>content</code>, and it must be absent otherwise.</td></tr>
+<tr><td><code>script</code></td><td>with <code>kind</code> script</td><td>A block with <code>runtime</code> and <code>entry</code>. It is covered in <a href="SCRIPTS.html">Script mods</a>.</td></tr>
+<tr><td><code>affects_gameplay</code></td><td>yes</td><td>Whether the pack changes play. The game checks the value, see below.</td></tr>
+<tr><td><code>commands</code></td><td>no</td><td>Command categories a script mod may issue: <code>infrastructure</code>, <code>finance</code>, <code>customers</code>, <code>incidents</code>.</td></tr>
+<tr><td><code>events</code></td><td>no</td><td>Event categories a script mod is told about: <code>lifecycle</code>, <code>receipts</code>, <code>incidents</code>, <code>customers</code>, <code>finance</code>, <code>builds</code>.</td></tr>
+<tr><td><code>reads</code></td><td>no</td><td>Snapshot sections a script mod reads.</td></tr>
+<tr><td><code>panels</code></td><td>no</td><td>Panel files, at most 32. See <a href="PANELS.html">Panels</a>.</td></tr>
+<tr><td><code>config_schema</code></td><td>no</td><td>A file that describes the mod’s config. See <a href="CONFIG.html">Config</a>.</td></tr>
+<tr><td><code>state_schema</code></td><td>no</td><td>A number that versions the mod’s saved state. It defaults to <code>0</code>.</td></tr>
+<tr><td><code>dependencies</code></td><td>no</td><td>Other packs this one needs, at most 64. See below.</td></tr>
+</tbody>
+</table>
+</div>
+<p>Lists may not repeat a word. A path in the manifest must pass the path rules below, and the file must exist in the pack.</p>
+<h3 id="the-affects_gameplay-check"><a class="header" href="#the-affects_gameplay-check">The affects_gameplay check</a></h3>
+<p>The game works out the right value for <code>affects_gameplay</code> and refuses the manifest when yours differs. The value is <code>true</code> when the pack lists any <code>commands</code> category or carries <code>hardware</code>, <code>scenarios</code>, <code>customers</code>, <code>services</code> or <code>events</code>. A pack with only <code>locale</code> or <code>art</code> content, and no commands, is <code>false</code>.</p>
+<p>Packs that affect play mark the run. See <a href="SCRIPTS.html">Script mods</a> for what that costs a player.</p>
+<h3 id="api_version-and-api_minor"><a class="header" href="#api_version-and-api_minor">api_version and api_minor</a></h3>
+<p><code>api_version</code> names a generation. <code>api_minor</code> names the minor within it. Every part of the mod API shares one minor: the snapshot, the events, the commands, the hardware, customer and service files, the scenario files and the manifest.</p>
+<p>The game accepts an <code>api_minor</code> between two limits. The low limit is the latest minor that declared a break on data your pack uses: a scenario field its scenario files set, or any break on the hardware, customer and service files or the manifest. The high limit is the minor this build serves. A pack outside that range is incompatible and the game says so by name. A pack built against an older minor still loads while no break on its data has landed since.</p>
+<p>The current minor is <code>1</code>; minor <code>0</code> has shipped. Minor 1 removed two scenario fields, <code>pricing.load_balancer.per_million_requests_microcents</code> and <code>tuning.eviction_refund_cap_months</code>. A minor-0 scenario pack that sets either one must be rebuilt against minor 1. While <code>v1alpha1</code> is a preview, a minor may contain a break. The ledgers in <a href="REFERENCE.html">Reference</a> record every change.</p>
+<h2 id="hardware-packs"><a class="header" href="#hardware-packs">Hardware packs</a></h2>
+<p>Declare <code>"content": ["hardware"]</code>. The game loads two files and no others from <code>hardware/</code>:</p>
+<ul>
+<li><code>hardware/hosts.json</code> holds <code>{ "hosts": [ ... ] }</code>.</li>
+<li><code>hardware/switches.json</code> holds <code>{ "switches": [ ... ] }</code>.</li>
+</ul>
+<p>The game refuses any other file under <code>hardware/</code> with the rule <code>content_category_unsupported</code>.</p>
+<h3 id="the-base-model-rule"><a class="header" href="#the-base-model-rule">The base-model rule</a></h3>
+<p>A row names a built-in SKU in <code>model</code> and sets scalar stats only. It cannot set shape. Rack units, ports, NIC and PSU counts, bays, architecture, accelerator, category and switch role all come from the base model. Every row rejects unknown keys. A new SKU draws as its base model unless the pack ships a model for it, see <a href="MODELS.html">Equipment models</a>. An override always draws as the SKU it overrides.</p>
+<p>Copy base SKU names exactly from the built-in catalog, for example <code>Balanced x86 1U</code>, <code>Compute 1U</code> and <code>16-port Access GbE</code>. The GPU host is <code>GPU 2× 2U</code> and the name contains the character <code>×</code>.</p>
+<h3 id="host-rows"><a class="header" href="#host-rows">Host rows</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td><code>id</code></td><td>Required. The item name in the pack.</td></tr>
+<tr><td><code>model</code></td><td>Required. The base host SKU the row starts from.</td></tr>
+<tr><td><code>overrides</code></td><td>Optional. <code>base:&lt;name&gt;</code> to replace a built-in SKU.</td></tr>
+<tr><td><code>vcpu</code>, <code>mem_mb</code>, <code>ssd_gb</code>, <code>ssd_iops</code>, <code>power_w</code></td><td>Optional numbers.</td></tr>
+<tr><td><code>capex</code>, <code>hourly_cost</code></td><td>Optional money, see below.</td></tr>
+<tr><td><code>mtbf_hours</code>, <code>generation_year</code></td><td>Optional numbers.</td></tr>
+<tr><td><code>accel_count</code>, <code>gpu_mem_mb_per_gpu</code></td><td>Optional. Above zero only when the base model has an accelerator.</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="switch-rows"><a class="header" href="#switch-rows">Switch rows</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td><code>id</code></td><td>Required. The item name in the pack.</td></tr>
+<tr><td><code>model</code></td><td>Required. The base switch SKU the row starts from.</td></tr>
+<tr><td><code>overrides</code></td><td>Optional. <code>base:&lt;name&gt;</code> to replace a built-in SKU.</td></tr>
+<tr><td><code>capex</code>, <code>hourly_cost</code></td><td>Optional money, see below.</td></tr>
+<tr><td><code>power_w</code>, <code>fabric_capacity_gbps</code>, <code>pps_ceiling</code>, <code>mtbf_hours</code></td><td>Optional numbers.</td></tr>
+</tbody>
+</table>
+</div>
+<p>Each number has a floor and a ceiling. The exact bounds are in <code>content.v1alpha1.schema.json</code>, described in <a href="REFERENCE.html">Reference</a>. A value outside them fails with the rule <code>min</code> or <code>max</code> and names the field.</p>
+<p>Money fields are whole numbers in minor units. One dollar is 100,000,000 units. The example hardware pack sets <code>capex</code> to <code>220000000000</code>, which is 2,200 dollars.</p>
+<h3 id="ids-and-overrides"><a class="header" href="#ids-and-overrides">Ids and overrides</a></h3>
+<p>An item <code>id</code> matches <code>[a-z0-9][a-z0-9_-]{0,63}</code>. A new row becomes the SKU named <code>&lt;pack id&gt;:&lt;id&gt;</code>. Scenarios and <code>sku_gates</code> use that full name.</p>
+<p>A row with <code>"overrides": "base:&lt;name&gt;"</code> replaces that built-in SKU’s stats in place and keeps its name. Three rules apply:</p>
+<ul>
+<li>The text after <code>base:</code> must name a built-in SKU of the same family.</li>
+<li>The row’s <code>model</code> must equal that same name.</li>
+<li>One pack may override a target once.</li>
+</ul>
+<p>Only built-in SKUs can be overridden. If two selected packs override the same built-in SKU, the one that loads last wins. Load order is the dependency order, and ties go to the smaller pack id.</p>
+<h2 id="scenario-packs"><a class="header" href="#scenario-packs">Scenario packs</a></h2>
+<p>Declare <code>"content": ["scenarios"]</code>. A scenario is a RON file at <code>scenarios/&lt;item&gt;.ron</code>. The file name stem must match the item id pattern above. The game refuses files in subfolders of <code>scenarios/</code>, and any file that is not <code>.ron</code> or not UTF-8 text.</p>
+<p>The scenario’s own <code>id</code> must equal <code>&lt;pack id&gt;:&lt;file stem&gt;</code>. The rule <code>scenario_id_not_namespaced</code> fires otherwise.</p>
+<p>A scenario <code>config</code> block may set only these keys: <code>tuning</code>, <code>sku_gates</code>, <code>pricing</code>, <code>prospects</code>, <code>staff</code>, <code>bootstrap</code>, <code>component_lifecycle</code>, <code>relationship</code>, <code>consequences</code>, <code>service_investment</code>, <code>service_plane</code>, <code>rewards</code>, <code>quests</code>, <code>coop</code>, <code>bailout</code> and <code>depreciation</code>. The same holds for the <code>config</code> inside <code>hard_mode</code>. A pack scenario may not set <code>catalogs</code>, <code>steam</code> or <code>sites</code>. New SKUs come from hardware packs, and the achievement catalog and the sites belong to the base game. Every SKU a scenario names must exist in the packs you selected or in the base game. Every <code>archetype</code> a seeded customer or prospect carries must be an archetype id or name from the base game, the scenario’s own archetypes or a selected customer pack, or it fails with <code>unknown_archetype</code>.</p>
+<p>The field-by-field shape of a scenario file is in <code>scenario.v1alpha1.fields</code>.</p>
+<h2 id="customer-packs"><a class="header" href="#customer-packs">Customer packs</a></h2>
+<p>Declare <code>"content": ["customers"]</code>. A customer pack adds customer types, which the game calls archetypes, and can change the built-in ones. The game loads one file and no others from <code>customers/</code>:</p>
+<ul>
+<li><code>customers/archetypes.json</code> holds <code>{ "archetypes": [ ... ] }</code>, at most 64 rows.</li>
+</ul>
+<p>The game refuses any other file under <code>customers/</code> with the rule <code>content_category_unsupported</code>.</p>
+<h3 id="the-model-rule"><a class="header" href="#the-model-rule">The model rule</a></h3>
+<p>A row names a built-in archetype in <code>model</code> and sets demand on top of it: the tier, what the customer asks for, how it grows and when it leaves. Everything else comes from the model: how the customer talks, how patient it is during an incident, its sales cycle and its compliance needs. Every row rejects unknown keys.</p>
+<p>The built-in archetype ids are lowercase words such as <code>hobbyist</code>, <code>freelance_dev</code>, <code>local_business</code>, <code>etsy_seller</code> and <code>agency</code>.</p>
+<h3 id="archetype-rows"><a class="header" href="#archetype-rows">Archetype rows</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td><code>id</code></td><td>Required. The item name in the pack.</td></tr>
+<tr><td><code>model</code></td><td>Required. The built-in archetype the row starts from.</td></tr>
+<tr><td><code>overrides</code></td><td>Optional. <code>base:&lt;id&gt;</code> to change a built-in archetype.</td></tr>
+<tr><td><code>name</code></td><td>New rows only, where it is required. The name players see, at most 48 bytes of plain text.</td></tr>
+<tr><td><code>tier</code></td><td>Optional. <code>bronze</code>, <code>silver</code>, <code>gold</code> or <code>platinum</code>. A fixed tier replaces the model’s tier and any range of tiers.</td></tr>
+<tr><td><code>workload_from</code></td><td>Optional, new rows only. A built-in archetype whose main service this one asks for.</td></tr>
+<tr><td><code>extra_workloads_from</code></td><td>Optional, new rows only. Up to 4 built-in archetypes whose main services this one adds. It replaces the model’s extra services; <code>[]</code> asks for the main service alone.</td></tr>
+<tr><td><code>growth_chance_per_check</code>, <code>viral_spike_chance_per_check</code></td><td>Optional, 0 to 1. How often a happy customer asks for more.</td></tr>
+<tr><td><code>plateau_at_allocation</code></td><td>Optional, 1 to 1000. The size at which the customer stops asking for more.</td></tr>
+<tr><td><code>payload_ceiling_mult</code>, <code>payload_growth_per_30_days</code>, <code>site_share</code></td><td>Optional. How far and how fast the customer’s traffic grows.</td></tr>
+<tr><td><code>signup_bonus_min</code>, <code>signup_bonus_max</code></td><td>Optional. The signup bonus range in whole dollars, up to 1,000,000. The minimum may not be above the maximum.</td></tr>
+<tr><td><code>competitor_poach_chance</code></td><td>Optional, 0 to 1. The chance per month a competitor takes the customer.</td></tr>
+<tr><td><code>outage_tolerance_minutes</code></td><td>Optional. Outage minutes before the customer starts to leave.</td></tr>
+<tr><td><code>referral_chance_when_happy</code></td><td>Optional, 0 to 1. The chance per month a happy customer sends you a new prospect.</td></tr>
+<tr><td><code>exposure_weight</code>, <code>attack_event_chance_per_month</code></td><td>Optional. How much attacker attention the customer draws.</td></tr>
+<tr><td><code>requires_multi_az</code></td><td>Optional. The contract needs two availability zones.</td></tr>
+<tr><td><code>min_rep</code></td><td>Optional, new rows only, 0 to 1. The reputation at which this archetype’s prospects start to arrive.</td></tr>
+<tr><td><code>service</code></td><td>Optional, new rows only. A service offering, as <code>&lt;pack id&gt;:&lt;item&gt;</code>, that the archetype’s workload of that offering’s kind is sold as. See <a href="#service-packs">Service packs</a>.</td></tr>
+</tbody>
+</table>
+</div>
+<p>The exact bounds are in <code>content.v1alpha1.schema.json</code>. A value outside them fails with the rule <code>min</code> or <code>max</code> and names the field.</p>
+<p>A row asks for services by naming built-in archetypes, not services. Every service a built-in archetype asks for is open to yours, including VMs, managed databases and CDNs. A name in <code>workload_from</code> or <code>extra_workloads_from</code> must be a built-in archetype, or it fails with <code>unknown_model</code>.</p>
+<h3 id="ids-names-and-overrides"><a class="header" href="#ids-names-and-overrides">Ids, names and overrides</a></h3>
+<p>A new row becomes the archetype <code>&lt;pack id&gt;:&lt;id&gt;</code>. Prospects of it arrive like any other: the game adds it to the prospect roster with its <code>min_rep</code>, unless the scenario’s own roster names it already. A pack scenario can name <code>&lt;pack id&gt;:&lt;id&gt;</code> in its <code>prospects</code> roster to place it on its own ladder. Customer names follow the model’s naming pattern.</p>
+<p>Each archetype’s <code>name</code> must be its own. A new row fails with <code>archetype_name_taken</code> when its name is a built-in archetype’s name, another row’s name in your pack or in any selected pack, a built-in archetype id such as <code>agency</code>, or shaped like <code>&lt;pack id&gt;:&lt;id&gt;</code>. The game shows the name as plain text.</p>
+<p>A row with <code>"overrides": "base:&lt;id&gt;"</code> changes that built-in archetype in place and keeps its id. The text after <code>base:</code> must name a built-in archetype, the row’s <code>model</code> must equal it, and one pack may override a target once. An override keeps its archetype’s name, services and place on the roster, so <code>name</code>, <code>workload_from</code>, <code>extra_workloads_from</code>, <code>min_rep</code> and <code>service</code> fail on an override with <code>override_field_forbidden</code>. If two selected packs override one archetype, the one that loads last wins.</p>
+<p>A new row starts from its model as the selected overrides leave it.</p>
+<h3 id="removing-a-customer-pack"><a class="header" href="#removing-a-customer-pack">Removing a customer pack</a></h3>
+<p>A save keeps the customers its packs brought. When you load it without the pack, each customer of one of its archetypes becomes a customer of the built-in archetype the row was built from. It keeps its name, its contract and every workload it runs. Only its persona changes. The game drops waiting prospects of the pack’s archetypes, and undoes any change the pack made to a built-in archetype.</p>
+<h2 id="event-packs"><a class="header" href="#event-packs">Event packs</a></h2>
+<p>Declare <code>"content": ["events", "locale"]</code>. An event pack adds macro events: the big outside shocks, such as a chip shortage or a power crisis, that a scenario draws a few of for each run. The game loads one file and no others from <code>events/</code>:</p>
+<ul>
+<li><code>events/templates.json</code> holds <code>{ "events": [ ... ] }</code>, at most 32 rows.</li>
+</ul>
+<p>The game refuses any other file under <code>events/</code> with the rule <code>content_category_unsupported</code>.</p>
+<h3 id="the-model-rule-1"><a class="header" href="#the-model-rule-1">The model rule</a></h3>
+<p>A row names a built-in macro event in <code>model</code>, and the model decides what the event does: which prices and costs go up, how lead times change, and how customers react. The row sets the news text, when the event may start, how long it lasts and how often the draw picks it. Every row rejects unknown keys. An event pack adds no new kind of trouble, only new stories for the kinds the game already has.</p>
+<p>The models are <code>nand_shortage</code>, <code>gpu_allocation_crisis</code>, <code>regional_power_crisis</code>, <code>data_residency_law</code>, <code>submarine_cable_cut</code>, <code>major_cve</code>, <code>rival_price_war</code>, <code>acquisition_offer</code>, <code>zero_day_worm</code> and <code>ai_runaway_job</code>.</p>
+<h3 id="event-rows"><a class="header" href="#event-rows">Event rows</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td><code>id</code></td><td>Required. The item name in the pack.</td></tr>
+<tr><td><code>model</code></td><td>Required. The built-in macro event the row starts from.</td></tr>
+<tr><td><code>start_text</code></td><td>Required. A key of your pack’s locale text, posted to <code>#news</code> when the event starts.</td></tr>
+<tr><td><code>end_text</code></td><td>Required. A key of your pack’s locale text, posted to <code>#news</code> when the event ends.</td></tr>
+<tr><td><code>duration_hours_min</code>, <code>duration_hours_max</code></td><td>Optional, 1 to 2160. How long the event lasts. With neither set the scenario’s range applies; with one set the event lasts exactly that long. The minimum may not be above the maximum.</td></tr>
+<tr><td><code>weight</code></td><td>Optional, 1 to 100. How likely the draw is to pick this event. Every built-in event weighs 10, which is also the default.</td></tr>
+<tr><td><code>when</code></td><td>Optional. World facts the event waits for, all of them, on top of the day the draw gives it.</td></tr>
+</tbody>
+</table>
+</div>
+<p><code>when</code> takes these fields, each optional:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td><code>after_day</code></td><td>0 to 3650. The event starts on this day of the run at the earliest.</td></tr>
+<tr><td><code>min_customers</code></td><td>Up to 100,000. The event waits until you have this many customers.</td></tr>
+<tr><td><code>min_cash_dollars</code></td><td>0 to 1,000,000,000,000. The event waits until you hold this much cash.</td></tr>
+<tr><td><code>min_reputation</code></td><td>0 to 1. The event waits until your reputation reaches this.</td></tr>
+<tr><td><code>min_progression_step</code></td><td>Up to 64. The event waits until the campaign reaches this step.</td></tr>
+</tbody>
+</table>
+</div>
+<p>The exact bounds are in <code>content.v1alpha1.schema.json</code>. A value outside them fails with the rule <code>min</code> or <code>max</code> and names the field.</p>
+<h3 id="event-text"><a class="header" href="#event-text">Event text</a></h3>
+<p>The text is never written in the row. <code>start_text</code> and <code>end_text</code> name messages in your pack’s locale files, so the text shows in the player’s language and voice like any other locale pack text. See <a href="#locale-packs">Locale packs</a>.</p>
+<ul>
+<li>A key that is not your pack’s prefix plus a name with no dash, such as a sentence or another pack’s key, fails with <code>event_text_not_owned</code>.</li>
+<li>A key that is not in one of your <code>locale/en/</code> files fails with <code>event_text_missing</code>.</li>
+</ul>
+<pre><code>mod-com-example-weather-heat_start = A heatwave is pushing the grid hard. Power costs more until it breaks.
+    .eng = Heatwave: grid at peak load, utility power prices up.
+mod-com-example-weather-heat_end = The heatwave is over. Power prices are back to normal.
+</code></pre>
+<p>Because an event pack carries locale text, it is client-required: a player who joins a multiplayer world that uses it must have it installed.</p>
+<h3 id="when-an-event-runs"><a class="header" href="#when-an-event-runs">When an event runs</a></h3>
+<p>A new row becomes the event <code>&lt;pack id&gt;:&lt;id&gt;</code>. Events come from a scenario’s macro event pool. Your events join the draw of every scenario whose pool is turned on and lists your model, or lists no kinds at all. A scenario with no pool, such as the sandbox, never draws them, and a scenario that leaves your model out of its pool does not draw that row.</p>
+<p>The draw picks events by weight without picking one kind twice, so your row and its model never run in the same draw. A run’s draw is fixed by its scenario and seed: the same packs and seed always give the same events. With no event packs selected, every scenario draws exactly as before.</p>
+<h3 id="removing-an-event-pack"><a class="header" href="#removing-an-event-pack">Removing an event pack</a></h3>
+<p>When you load a save without the pack, the events from it that had not started yet are dropped. An event from it that is running keeps going with its model’s effects and ends with the game’s own text.</p>
+<h2 id="service-packs"><a class="header" href="#service-packs">Service packs</a></h2>
+<p>Declare <code>"content": ["services"]</code>. A service pack adds service offerings and can change the built-in service kinds. The game loads one file and no others from <code>services/</code>:</p>
+<ul>
+<li><code>services/services.json</code> holds <code>{ "services": [ ... ] }</code>, at most 32 rows.</li>
+</ul>
+<p>The game refuses any other file under <code>services/</code> with the rule <code>content_category_unsupported</code>.</p>
+<h3 id="the-kind-rule"><a class="header" href="#the-kind-rule">The kind rule</a></h3>
+<p>A row names a built-in service kind in <code>model</code> by its tag: <code>vm</code>, <code>fn</code>, <code>obj</code>, <code>db</code>, <code>cdn</code>, <code>k8s</code> or <code>lb</code>. An offering is a product line of that kind. Its units are the kind’s units: they are placed, moved, served and repaired exactly as the kind’s are. A row sets plain values only, the shop name, the unlock gate, the spread grain and the price. It cannot change what a unit is or how it behaves. Every row rejects unknown keys.</p>
+<h3 id="service-rows"><a class="header" href="#service-rows">Service rows</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td><code>id</code></td><td>Required. The item name in the pack.</td></tr>
+<tr><td><code>model</code></td><td>Required. The built-in kind the offering runs as.</td></tr>
+<tr><td><code>overrides</code></td><td>Optional. <code>base:&lt;tag&gt;</code> to change a built-in kind.</td></tr>
+<tr><td><code>name</code></td><td>The name players see in the shop. Required on a new row, refused on an override. At most 48 bytes, plain text.</td></tr>
+<tr><td><code>unlock_cost</code></td><td>Optional. The one-time cost to sell the offering while it is locked, in money minor units, see <a href="#host-rows">Host rows</a>.</td></tr>
+<tr><td><code>enabled_by_default</code></td><td>Optional. Whether it sells from the start. A new offering without it does.</td></tr>
+<tr><td><code>spread_grain</code></td><td>Optional. The blast radius the kind’s units are spread across: <code>host</code>, <code>switch</code>, <code>az</code>, <code>region</code>, <code>power</code> or <code>router</code>. Only <code>obj</code>, <code>db</code>, <code>cdn</code>, <code>k8s</code> and <code>lb</code> spread their units, so the field fails on <code>vm</code> and <code>fn</code> with <code>service_spread_unsupported</code>. A tenant’s own redundancy contract can still ask for a coarser grain. An offering sets the grain only, never a count of domains: the game shares a kind’s units evenly across the domains at that grain.</td></tr>
+<tr><td><code>price_multiplier</code></td><td>Optional, 0.1 to 10. Scales every billed line of the kind.</td></tr>
+</tbody>
+</table>
+</div>
+<p>The exact bounds are in <code>content.v1alpha1.schema.json</code>.</p>
+<h3 id="who-buys-an-offering"><a class="header" href="#who-buys-an-offering">Who buys an offering</a></h3>
+<p>A new row becomes the offering <code>&lt;pack id&gt;:&lt;id&gt;</code>. Only a customer of a pack archetype whose <code>service</code> names it buys it, and only for its workload of the offering’s kind. Built-in customers never do. The archetype may come from the same pack or from another selected pack, and <code>service</code> must name an offering of a selected pack, or the selection fails with <code>unknown_service</code>.</p>
+<p>An offering that starts locked shows in the shop’s Services page under its kind with an Invest button. Its kind must be sold first. A prospect who buys a locked offering cannot sign until you unlock it.</p>
+<p>Each offering’s <code>name</code> must be its own. A name that is a built-in kind’s name, or another offering’s in your pack or in any selected pack, fails with <code>service_name_taken</code>.</p>
+<h3 id="overrides"><a class="header" href="#overrides">Overrides</a></h3>
+<p>A row with <code>"overrides": "base:&lt;tag&gt;"</code> changes that built-in kind for every tenant that runs it, and keeps its tag. The text after <code>base:</code> must name a built-in kind, the row’s <code>model</code> must equal it, and one pack may override a kind once. If two selected packs override one kind, the one that loads last wins. An override’s <code>unlock_cost</code> and <code>enabled_by_default</code> replace the scenario’s gate for the kind.</p>
+<h3 id="removing-a-service-pack"><a class="header" href="#removing-a-service-pack">Removing a service pack</a></h3>
+<p>A save keeps the tenants that bought an offering. When you load it without the pack, each of them runs on as the built-in kind, with the kind’s own grain and price. Every unit stays where it is. An unlock you paid for is kept, and applies again if the pack comes back.</p>
+<h2 id="locale-packs"><a class="header" href="#locale-packs">Locale packs</a></h2>
+<p>Declare <code>"content": ["locale"]</code>. A locale pack carries text for your mod in one or more languages, as <a href="https://projectfluent.org/">Fluent</a> files:</p>
+<pre><code>com.example.words/
+  manifest.json
+  locale/en/main.ftl
+  locale/de/main.ftl
+</code></pre>
+<p>The game loads <code>locale/&lt;lang&gt;/&lt;name&gt;.ftl</code> and nothing else under <code>locale/</code>. <code>&lt;lang&gt;</code> is a language tag: two or three lowercase letters, then any number of <code>-</code> subtags of two to eight letters or digits, such as <code>en</code>, <code>de</code> or <code>pt-BR</code>. <code>&lt;name&gt;</code> matches the item id pattern above. Any other file under <code>locale/</code> fails with the rule <code>content_category_unsupported</code>.</p>
+<h3 id="the-key-prefix"><a class="header" href="#the-key-prefix">The key prefix</a></h3>
+<p>Every message in your files is your pack’s prefix followed by a name. The prefix is <code>mod-</code>, then your pack id with each <code>.</code> written as <code>-</code> and each <code>-</code> written as <code>--</code>, then <code>-</code>. The name after it has no dash: use letters, digits and <code>_</code>. The pack <code>com.example.night-shift</code> owns <code>mod-com-example-night--shift-</code>, so its messages look like this:</p>
+<pre><code>-pack-name = Night Shift
+
+mod-com-example-night--shift-title = { -pack-name }
+mod-com-example-night--shift-greeting = Welcome to the night shift.
+    .eng = On call. Pager is live.
+mod-com-example-night--shift-open_tickets = { $count -&gt;
+    [one] One ticket waits for you.
+   *[other] { $count } tickets wait for you.
+}
+</code></pre>
+<p>Every key belongs to exactly one pack id: everything before its last dash is the prefix, and the prefix turns back into one id. So no pack can define another pack’s text. No game key starts with <code>mod-</code>, so a pack adds text and never changes the game’s own. A message that is not your prefix plus a dash-free name fails with the rule <code>locale_key_not_namespaced</code>.</p>
+<p>Terms, the ids that start with <code>-</code>, are private to your pack and can use any name. A message can use your own terms and messages, not the game’s.</p>
+<p>The <code>.eng</code> attribute is the text shown when the player has engineer terms on. Without it, both settings show the message’s value.</p>
+<h3 id="languages"><a class="header" href="#languages">Languages</a></h3>
+<p>The player’s language picks your text. When your pack has no text for a message in that language, the game shows your <code>en</code> text. So every message in another language must also be in <code>locale/en/</code>, or it fails with the rule <code>locale_key_missing_en</code>.</p>
+<p>A pack cannot add a language to the game. Text in a language the game does not ship is never shown, since the player cannot pick that language.</p>
+<h3 id="locale-rules"><a class="header" href="#locale-rules">Locale rules</a></h3>
+<ul>
+<li>A file is at most 256 KiB and a pack’s locale files are at most 1 MiB together. Over either fails with <code>max</code>.</li>
+<li>A file must be UTF-8 text, or it fails with <code>wrong_type</code>.</li>
+<li>A file must parse as Fluent. A parse error fails with <code>locale_syntax</code> and the message gives the line.</li>
+<li>Text a message shows holds no control character other than a newline and no invisible formatting character (bidirectional marks, overrides and isolates, zero-width spaces, tag characters, the byte order mark, the Arabic letter mark, soft hyphens). The zero-width joiner and non-joiner are allowed. The same holds for a string literal, escapes included. Breaking it fails with <code>locale_syntax</code>.</li>
+<li>A message nests placeables and function calls at most 8 deep, and one entry holds at most 256 <code>{</code> and <code>(</code> together. Past either fails with <code>locale_syntax</code>.</li>
+<li>A placeable cannot sit directly inside another placeable, as in <code>{ { $n } }</code>, and a select cannot choose on a literal, as in <code>{ "x" -&gt; ... }</code>. Both fail with <code>locale_syntax</code>. Write <code>{ $n }</code>, and select on a variable or a function.</li>
+<li>A number in your text is at most 32 characters with at most 18 digits after the point, or it fails with <code>locale_syntax</code>.</li>
+<li>A message or term defined twice in one language, in one file or two, fails with <code>duplicate_id</code>.</li>
+</ul>
+<p><code>uptime-mod validate</code> runs these same checks.</p>
+<p>A locale pack does not change play, so <code>affects_gameplay</code> is <code>false</code>. It is client-required: a player who joins a multiplayer world that uses it must have it installed. See <a href="MULTIPLAYER.html">Multiplayer</a>. The game loads the text of every locale pack installed and valid, enabled or not, so a joiner sees the host’s text. The text comes from the same read of your files that the join’s pack hash covers.</p>
+<p>Panel and config titles and labels are plain text, or <code>@</code> and one of your keys. See <a href="PANELS.html#labels-that-name-a-locale-key">Panels</a>.</p>
+<p>The game reads the text again when the set of installed packs changes, such as after a Workshop install or removal, so a new pack’s words show without a restart.</p>
+<h2 id="art"><a class="header" href="#art">Art</a></h2>
+<p>Declare <code>"content": ["art"]</code>. Art belongs to the pack’s own new hardware items, so the pack also carries those rows. The game loads two kinds of art file, icons and models. Every other file under <code>art/</code> fails with the rule <code>content_category_unsupported</code>.</p>
+<p>A pack with <code>art</code> content is client-required: a player who joins a multiplayer world that uses it must have it installed. See <a href="MULTIPLAYER.html">Multiplayer</a>. It cannot also carry a script.</p>
+<h3 id="icons"><a class="header" href="#icons">Icons</a></h3>
+<p>An icon is a PNG at <code>art/icons/&lt;item&gt;.png</code>, where <code>&lt;item&gt;</code> is the id of one of the pack’s own hardware items. It is at most 64 KiB and at most 256 by 256 pixels. The shop shows it on that item’s row.</p>
+<h3 id="models"><a class="header" href="#models">Models</a></h3>
+<p>A new host or switch can ship its own 3D model, drawn in the rack in place of its base model. A model is three files in <code>art/models/</code> named after the item: <code>&lt;item&gt;_render.glb</code>, <code>&lt;item&gt;_proxy.glb</code> and <code>&lt;item&gt;.pips.json</code>. A model that breaks any rule makes the whole pack invalid. <a href="MODELS.html">Equipment models</a> covers how to make the files, every limit and the <code>.pips.json</code> fields.</p>
+<h2 id="dependencies"><a class="header" href="#dependencies">Dependencies</a></h2>
+<p><code>dependencies</code> maps a pack id to a semver range:</p>
+<pre><code class="language-json">"dependencies": {
+  "com.uptime.example-hardware": "&gt;=1.0.0 &lt;2.0.0"
+}
+</code></pre>
+<p>The game refuses a pack that depends on itself. A dependency must be installed, must match the range and must be able to load. The player must also select it. The game loads dependencies first. A dependency cycle makes every pack on the cycle incompatible. If a dependency cannot load, the packs that need it cannot load either, and the message carries the root cause.</p>
+<h2 id="archive-rules"><a class="header" href="#archive-rules">Archive rules</a></h2>
+<p>These rules apply to every file in a pack. The scan checks the pack folder against them before it reads any content.</p>
+<ul>
+<li><code>manifest.json</code> must be at the root.</li>
+<li>Every file the manifest points at must exist: <code>script.entry</code>, each <code>panels</code> entry and <code>config_schema</code>.</li>
+<li>A path uses only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>.</code>, <code>_</code>, <code>-</code> and <code>/</code>.</li>
+<li>A path is at most 240 bytes. It may not be empty, absolute or contain a backslash or a percent sign. It may not have a segment that is empty, is <code>.</code>, ends in a dot, or is made only of dots.</li>
+<li>The part of a segment before its first dot may not be a Windows device name: <code>con</code>, <code>prn</code>, <code>aux</code>, <code>nul</code>, <code>com1</code> to <code>com9</code> or <code>lpt1</code> to <code>lpt9</code>. So the game refuses <code>con.txt</code> too.</li>
+<li>A pack holds at most 4096 entries.</li>
+<li>One file may not exceed 32 MiB, and all files together may not exceed 64 MiB. The game counts the bytes it reads, not the size a header claims.</li>
+<li>The game refuses symlinks and special files. On unix it refuses a file with more than one name as well.</li>
+<li>Two paths that differ only in letter case collide, and the game refuses them.</li>
+<li>A file cannot also be a folder.</li>
+<li>The game skips <code>.DS_Store</code>, <code>Thumbs.db</code>, <code>desktop.ini</code>, <code>.localized</code> and files that start with <code>._</code>.</li>
+</ul>
+<p>Every other file must sit under the folder of a category the manifest declares, or be a file the manifest references. A stray file fails with the rule <code>content_outside_declared_category</code>. A Lua script pack also allows its <code>.lua</code> files, see <a href="LUA.html">Lua mods</a>.</p>
+<h2 id="what-refuses-a-pack"><a class="header" href="#what-refuses-a-pack">What refuses a pack</a></h2>
+<p>The scan reports each problem with the pack id, the file, a JSON pointer to the field and a stable rule code. A pack lands in one of three states: valid, invalid or incompatible.</p>
+<p>An invalid pack has bad files. Nothing from it loads. These rule codes mark it:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Rule</th><th>Cause</th></tr>
+</thead>
+<tbody>
+<tr><td><code>manifest</code></td><td><code>manifest.json</code> is missing a field, has an unknown field or breaks a manifest rule.</td></tr>
+<tr><td><code>archive</code></td><td>A path, size, count, link or collision rule failed.</td></tr>
+<tr><td><code>unknown_field</code>, <code>missing_field</code>, <code>wrong_type</code></td><td>A row has a key the type does not declare, lacks a required key, or has a value of the wrong type.</td></tr>
+<tr><td><code>min</code>, <code>max</code></td><td>A number is below its floor or above its ceiling.</td></tr>
+<tr><td><code>id_pattern</code></td><td>An item id breaks the id pattern.</td></tr>
+<tr><td><code>duplicate_id</code></td><td>Two items, or two overrides of one target, in one pack.</td></tr>
+<tr><td><code>unknown_model</code>, <code>model_family_mismatch</code></td><td><code>model</code> names no built-in SKU or archetype, or a SKU of the other family.</td></tr>
+<tr><td><code>override_not_base</code>, <code>override_target_missing</code>, <code>override_model_mismatch</code></td><td>An <code>overrides</code> rule failed.</td></tr>
+<tr><td><code>unknown_sku</code></td><td>A scenario names a SKU that exists nowhere.</td></tr>
+<tr><td><code>unknown_archetype</code></td><td>A scenario seeds a customer or prospect under an archetype that exists nowhere.</td></tr>
+<tr><td><code>scenario_id_not_namespaced</code>, <code>scenario_config_key_forbidden</code>, <code>scenario_catalog_override_forbidden</code></td><td>A scenario rule failed.</td></tr>
+<tr><td><code>archetype_name_taken</code>, <code>override_field_forbidden</code></td><td>A customer rule failed. See <a href="#customer-packs">Customer packs</a>.</td></tr>
+<tr><td><code>event_text_not_owned</code>, <code>event_text_missing</code></td><td>An event’s text is not a key of the pack’s own <code>en</code> text. See <a href="#event-packs">Event packs</a>.</td></tr>
+<tr><td><code>service_name_taken</code>, <code>service_spread_unsupported</code>, <code>unknown_service</code></td><td>A service rule failed. See <a href="#service-packs">Service packs</a>.</td></tr>
+<tr><td><code>content_outside_declared_category</code>, <code>content_category_unsupported</code></td><td>A file is in the wrong place, or in a category this build does not load.</td></tr>
+<tr><td><code>locale_syntax</code>, <code>locale_key_not_namespaced</code>, <code>locale_key_missing_en</code></td><td>A locale rule failed. See <a href="#locale-packs">Locale packs</a>.</td></tr>
+<tr><td><code>model_orphan_item</code>, <code>model_missing_file</code>, <code>model_malformed</code>, <code>model_out_of_bounds</code>, <code>model_over_limit</code>, <code>model_external_uri</code>, <code>model_unsupported_feature</code>, <code>model_material_forbidden</code>, <code>model_bad_image</code>, <code>model_outside_envelope</code></td><td>A model’s GLB broke a rule. See <a href="MODELS.html#limits-and-rules">Limits and rules</a>.</td></tr>
+<tr><td><code>pips_malformed</code>, <code>pips_over_limit</code>, <code>pips_port_mismatch</code>, <code>pips_iec_mismatch</code>, <code>pips_bay_mismatch</code>, <code>pips_bad_xform</code></td><td>A model’s <code>.pips.json</code> is malformed, too large, or does not match its base model. See <a href="MODELS.html#the-pipsjson-sidecar">The .pips.json sidecar</a>.</td></tr>
+<tr><td><code>client_pack_has_script</code></td><td>A pack with <code>art</code> or <code>locale</code> content also carries a script.</td></tr>
+</tbody>
+</table>
+</div>
+<p>An incompatible pack is well formed but cannot load here. The game marks it when its id is installed twice, its <code>game_version</code> range excludes this build, its <code>api_minor</code> is out of range, a dependency is missing or at the wrong version, or it sits on a cycle. The rule code is <code>incompatible</code>. The related selection errors are <code>mod_unavailable</code>, when a selected id is not installed or is invalid, and <code>runtime_unavailable</code>, when this build has no runtime for a script mod.</p>
+<h2 id="the-example-packs"><a class="header" href="#the-example-packs">The example packs</a></h2>
+<p><code>ModSDK/examples/com.uptime.example-hardware</code> carries two new host SKUs, one new switch SKU and one override. <code>ModSDK/examples/com.uptime.example-scenario</code> carries one scenario and depends on the hardware pack. <code>ModSDK/examples/com.uptime.example-locale</code> carries English and German text. <code>ModSDK/examples/com.uptime.example-customers</code> carries two new archetypes and one override. <code>ModSDK/examples/com.uptime.example-service</code> carries a locked <code>Cold Storage</code> offering over object storage and an archetype that buys it. <code>ModSDK/examples/com.uptime.example-events</code> carries two macro events and their English text. <code>ModSDK/examples/com.uptime.example-model</code> carries one switch SKU with its own model, the three files <code>uptime-mod model</code> writes. See <a href="MODELS.html">Equipment models</a>. Copy any of them as a starting point. The model files in that pack are game art and are not MIT: see <code>TERMS.md</code> in the SDK folder.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="QUICKSTART.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="MODELS.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="QUICKSTART.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="MODELS.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

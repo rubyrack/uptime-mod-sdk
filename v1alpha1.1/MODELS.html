@@ -1,0 +1,370 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Equipment models - Uptime mod SDK</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-e96d0476.css">
+        <link rel="stylesheet" href="css/chrome-d279d366.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-13b5f828.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-5112729b.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Uptime mod SDK</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="equipment-models"><a class="header" href="#equipment-models">Equipment models</a></h1>
+<p>A content pack can give a new host or switch its own 3D model. The rack draws that model in place of the base model the row starts from. This page covers the files, how to model and name the parts, the limits, the <code>.pips.json</code> sidecar field by field, and what happens when a model fails.</p>
+<p>A model is part of the <code>art</code> category, see <a href="CONTENT_PACKS.html#art">Art</a>. The example pack <code>com.uptime.example-model</code> carries one switch SKU with a model. Its manifest, hardware row and the three model files are the smallest complete case. The model files in it are game art and are not MIT: see <code>TERMS.md</code> in the SDK folder.</p>
+<h2 id="the-three-files"><a class="header" href="#the-three-files">The three files</a></h2>
+<p>A model is three files in <code>art/models/</code>, all named after the item:</p>
+<pre><code>com.example.my-hardware/
+  manifest.json
+  hardware/hosts.json
+  art/models/box_render.glb
+  art/models/box_proxy.glb
+  art/models/box.pips.json
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>File</th><th>What it holds</th></tr>
+</thead>
+<tbody>
+<tr><td><code>&lt;item&gt;_render.glb</code></td><td>The near model.</td></tr>
+<tr><td><code>&lt;item&gt;_proxy.glb</code></td><td>The far model, drawn at a distance.</td></tr>
+<tr><td><code>&lt;item&gt;.pips.json</code></td><td>Where the ports, lights, fans, power inlets, module bays and nameplate sit.</td></tr>
+</tbody>
+</table>
+</div>
+<p>The manifest lists <code>"content": ["hardware", "art"]</code>. <code>&lt;item&gt;</code> is the <code>id</code> of a new host or switch row in the same pack. A model never changes what the hardware is. Ports, power supplies and bays always come from the base model, so the model must match their counts.</p>
+<h2 id="making-the-files"><a class="header" href="#making-the-files">Making the files</a></h2>
+<p>Export one GLB from your modelling tool and run <a href="CLI.html#model"><code>uptime-mod model</code></a>:</p>
+<pre><code>uptime-mod model work/box.glb --proxy work/box_proxy.glb --pack com.example.my-hardware --item box
+</code></pre>
+<p>The command reads your node names into the sidecar, merges the drawn nodes into the near model, copies the far model you made, and runs the game’s own pack checks on the result. <a href="CLI.html#naming-the-nodes">Naming the nodes</a> lists the names it reads. You write the far model yourself, and the command copies it unchanged, so it must pass the same checks. You can also write all three files by hand.</p>
+<h2 id="authoring-conventions"><a class="header" href="#authoring-conventions">Authoring conventions</a></h2>
+<ul>
+<li>Units are metres and the up axis is Y. The glTF format already uses both. In Blender, export with Y up.</li>
+<li>The front face of the device is at Z = 0 and the body runs back along negative Z. Port jacks, bezels and the nameplate face positive Z.</li>
+<li>The model sits inside the base model’s rack slot. The slot’s width is a 19-inch rack face, centred on X = 0. Its height is the base model’s rack units at 44.5 mm each, starting at Y = 0. Its depth is the base model’s depth, measured from its shipped render model. When the base model has no measured depth, a host uses 0.740 m and a switch uses its chassis depth. The game allows a little more than the slot: 1 mm at each side, above and below, 15 mm in front for handles and bezels, and 25 mm behind for rear plugs.</li>
+<li>The render file has one mesh drawn by one node. Every drawn node of your source is placed in model space and merged into one primitive per material, so the material count is the primitive count. Keep the node and material counts low at the source.</li>
+<li>The game draws every light from the sidecar. A light is a mesh with <code>LED</code> in its node name. <code>uptime-mod model</code> leaves these meshes out of the render file and writes a sidecar entry for each, sized to the mesh’s box. The exception is a <code>LED_Link</code> or <code>LED_Activity</code> light that has no <code>Port_</code> node to bind to, or whose nearest port is a management pin or <code>Port_0</code>: the command drops it and prints a warning, see <a href="CLI.html#naming-the-nodes">Naming the nodes</a>. Give no material an emissive color.</li>
+<li>Name the parts the generator reads: <code>Port_&lt;N&gt;</code> for cabled ports numbered from 1, <code>Port_&lt;name&gt;</code> for named ports, <code>LED_Link...</code> and <code>LED_Activity...</code> under a port, <code>Bay_&lt;N&gt;</code> for module bays, names ending <code>_IEC</code> or <code>AcInlet</code> for power inlets, <code>FanRotor...</code> for fans, and <code>Nameplate_Plate</code> for the name placard. The full table is in <a href="CLI.html#naming-the-nodes">Naming the nodes</a>.</li>
+<li>A default export from a modelling tool usually fails the limits below. It tends to give each object its own node and primitive, lists extensions the game does not load, and includes cameras or lights. Turn off cameras and lights in the exporter, apply modifiers, join objects that share a material, and keep textures inside the GLB.</li>
+</ul>
+<h2 id="limits-and-rules"><a class="header" href="#limits-and-rules">Limits and rules</a></h2>
+<p>The game checks the model in the pack scan, and again in the client when it loads one. These rules apply to both GLB files unless a row says otherwise.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Rule</th><th>Limit</th></tr>
+</thead>
+<tbody>
+<tr><td>File name</td><td><code>&lt;item&gt;</code> is the id of a new host or switch row in the same pack. A model for any other id fails with <code>model_orphan_item</code>. So does a model for an override row.</td></tr>
+<tr><td>Files</td><td>An item ships all three files or none, or it fails with <code>model_missing_file</code>.</td></tr>
+<tr><td>Container</td><td>A GLB 2.0 file with one scene, one mesh and at most one buffer, which is the BIN chunk. Exactly one node draws the mesh.</td></tr>
+<tr><td>Data inside</td><td>Nothing loads by uri. A buffer or image that points at another file fails with <code>model_external_uri</code>.</td></tr>
+<tr><td>Counts</td><td>At most 32 nodes, 32 primitives, 32 materials and 4 images. A texture is a PNG of at most 2048 by 2048 pixels.</td></tr>
+<tr><td>Near model</td><td>At most 32 MiB, 524,288 triangles and 524,288 vertices.</td></tr>
+<tr><td>Far model</td><td>At most 512 KiB, 8,000 triangles and 12,000 vertices.</td></tr>
+<tr><td>Geometry</td><td>Triangle lists only. The bounds, read from the vertex data and placed by the node, must fit the slot above, or the file fails with <code>model_outside_envelope</code>.</td></tr>
+<tr><td>Not allowed</td><td>Animation, skins, cameras, morph targets and sparse accessors fail with <code>model_unsupported_feature</code>.</td></tr>
+<tr><td>Extensions</td><td>The only extensions are <code>KHR_texture_transform</code>, <code>KHR_materials_specular</code> and <code>KHR_materials_ior</code>. A model may require none.</td></tr>
+<tr><td>Materials</td><td>A material may not emit light or blend its alpha. Use <code>OPAQUE</code> or <code>MASK</code> for alpha. The rule is <code>model_material_forbidden</code>.</td></tr>
+<tr><td>Nulls</td><td>A JSON <code>null</code> in the glTF fails with <code>model_malformed</code>, except under an <code>extras</code> key. So does an object written as an array.</td></tr>
+</tbody>
+</table>
+</div>
+<p>A GLB that is cut short or has bytes after its last chunk fails with <code>model_malformed</code>. One that reads past its buffer fails with <code>model_out_of_bounds</code>. A PNG with a bad header, checksum or size fails with <code>model_bad_image</code>. A file, texture or count over a limit in the table fails with <code>model_over_limit</code>. A list longer than its cap reads the same way, for example <code>/materials the list has more than 32 entries</code>.</p>
+<p>One failing model makes the whole pack invalid. Nothing in the pack loads until every error is fixed, including its hardware rows. <code>uptime-mod validate</code> lists the errors.</p>
+<h2 id="the-pipsjson-sidecar"><a class="header" href="#the-pipsjson-sidecar">The .pips.json sidecar</a></h2>
+<p>The sidecar says where each port, light, fan, inlet, bay and the nameplate sit in model space. A file is at most 256 KiB. It holds one JSON object with these keys. Every key except <code>nameplate</code> is required, and an unknown key fails.</p>
+<pre><code class="language-json">{
+  "pips": [
+    { "kind": "port_link", "port": 1, "xform": [0.003, 0, 0, 0, 0.003, 0, 0, 0, 0.003, -0.2, 0.02, 0] },
+    { "kind": "psu", "port": 1, "xform": [0.003, 0, 0, 0, 0.003, 0, 0, 0, 0.003, 0.2, 0.03, -0.1] }
+  ],
+  "ports": { "1": [0.012, 0, 0, 0, 0.012, 0, 0, 0, 0.012, -0.2, 0.02, 0] },
+  "named_ports": { "Port_BMC": [0.012, 0, 0, 0, 0.012, 0, 0, 0, 0.012, -0.21, 0.02, 0] },
+  "fans": [],
+  "iec": [[0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0.2, 0.02, -0.2]],
+  "bays": {},
+  "nameplate": [0.1, 0, 0, 0, 0.02, 0, 0, 0, 0.001, 0, 0.01, 0]
+}
+</code></pre>
+<p>This one is for a base model with one cabled port, one power supply and no module bays. Your counts come from your base model.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Key</th><th>Holds</th></tr>
+</thead>
+<tbody>
+<tr><td><code>pips</code></td><td>A list of at most 256 status lights, see below.</td></tr>
+<tr><td><code>ports</code></td><td>An object from <code>"1"</code> up to the base model’s cabled port count to a transform. The keys must be exactly that set, or the file fails with <code>pips_port_mismatch</code>.</td></tr>
+<tr><td><code>named_ports</code></td><td>An object from a name to a transform, for ports outside the numbered set, such as <code>Port_BMC</code>. A light bound to one lights from the device port that carries that name, see <code>port_name</code> below. The name is <code>Port_</code> and then letters, digits or <code>_</code>, at most 64 bytes. It may be empty.</td></tr>
+<tr><td><code>fans</code></td><td>A list of at most 16 transforms, one for each fan blade. It may be empty.</td></tr>
+<tr><td><code>iec</code></td><td>A list of transforms, one power inlet for each power supply of the base model. Another count fails with <code>pips_iec_mismatch</code>.</td></tr>
+<tr><td><code>bays</code></td><td>An object from <code>"1"</code> up to the base model’s module bay count to a transform. It is empty, or holds exactly that set, or the file fails with <code>pips_bay_mismatch</code>.</td></tr>
+<tr><td><code>nameplate</code></td><td>One transform for the name placard. Optional. Leave the key out for none.</td></tr>
+</tbody>
+</table>
+</div>
+<p>A cabled port is a numbered data port of the base model. A host counts the ports of all its port banks. A switch counts its <code>port_count</code>.</p>
+<h3 id="pip-fields"><a class="header" href="#pip-fields">Pip fields</a></h3>
+<p>Each entry of <code>pips</code> is an object with these keys, and an unknown key fails.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Required</th><th>Holds</th></tr>
+</thead>
+<tbody>
+<tr><td><code>kind</code></td><td>yes</td><td>What the light shows: <code>port_link</code>, <code>port_act</code>, <code>activity</code>, <code>power</code> or <code>psu</code>.</td></tr>
+<tr><td><code>port</code></td><td>yes</td><td>A whole number, 0 or more. <code>uptime-mod model</code> writes the port number for <code>port_link</code> and <code>port_act</code> lights on a numbered port, the power supply number (1 is the rightmost) for <code>psu</code>, and 0 otherwise.</td></tr>
+<tr><td><code>port_name</code></td><td>no</td><td>The named port a <code>port_link</code> or <code>port_act</code> light belongs to. Same pattern as a <code>named_ports</code> key. The game finds the device port whose label is the name after <code>Port_</code>, ignoring case, so <code>Port_BMC</code> follows a port labelled <code>BMC</code>; <code>Port_MlagKeepalive</code> follows the keepalive port. A name no device port carries passes every check and stays dark. <code>Port_PSU</code>, <code>Port_Mgmt</code> and <code>Port_Out</code> are refused, because their labels repeat on one device and the game binds a light to the first port with that label, so the name cannot say which port is meant.</td></tr>
+<tr><td><code>role</code></td><td>no</td><td>A status role such as <code>sys</code>, <code>alm</code> or <code>fan</code>: lowercase letters, digits and <code>_</code>, at most 64 bytes. On an <code>activity</code> light the game paints by it: <code>alm</code> shows a fault and is dark otherwise, <code>fan</code> never shows a fault, and <code>sys</code> or no role follows the device’s indicator. Any other text is accepted and paints as no role.</td></tr>
+<tr><td><code>xform</code></td><td>yes</td><td>A transform, see below.</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="transforms"><a class="header" href="#transforms">Transforms</a></h3>
+<p>Every transform is a list of exactly 12 numbers. The first nine are the basis columns x, y and z, three numbers each. The last three are the origin. The basis scales a unit box, so a light or port jack is a small basis. The rules, all <code>pips_bad_xform</code>:</p>
+<ul>
+<li>Every number is finite.</li>
+<li>Each basis column is at least 0.000001 long and at most 2.0 long.</li>
+<li>The three columns do not lie in one plane. The volume they span, divided by the product of their lengths, is at least 0.001.</li>
+<li>The origin sits inside the rack slot, with the same slack as the geometry.</li>
+</ul>
+<p>The game checks the origin only. It does not check that the whole light or port fits.</p>
+<h3 id="what-the-sidecar-refuses"><a class="header" href="#what-the-sidecar-refuses">What the sidecar refuses</a></h3>
+<ul>
+<li>A JSON <code>null</code> anywhere, including <code>"nameplate": null</code>. Leave <code>nameplate</code> out instead. This fails as <code>pips_malformed</code>.</li>
+<li>An unknown key at any level. Keys that the built-in models carry, such as <code>has_side_panels</code> and <code>rack_anchors</code>, are unknown here, and pack models do not use them.</li>
+<li>A key given twice in <code>ports</code>, <code>named_ports</code> or <code>bays</code>.</li>
+<li>An array where an object belongs, such as <code>ports</code> written as a list.</li>
+<li>A file over 256 KiB, more than 256 pips or more than 16 fans, as <code>pips_over_limit</code>.</li>
+</ul>
+<h2 id="when-a-model-fails"><a class="header" href="#when-a-model-fails">When a model fails</a></h2>
+<p>The pack scan refuses a bad model and the whole pack with it, see <a href="CONTENT_PACKS.html#what-refuses-a-pack">What refuses a pack</a>. That is the normal failure and <code>uptime-mod validate</code> shows it.</p>
+<p>The client checks the bytes again when it loads a pack, and then imports them with the engine’s glTF importer. A model that fails the check or the import draws as its base model. The game shows a warning toast once for that item, “The model for X in the mod Y couldn’t be loaded, so it looks like the model it’s based on.” Every other item of the pack is unaffected.</p>
+<h2 id="without-a-model"><a class="header" href="#without-a-model">Without a model</a></h2>
+<p>A new SKU with no model files draws as its base model. An override of a built-in SKU always draws as that SKU. A pack with <code>art</code> content is client-required, so a player who joins a multiplayer world that uses it must have it installed. See <a href="MULTIPLAYER.html">Multiplayer</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="CONTENT_PACKS.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="CONFIG.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="CONTENT_PACKS.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="CONFIG.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

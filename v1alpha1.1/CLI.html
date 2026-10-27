@@ -1,0 +1,393 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>CLI - Uptime mod SDK</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-e96d0476.css">
+        <link rel="stylesheet" href="css/chrome-d279d366.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-13b5f828.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-5112729b.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Uptime mod SDK</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="the-uptime-mod-command"><a class="header" href="#the-uptime-mod-command">The uptime-mod command</a></h1>
+<p><code>uptime-mod</code> makes, checks, packages, runs and uploads a mod. It ships in the game’s <code>ModSDK/bin</code> folder. It checks a pack with the same code the game uses. When <code>validate</code> passes a pack with no warnings, the game loads that folder as it is. When it passes with warnings, the game loads the <code>package</code> output and refuses the folder itself.</p>
+<pre><code>uptime-mod new --template content|lua|rust --id &lt;mod id&gt; [--title &lt;title&gt;]
+               [--sdk &lt;ModSDK folder&gt;] [&lt;dir&gt;]
+uptime-mod validate &lt;dir&gt; [--json]
+uptime-mod package &lt;dir&gt; [--out &lt;dir&gt;]
+uptime-mod run &lt;dir&gt; (--scenario &lt;id&gt; | --world &lt;save&gt;) --quanta &lt;n&gt;
+               [--seed &lt;n&gt;] [--golden &lt;file&gt;] [--watch] [--runner &lt;path&gt;]
+uptime-mod upload &lt;dir&gt; [--visibility private|friends|public]
+                  [--change-note &lt;text&gt;] [--preview &lt;image&gt;] [--dry-run]
+uptime-mod model &lt;source.glb&gt; --proxy &lt;proxy.glb&gt; --pack &lt;dir&gt; --item &lt;item id&gt;
+</code></pre>
+<p><code>uptime-mod --help</code> prints this usage with a line on each command, and <code>uptime-mod &lt;command&gt; --help</code> prints the same text.</p>
+<h2 id="exit-codes"><a class="header" href="#exit-codes">Exit codes</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Code</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td>The command finished.</td></tr>
+<tr><td>1</td><td>The pack has problems, or a step failed.</td></tr>
+<tr><td>2</td><td>The command line is wrong, or <code>run</code> found no runner.</td></tr>
+</tbody>
+</table>
+</div>
+<p><code>run</code> passes on the exit code of the game’s runner. See <a href="#run">run</a>.</p>
+<h2 id="new"><a class="header" href="#new">new</a></h2>
+<p><code>new</code> makes a pack folder from a template.</p>
+<pre><code>uptime-mod new --template lua --id com.example.my-mod
+</code></pre>
+<ul>
+<li><code>--template</code> is <code>content</code> (a hardware pack), <code>lua</code> or <code>rust</code> (a script mod). Each template is a working mod that <code>validate</code> accepts, except <code>rust</code>, which needs a build first. The command reports <code>bin/mod.wasm</code> as missing and tells you how to build it.</li>
+<li><code>--id</code> is a reverse-DNS id such as <code>com.example.my-mod</code>.</li>
+<li><code>--title</code> sets the display name. Without it, the title comes from the last part of the id, so <code>com.example.cool-gear</code> becomes <code>Cool Gear</code>. A title cannot hold quotes, backslashes or line breaks.</li>
+<li><code>--sdk</code> is the <code>ModSDK</code> folder. Only the <code>rust</code> template uses it: the new <code>Cargo.toml</code> gets the absolute path of <code>rust/uptime-mod</code> in that folder. Without <code>--sdk</code>, the command uses <code>UPTIME_SDK</code>, then the <code>ModSDK</code> folder this <code>uptime-mod</code> runs from. If it finds none, it exits 1 and asks for <code>--sdk</code>.</li>
+<li><code>&lt;dir&gt;</code> is the folder to make. It defaults to the id. The command refuses a folder that exists and is not empty.</li>
+</ul>
+<p>The command replaces <code>{{id}}</code> and <code>{{title}}</code> in the template files, and <code>{{sdk_path}}</code> in the <code>rust</code> template, and changes nothing else.</p>
+<h2 id="validate"><a class="header" href="#validate">validate</a></h2>
+<p><code>validate</code> checks a pack the way the game does and lists every problem.</p>
+<pre><code>uptime-mod validate com.example.my-mod
+</code></pre>
+<p>It runs the game’s pack scan, which covers the manifest, the schemas, the archive rules and the API minor. For a script mod it then compiles the script the way the game does before a world runs. A component must link against the game’s imports, and a Lua pack must compile with no syntax error.</p>
+<p>Each problem is one line with the file, the field, the rule in brackets and a message. A clean pack prints <code>ok:</code> with the id, the version and the pack hash.</p>
+<p><code>--json</code> prints one JSON report with <code>ok</code>, <code>id</code>, <code>version</code>, <code>hash</code>, a <code>problems</code> list and a <code>warnings</code> list. Each problem and each warning has <code>file</code>, <code>field</code>, <code>rule</code> and <code>message</code>.</p>
+<p><code>validate</code> checks the pack without the files that belong to building a mod: dotfiles, <code>Thumbs.db</code>, <code>desktop.ini</code>, and the top-level <code>src</code>, <code>target</code>, <code>tests</code>, <code>dist</code>, <code>Cargo.toml</code>, <code>Cargo.lock</code> and <code>workshop.json</code>. <code>package</code> leaves the same files out, and writes a hard-linked file as a plain copy.</p>
+<p>The game reads a pack folder as it is. It skips only the files an operating system makes on its own (<code>.DS_Store</code>, <code>Thumbs.db</code>, <code>desktop.ini</code>, <code>.localized</code> and <code>._*</code>), so it refuses a folder that holds any of the other build files or a hard link. When the pack itself is clean, <code>validate</code> also scans the folder as it is and prints each thing the game would refuse there as a <code>warning:</code> line. Those warnings do not fail the command, but they mean the folder must not be copied or linked into the mods folder. Put the <code>package</code> output there instead.</p>
+<p>The exit code is 0 for a clean pack and 1 for any problem.</p>
+<h2 id="package"><a class="header" href="#package">package</a></h2>
+<p><code>package</code> validates the pack, then writes the files the game accepts to <code>&lt;out&gt;/&lt;id&gt;-&lt;version&gt;/</code>. The default <code>&lt;out&gt;</code> is <code>dist</code>.</p>
+<pre><code>uptime-mod package com.example.my-mod --out dist
+</code></pre>
+<ul>
+<li>The folder holds the accepted files and <code>uptime-package.json</code>, which records the id, the version and a SHA-256 hash of the files.</li>
+<li>The output depends only on the pack’s files. It is sorted and carries no timestamps, so two runs give identical bytes.</li>
+<li>The command rescans its output and checks that it gives the same hash.</li>
+<li>It replaces an earlier package of the same name. It refuses a folder that exists and holds something else.</li>
+<li>It refuses an <code>--out</code> whose package folder would be the pack folder itself, would hold it, or would sit among the pack’s own files. A <code>dist</code> folder inside the pack is fine.</li>
+</ul>
+<p>A pack with any problem is not packaged, and the exit code is 1.</p>
+<h2 id="run"><a class="header" href="#run">run</a></h2>
+<p><code>run</code> plays your pack in a scenario and prints what your mod did. It validates the pack, stages a copy under the pack id and starts the game’s own <code>sim-runner</code> in batch mode on that copy.</p>
+<pre><code>uptime-mod run com.example.my-mod --scenario garage-to-glory --quanta 200
+</code></pre>
+<p>The runner prints one JSON line for each command that landed, with <code>issued</code>, <code>landed</code>, <code>mod</code>, <code>ok</code> and <code>code</code>. A run is the same every time for the same seed, and the seed is 1 unless you pass <code>--seed</code>.</p>
+<p>Your mod’s own log lines (<code>ctx:log</code> in Lua, <code>host.log</code> in a component) go to stderr, one per line, after the quantum that wrote them:</p>
+<pre><code>[mod-log] com.example.my-mod k=12 info: capacity low: buying a host
+</code></pre>
+<p>The level is <code>debug</code>, <code>info</code>, <code>warn</code> or <code>error</code>. Control characters are dropped and a line is cut at 512 bytes. The JSON lines on stdout stay as they were, so a <code>--golden</code> file is not affected.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Flag</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>--scenario &lt;id&gt;</code></td><td>A built-in scenario to build the world from.</td></tr>
+<tr><td><code>--world &lt;save&gt;</code></td><td>A save file to load instead.</td></tr>
+<tr><td><code>--quanta &lt;n&gt;</code></td><td>How many 15 second quanta to step.</td></tr>
+<tr><td><code>--seed &lt;n&gt;</code></td><td>The scenario seed. <code>--world</code> ignores it.</td></tr>
+<tr><td><code>--golden &lt;file&gt;</code></td><td>A file of expected output. The runner exits 1 and names the first differing line when the output does not match.</td></tr>
+<tr><td><code>--watch</code></td><td>Copy changes from your pack folder into the running copy, so the runner reloads them between steps. Lua scripts, a component and panel files reload. A change to anything else prints a line saying what it needs: a new run for a scenario, a restart for the manifest or hardware.</td></tr>
+<tr><td><code>--runner &lt;path&gt;</code></td><td>The <code>sim-runner</code> to use.</td></tr>
+</tbody>
+</table>
+</div>
+<p>The runner’s exit code becomes the command’s: 0 for a finished run, 1 for a golden mismatch and 2 for anything else it refuses. A pack with problems exits 1 before the runner starts, and the output says <code>nothing was run</code>.</p>
+<p><code>uptime-mod</code> looks for the runner in this order:</p>
+<ol>
+<li><code>--runner &lt;path&gt;</code>.</li>
+<li>The <code>UPTIME_RUNNER</code> environment variable.</li>
+<li>The game folder that holds <code>ModSDK</code>: <code>bin/&lt;triple&gt;/sim-runner</code>, where <code>&lt;triple&gt;</code> is the target for your machine, such as <code>aarch64-apple-darwin</code> or <code>x86_64-pc-windows-gnu</code>.</li>
+<li>macOS only: the same game folder, <code>Uptime.app/Contents/MacOS/bin/&lt;triple&gt;/sim-runner</code>, where the app bundle keeps its runner.</li>
+</ol>
+<p>When no runner is found, the command exits 2 and lists every place it looked.</p>
+<p>A stop signal (Ctrl-C) goes to the runner, and <code>run</code> removes its staged copy when the runner exits. A second stop ends a runner that ignored the first.</p>
+<h2 id="upload"><a class="header" href="#upload">upload</a></h2>
+<p><code>upload</code> packages the pack the way <code>package</code> does, checks the result again and publishes it as a Steam Workshop item. <code>--dry-run</code> prints what it would send and sends nothing.</p>
+<pre><code>uptime-mod upload com.example.my-mod --dry-run
+</code></pre>
+<p>The item id is kept in <code>workshop.json</code> in your pack folder, so each later upload updates the same item. A new item is private. Exit codes are 0 for a finished upload or dry run, 1 when the pack or Steam refuses it and 2 for a wrong command line. <a href="WORKSHOP.html">Workshop</a> has the flags, visibility, updates and the legal agreement.</p>
+<h2 id="model"><a class="header" href="#model">model</a></h2>
+<p><code>model</code> builds the three files of a new host or switch model from the GLB you export from your modelling tool, writes them into the pack, then checks them the way the game does. <a href="MODELS.html">Equipment models</a> covers the conventions and limits.</p>
+<pre><code>uptime-mod model work/box.glb --proxy work/box_proxy.glb --pack com.example.my-mod --item box
+</code></pre>
+<ul>
+<li><code>&lt;source.glb&gt;</code> is your full model: the body, the ports, the lights and the marker empties, as one <code>.glb</code> with its data and textures inside. Keep it outside the pack folder. The command refuses a source inside <code>--pack</code>, since the game refuses any file a pack does not load.</li>
+<li><code>--proxy</code> is the far model you made by hand. The command copies it unchanged.</li>
+<li><code>--pack</code> is the pack folder. The files go in its <code>art/models/</code> folder, and the command replaces any earlier files of the same item.</li>
+<li><code>--item</code> is the id of a new host or switch in the pack’s <code>hardware</code> rows. An override of a built-in SKU cannot ship a model.</li>
+</ul>
+<p>It writes:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>File</th><th>What it holds</th></tr>
+</thead>
+<tbody>
+<tr><td><code>art/models/&lt;item&gt;_render.glb</code></td><td>The near model. Every drawn node is placed in model space and merged into one primitive per material, under one mesh node. The command leaves out LED lenses, empties and every extension the game does not load, and prints a warning for each extension it drops. It keeps <code>KHR_texture_transform</code>, <code>KHR_materials_specular</code> and <code>KHR_materials_ior</code>.</td></tr>
+<tr><td><code>art/models/&lt;item&gt;.pips.json</code></td><td>Where the port lights, ports, fans, power inlets, module bays and nameplate sit, read from your node names.</td></tr>
+<tr><td><code>art/models/&lt;item&gt;_proxy.glb</code></td><td>The copy of <code>--proxy</code>.</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="naming-the-nodes"><a class="header" href="#naming-the-nodes">Naming the nodes</a></h3>
+<p>The sidecar comes from the node names alone, so name them the way the base models are named. The command ignores a trailing suffix such as <code>.001</code>.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Node name</th><th>Read as</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Port_1</code>, <code>Port_2</code>, …</td><td>A cabled data port, numbered from 1. Its position is the cable anchor.</td></tr>
+<tr><td><code>Port_&lt;name&gt;</code>, such as <code>Port_BMC</code></td><td>A named port. <code>Port_Console</code>, <code>Port_USB_Mgmt</code>, <code>Port_Mgmt</code> and <code>Port_iDRAC</code> are management pins and carry no lights: the command drops an <code>LED_Link</code> or <code>LED_Activity</code> light nearest to one, a light nearest to <code>Port_0</code>, and every such light in a source with no <code>Port_</code> node at all, and prints a <code>warning:</code> line naming each light it drops. The game lights a named port’s light from the device port whose label is the name after <code>Port_</code>, so <code>Port_BMC</code> follows a port labelled <code>BMC</code>. <code>Port_MlagKeepalive</code> follows the keepalive port. A name no device port carries stays dark. <code>Port_PSU</code>, <code>Port_Mgmt</code> and <code>Port_Out</code> are refused, because their labels repeat on one device and the game would bind the light to the first match: the command drops a light nearest to one with a <code>warning:</code> line, and <code>.pips.json</code> validation refuses it.</td></tr>
+<tr><td>A mesh named <code>LED_Link...</code> or <code>LED_Activity...</code></td><td>The link or activity light of the port it sits under (a <code>Port_&lt;N&gt;</code> or <code>PortSlot_&lt;N&gt;</code> parent), or else of the nearest port.</td></tr>
+<tr><td>A mesh with <code>LED</code> and <code>PSU</code> in its name or material</td><td>A PSU light. The command numbers PSU lights from the rightmost, as it numbers the inlets.</td></tr>
+<tr><td>A mesh with <code>LED</code> and <code>power</code> or <code>_PWR</code> in its name, or <code>_PWR</code> in its material</td><td>The power light.</td></tr>
+<tr><td>A mesh <code>StatusLED_SYS</code>, <code>StatusLED_ALM</code> or <code>StatusLED_FAN</code></td><td>The system, alarm or fan status light. The command writes the role to the sidecar and the game paints the light by it: the alarm light shows a fault and is dark otherwise, the fan light never shows a fault, and the system light follows the device’s indicator. Any other mesh with <code>LED</code> in its name is a status light with no role.</td></tr>
+<tr><td>A node ending <code>_IEC</code> or <code>AcInlet</code>, or <code>_RearIEC_&lt;n&gt;</code></td><td>A power inlet, one per PSU.</td></tr>
+<tr><td><code>Bay_1</code>, <code>Bay_2</code>, …</td><td>A module bay frame.</td></tr>
+<tr><td><code>FanRotor...</code></td><td>A spinning fan blade.</td></tr>
+<tr><td>A mesh <code>Nameplate_Plate</code>, or else a node <code>_NameDisplay</code></td><td>The name placard. With neither, the sidecar has no nameplate.</td></tr>
+</tbody>
+</table>
+</div>
+<p>Every light is a mesh with <code>LED</code> in its name. Its box sets the size of the light the game draws. The command also leaves out of the render model any primitive whose material has <code>LED</code> in its name.</p>
+<h3 id="the-checks"><a class="header" href="#the-checks">The checks</a></h3>
+<p>After writing, the command runs the game’s pack scan and prints what it refuses in this item’s model, grouped by rule. For example:</p>
+<pre><code>refused [model_over_limit]:
+  art/models/box_render.glb /materials the list has more than 32 entries
+box: 1 model problem(s)
+</code></pre>
+<p>A clean model prints <code>ok: the game's checks pass box's model</code>. The counts must match the base model the row names: the same number of cabled ports, one inlet per PSU, and no bays or the base model’s bays. The model must fit the base model’s rack slot, with at most 32 materials. <a href="MODELS.html">Equipment models</a> lists every limit and the <code>.pips.json</code> fields. A default export usually needs work before it passes:</p>
+<ul>
+<li>Join or reuse materials until there are 32 or fewer. The command merges by material, so the material count is the primitive count.</li>
+<li>The game draws the lights from the sidecar, so no material needs to glow. The game refuses a material that emits light or blends its alpha.</li>
+<li>A texture is a PNG inside the GLB, at most 2048 by 2048.</li>
+</ul>
+<p>The command counts problems elsewhere in the pack but does not list them. Run <code>validate</code> for those. The exit code is 0 when the model passes, 1 when the game refuses it or a step failed, and 2 for a wrong command line.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="MULTIPLAYER.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="REFERENCE.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="MULTIPLAYER.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="REFERENCE.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

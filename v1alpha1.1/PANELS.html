@@ -1,0 +1,552 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Panels - Uptime mod SDK</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-e96d0476.css">
+        <link rel="stylesheet" href="css/chrome-d279d366.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-13b5f828.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-5112729b.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Uptime mod SDK</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="panels"><a class="header" href="#panels">Panels</a></h1>
+<p>A panel is a screen a script mod draws inside the game. You declare the panel in a JSON file. Your mod fills it with data on every step. The game draws the widgets and checks every value your mod sends. A mod never draws pixels and never runs code in the game’s interface.</p>
+<p>Panels belong to script mods. The shared rules for script mods are in <a href="SCRIPTS.html">Script mods</a>.</p>
+<h2 id="declare-panels"><a class="header" href="#declare-panels">Declare panels</a></h2>
+<p>List the panel files in the manifest, at most 32:</p>
+<pre><code class="language-json">"panels": ["panels/fleet.json"]
+</code></pre>
+<p>Each file is a JSON object with a <code>panels</code> list and may be at most 64 KiB. Every object refuses keys it does not list. This file declares one panel with every widget kind:</p>
+<pre><code class="language-json">{
+  "panels": [
+    {
+      "id": "fleet",
+      "title": "Fleet policy",
+      "point": "dashboard",
+      "widgets": [
+        { "id": "cash", "label": "Cash", "kind": "stat_tile" },
+        {
+          "id": "queue", "label": "Pending orders", "kind": "table",
+          "columns": [
+            { "id": "host", "label": "Host" },
+            { "id": "age", "label": "Age", "numeric": true }
+          ]
+        },
+        { "id": "load", "label": "Load", "kind": "line_chart", "tone": "info" },
+        { "id": "note", "label": "Status", "kind": "text" },
+        { "id": "auto", "label": "Buy automatically", "kind": "toggle" },
+        { "id": "limit", "label": "Spend limit", "kind": "slider", "min": 0, "max": 100, "step": 5 },
+        {
+          "id": "mode", "label": "Mode", "kind": "select",
+          "options": [ { "id": "fast", "label": "Fast" }, { "id": "slow", "label": "Slow" } ]
+        },
+        { "id": "go", "label": "Buy now", "kind": "button" }
+      ]
+    }
+  ]
+}
+</code></pre>
+<p>A panel has these fields:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>id</code></td><td>The panel’s name, unique in your mod.</td></tr>
+<tr><td><code>title</code></td><td>The heading, at most 64 bytes.</td></tr>
+<tr><td><code>point</code></td><td>Where the panel appears. See the next section.</td></tr>
+<tr><td><code>entity</code></td><td>Required for <code>entity_tab</code> and refused for other points.</td></tr>
+<tr><td><code>key</code></td><td>Optional. A default key that opens the panel. <code>dashboard</code> panels only. See <a href="#keys">Keys</a>.</td></tr>
+<tr><td><code>widgets</code></td><td>1 to 24 widgets. A <code>hud</code> panel has 1 to 3.</td></tr>
+</tbody>
+</table>
+</div>
+<p>A <code>button</code> widget may also carry a <code>key</code>, which presses it. See <a href="#keys">Keys</a>.</p>
+<p>An id matches <code>[a-z0-9_]{1,32}</code>. Panel ids are unique per mod. Widget ids are unique per panel. Column ids are unique per table, and option ids are unique per select.</p>
+<h2 id="extension-points"><a class="header" href="#extension-points">Extension points</a></h2>
+<p><code>point</code> is one of these:</p>
+<ul>
+<li><code>dashboard</code> adds a panel to the dashboard.</li>
+<li><code>entity_tab</code> adds a tab to one kind of entity. Set <code>entity</code> to <code>host</code>, <code>rack</code> or <code>service</code>.</li>
+<li><code>settings</code> adds a panel to the settings screen.</li>
+<li><code>hud</code> adds a small card to the player’s view, outside the ops console. See <a href="#the-hud-point">The HUD point</a>.</li>
+</ul>
+<p>A control (toggle, slider, select or button) sits only on a <code>dashboard</code> or <code>settings</code> panel. An <code>entity_tab</code> panel and a <code>hud</code> panel display values and take no input.</p>
+<h2 id="widget-kinds"><a class="header" href="#widget-kinds">Widget kinds</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Kind</th><th>Extra fields</th><th>Value your mod writes</th></tr>
+</thead>
+<tbody>
+<tr><td><code>stat_tile</code></td><td>none</td><td><code>Stat</code>: a <code>value</code>, a <code>detail</code> and a <code>tone</code>.</td></tr>
+<tr><td><code>table</code></td><td><code>columns</code>: 1 to 8, each with <code>id</code>, <code>label</code> and optional <code>numeric</code></td><td><code>Rows</code>: a list of rows, each with one string per column.</td></tr>
+<tr><td><code>line_chart</code>, <code>bar_chart</code></td><td>optional <code>tone</code></td><td><code>Series</code>: a list of finite numbers.</td></tr>
+<tr><td><code>text</code></td><td>none</td><td><code>Text</code>: a string.</td></tr>
+<tr><td><code>toggle</code></td><td>none</td><td><code>Control</code> with <code>Bool</code>.</td></tr>
+<tr><td><code>slider</code></td><td><code>min</code>, <code>max</code> and <code>step</code>, all required</td><td><code>Control</code> with <code>Number</code>.</td></tr>
+<tr><td><code>select</code></td><td><code>options</code>: 1 to 32, each with <code>id</code> and <code>label</code></td><td><code>Control</code> with <code>Choice</code>, an option id.</td></tr>
+<tr><td><code>button</code></td><td>none</td><td><code>Control</code> with <code>Press</code>.</td></tr>
+</tbody>
+</table>
+</div>
+<p>A field that does not belong to the widget’s kind is an error. A slider needs finite bounds, <code>min</code> below <code>max</code> and <code>step</code> above 0. The distance from <code>min</code> to <code>max</code> must be a whole number of steps.</p>
+<p>A tone is <code>neutral</code>, <code>info</code>, <code>good</code>, <code>warn</code> or <code>danger</code> in the file. In data it is <code>Neutral</code>, <code>Info</code>, <code>Good</code>, <code>Warn</code> or <code>Danger</code>. A tone is never a colour. The game picks the colour.</p>
+<h2 id="fill-a-panel-with-data"><a class="header" href="#fill-a-panel-with-data">Fill a panel with data</a></h2>
+<p>Call <code>ctx:panel(id, update)</code> in Lua, or <code>step.panel(id, &amp;update)</code> in Rust. The update has a <code>values</code> table that maps a widget id to a value. Each call replaces the whole panel’s data, and the last call for an id in a step wins. A widget you leave out shows no value, and it stays blank after a load or when a player joins. Send every widget you want shown, on every update.</p>
+<pre><code class="language-lua">ctx:panel("fleet", {
+  values = {
+    cash = { Stat = { value = "$12,400", detail = "after rent", tone = "Good" } },
+    queue = { Rows = { { "web-1", "3" }, { "web-2", "7" } } },
+    load = { Series = { 0.2, 0.4, 0.3 } },
+    note = { Text = "All hosts answer." },
+    auto = { Control = { Bool = true } },
+    limit = { Control = { Number = 40 } },
+    mode = { Control = { Choice = "fast" } },
+  },
+})
+</code></pre>
+<p>In Rust the same update uses the SDK types:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::collections::BTreeMap;
+use uptime_mod::{PanelUpdate, Tone, WidgetValue};
+
+let mut values = BTreeMap::new();
+values.insert(
+    "cash".to_owned(),
+    WidgetValue::Stat { value: "$12,400".into(), detail: "after rent".into(), tone: Tone::Good },
+);
+step.panel("fleet", &amp;PanelUpdate { values, entities: None })?;
+<span class="boring">}</span></code></pre>
+<p>For an entity tab, add <code>entities</code>. It is a list of <code>{ id, values }</code>, one row for each entity the tab shows. Entity rows belong to <code>entity_tab</code> panels only, an update holds at most 256 of them, and an entity may appear once.</p>
+<p>The control values show the control’s current state. When you change them, the game redraws the control to match.</p>
+<h2 id="when-data-arrives"><a class="header" href="#when-data-arrives">When data arrives</a></h2>
+<p>Panel data lands with the step’s commands, two quanta after the step that wrote it. A quantum is 15 seconds of sim time, so data from step <code>N</code> shows at <code>N + 2</code>. Until then the player sees the previous data.</p>
+<p>The game checks each update when the step returns:</p>
+<ul>
+<li>The panel must be one your mod declares, and each widget id must belong to that panel.</li>
+<li>Each value must fit its widget. A <code>Rows</code> row must have one cell per column. A <code>Choice</code> must name an option. A <code>Number</code> must be inside the slider’s range.</li>
+<li>A step may not return the same panel twice.</li>
+</ul>
+<p>A refused update writes one line to the host log and changes nothing. The previous data stands, and a refusal is never a strike. The game logs the first 8 refusals of a step and counts the rest.</p>
+<p>The game refuses an update that goes over a cap below. It never trims one.</p>
+<h2 id="caps"><a class="header" href="#caps">Caps</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>What</th><th>Cap</th></tr>
+</thead>
+<tbody>
+<tr><td>Panel files in a manifest</td><td>32</td></tr>
+<tr><td>Size of a panel file</td><td>64 KiB</td></tr>
+<tr><td>Widgets in a panel</td><td>24</td></tr>
+<tr><td>Columns in a table</td><td>8</td></tr>
+<tr><td>Rows in a table</td><td>100</td></tr>
+<tr><td>Points in a chart series</td><td>240</td></tr>
+<tr><td>Options in a select</td><td>32</td></tr>
+<tr><td>Entity rows in one update</td><td>256</td></tr>
+<tr><td>Bytes of one panel update</td><td>16 KiB</td></tr>
+<tr><td>Bytes of panel data the world holds for one mod</td><td>64 KiB</td></tr>
+<tr><td>Bytes of one update to a <code>hud</code> panel</td><td>2 KiB</td></tr>
+<tr><td>Commands, panels and toasts in one step</td><td>256 KiB</td></tr>
+</tbody>
+</table>
+</div>
+<p>An update that would take your mod past 64 KiB of held panel data is refused, and that panel keeps its previous data. A step that goes over 256 KiB in total is discarded whole and counts as a strike. See <a href="SCRIPTS.html">Script mods</a>. The caps on a <code>hud</code> panel are in <a href="#the-hud-point">The HUD point</a>, and the caps on keys in <a href="#keys">Keys</a>.</p>
+<h2 id="text-rules"><a class="header" href="#text-rules">Text rules</a></h2>
+<p>All panel text is plain text. The game never reads markup, so a string such as <code>[url=x]y[/url]</code> shows as typed.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Text</th><th>Cap</th></tr>
+</thead>
+<tbody>
+<tr><td>Panel title, widget label, column label, option label</td><td>64 bytes</td></tr>
+<tr><td>Stat value, table cell</td><td>128 bytes</td></tr>
+<tr><td>Stat detail</td><td>64 bytes</td></tr>
+<tr><td>Text widget</td><td>1,024 bytes</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="labels-that-name-a-locale-key"><a class="header" href="#labels-that-name-a-locale-key">Labels that name a locale key</a></h3>
+<p>A panel title, widget label, column label or option label in a panel file is plain text, or <code>@</code> followed by a locale key. <code>"label": "@mod-com-example-fleet-rate"</code> shows the pack’s text for that key, in the player’s language. Text starting with <code>@</code> is a key, so write <code>@@</code> for a label that really starts with an at sign: <code>"@@handle"</code> shows <code>@handle</code>.</p>
+<p>The key must be one of the pack’s own messages, or a message of a locale pack the mod lists in <code>dependencies</code> (see <a href="CONTENT_PACKS.html#locale-packs">Content packs</a>). Either way the owning pack’s <code>en</code> files must define it. A key in any other namespace, a game key included, fails with <code>locale_key_not_namespaced</code>. A key with no <code>en</code> text, or whose dependency is not installed, fails with <code>locale_key_missing_en</code>. Both name the file and the field. A key reference counts against the 64 byte cap as written. If the player’s packs do not hold the key, the label shows the last word of the key.</p>
+<p>A pack that carries <code>locale</code> content cannot also be a script mod, so a script mod ships its words in a second, locale pack and depends on it:</p>
+<pre><code class="language-text">com.example.fleet-words/        kind content, content ["locale"]
+  locale/en/main.ftl            mod-com-example-fleet--words-rate = Spend rate
+com.example.fleet/              kind script
+  manifest.json                 "dependencies": { "com.example.fleet-words": "&gt;=1.0.0" }
+  ui/panels.json                { "id": "rate", "label": "@mod-com-example-fleet--words-rate", ... }
+</code></pre>
+<p>The locale pack is client-required and the script mod is not, so a player joining a multiplayer world needs only the text pack. Data a mod writes at run time (stat values, cells, text) is not looked up.</p>
+<p>The rules differ for files and data:</p>
+<ul>
+<li>In a panel file, a title or label that holds a control character or an invisible formatting character (bidirectional marks, overrides and isolates, zero-width spaces, the byte order mark) makes the pack invalid. The zero-width joiner and non-joiner are allowed, since Persian and Indic text need them. The game does not fix it. What you wrote is what shows. A config schema’s titles follow the same rule.</li>
+<li>In data, the game drops those same characters and normalises the rest to NFC. A text widget keeps its newlines. Every other string is one line. The text must still fit its cap after cleaning, or the update is refused.</li>
+</ul>
+<h2 id="the-hud-point"><a class="header" href="#the-hud-point">The HUD point</a></h2>
+<p>A <code>hud</code> panel is a small card on the player’s view. The player sees it while walking the datacenter, with no console open. Use it for one number or one short line that a player should be able to glance at, such as a count of open incidents. A card shows values only. The HUD has no cursor, so it takes no input.</p>
+<pre><code class="language-json">{
+  "panels": [
+    {
+      "id": "hud",
+      "title": "Incidents",
+      "point": "hud",
+      "widgets": [
+        { "id": "open", "label": "Open incidents", "kind": "stat_tile" }
+      ]
+    }
+  ]
+}
+</code></pre>
+<p>You fill it with <code>ctx:panel</code> or <code>step.panel</code>, like any panel. The update lands two quanta after the step, as <a href="#when-data-arrives">When data arrives</a> says, and every player in the world sees the same card. Each player can switch a mod’s card off with “Show on HUD” on the Mods page, and the HUD shows at most 4 cards across all mods.</p>
+<p>The pack check refuses a <code>hud</code> panel that breaks one of these rules. Each message starts with the code:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Code</th><th>When</th></tr>
+</thead>
+<tbody>
+<tr><td><code>hud_point_twice</code></td><td>The mod declares a second <code>hud</code> panel, in any of its panel files.</td></tr>
+<tr><td><code>hud_widget_count</code></td><td>The panel has more than 3 widgets.</td></tr>
+<tr><td><code>hud_widget_kind</code></td><td>A widget is anything but a <code>stat_tile</code> or a <code>text</code>.</td></tr>
+<tr><td><code>key_not_allowed</code></td><td>The panel carries a <code>key</code>. A card cannot be opened.</td></tr>
+</tbody>
+</table>
+</div>
+<p>A <code>hud</code> panel also refuses <code>entity</code>, as every panel that is not an <code>entity_tab</code> does.</p>
+<p>The caps are tighter than for other panels:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>What</th><th>Cap</th></tr>
+</thead>
+<tbody>
+<tr><td><code>hud</code> panels per mod</td><td>1</td></tr>
+<tr><td>Widgets in the panel</td><td>3</td></tr>
+<tr><td>Bytes of one update</td><td>2 KiB</td></tr>
+<tr><td>Values in one update</td><td>3</td></tr>
+<tr><td>A <code>text</code> value</td><td>128 bytes, on one line</td></tr>
+</tbody>
+</table>
+</div>
+<p>An update over a HUD cap is refused whole, like any other: one line in the host log, and the previous data stands. A line break in a <code>text</code> value on the HUD refuses the update. The card’s data counts against the same 64 KiB of held panel data as the mod’s other panels.</p>
+<p>An update with an empty <code>values</code> clears the card, in Lua (<code>values = {}</code>) and in Rust (an empty map) alike. A mod uses it to take an alert down when there is nothing to show.</p>
+<h2 id="player-input"><a class="header" href="#player-input">Player input</a></h2>
+<p>A player presses a control, and your mod learns about it as an event. The event arrives in your mod’s next batch, after the receipts, whatever your <code>events</code> list says. Only the mod that owns the panel gets it.</p>
+<pre><code class="language-lua">for _, ev in ipairs(ctx.events) do
+  local input = ev.UiInput
+  if input and input.panel == "fleet" then
+    if input.widget == "auto" then
+      auto_buy = input.value.Bool
+    elseif input.widget == "go" and input.value == "Press" then
+      want_host = true
+    end
+  end
+end
+</code></pre>
+<p>A <code>UiInput</code> entry has <code>at_ns</code>, <code>player</code>, <code>panel</code>, <code>widget</code> and <code>value</code>. The value is <code>"Press"</code> for a button, <code>{ Bool = ... }</code> for a toggle, <code>{ Number = ... }</code> for a slider and <code>{ Choice = "id" }</code> for a select. Keep the result in saved state. The input is a one-time event, and the game does not repeat it.</p>
+<p>A command you issue in response lands two quanta after the step that read the input. A panel update written in the same step lands with that command, two quanta after the step.</p>
+<p>The game checks an input before your mod sees it. It refuses an input in these cases, and your mod gets nothing:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Reason</th><th>When</th></tr>
+</thead>
+<tbody>
+<tr><td><code>unknown_mod</code>, <code>unknown_panel</code>, <code>unknown_widget</code></td><td>The id does not exist in the world.</td></tr>
+<tr><td><code>not_a_control</code></td><td>The widget only displays.</td></tr>
+<tr><td><code>wrong_type</code>, <code>bad_value</code>, <code>unknown_choice</code></td><td>The value does not fit the control.</td></tr>
+<tr><td><code>out_of_range</code>, <code>off_step</code></td><td>A slider value is outside the range or between two steps.</td></tr>
+<tr><td><code>rate</code></td><td>A connection sent more than 8 inputs at once, or more than 4 a second over time.</td></tr>
+<tr><td><code>queue</code></td><td>Your mod already has 32 inputs waiting for this quantum.</td></tr>
+<tr><td><code>not_running</code></td><td>The mod’s worker has stopped.</td></tr>
+<tr><td><code>dedicated</code>, <code>not_joined</code></td><td>See the next section.</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="who-can-press"><a class="header" href="#who-can-press">Who can press</a></h2>
+<p>Every player who has joined the world can press a control: the host and every guest. The event’s <code>player</code> is the seat of the player who pressed it, and 0 is the host. The game sets it from the connection, so a client cannot press as someone else. A connection that has not been accepted into the world is refused with <code>not_joined</code>.</p>
+<p>If a control should only work for the host, check <code>player</code> in your mod and ignore the input when it is not 0. The game does not do this for you.</p>
+<p>A dedicated server has no host player, so its panels show values and take no input (<code>dedicated</code>).</p>
+<p>A mod cannot press its own controls. Input comes from player requests only, and no mod command presses a control.</p>
+<p>The demo has no mods, and a demo build refuses panel input.</p>
+<h2 id="keys"><a class="header" href="#keys">Keys</a></h2>
+<p>A mod can ask for a key. A key does one of two things:</p>
+<ul>
+<li>A <code>key</code> on a <code>dashboard</code> panel opens that panel in an overlay, from anywhere in the world. The player does not walk to the laptop.</li>
+<li>A <code>key</code> on a <code>button</code> widget of a <code>dashboard</code> panel presses the button, from anywhere. The panel does not need to be open.</li>
+</ul>
+<p>Both are for the mod’s own panels. A mod key never opens a panel that belongs to the game or to another mod.</p>
+<pre><code class="language-json">{
+  "id": "board",
+  "title": "Alert board",
+  "point": "dashboard",
+  "key": "F6",
+  "widgets": [
+    { "id": "ack", "label": "Acknowledge", "kind": "button", "key": "F7" }
+  ]
+}
+</code></pre>
+<p>A key on any other panel or widget is refused with <code>key_not_allowed</code>: a <code>settings</code>, <code>entity_tab</code> or <code>hud</code> panel, or a widget that is not a button.</p>
+<p>A press key gives your mod the same <code>UiInput</code> event as a click on the button: the <code>panel</code>, the <code>widget</code>, the value <code>"Press"</code> and the <code>player</code> who pressed. The same checks apply, including the input limits in <a href="#player-input">Player input</a>. A dedicated server takes no input, so a press key does nothing there.</p>
+<h3 id="what-a-key-looks-like"><a class="header" href="#what-a-key-looks-like">What a key looks like</a></h3>
+<p><code>key</code> is a default. It is one base key with optional modifiers, written in this order and each at most once:</p>
+<pre><code class="language-text">ctrl+  alt+  shift+  BASE
+</code></pre>
+<p><code>BASE</code> is one of <code>A</code> to <code>Z</code>, <code>0</code> to <code>9</code> or <code>F1</code> to <code>F12</code>, in capitals. <code>F6</code>, <code>shift+F7</code> and <code>ctrl+alt+J</code> are keys. <code>f6</code>, <code>Ctrl+F6</code>, <code>alt+ctrl+J</code> and <code>Space</code> are not.</p>
+<h3 id="caps-and-refusals"><a class="header" href="#caps-and-refusals">Caps and refusals</a></h3>
+<p>A mod declares at most 4 keys in all its panel files. The pack check refuses these, and each message starts with the code:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Code</th><th>When</th></tr>
+</thead>
+<tbody>
+<tr><td><code>key_not_allowed</code></td><td>The key is not on a <code>dashboard</code> panel or on a button of one.</td></tr>
+<tr><td><code>key_bad_chord</code></td><td>The key does not follow the grammar above.</td></tr>
+<tr><td><code>key_reserved</code></td><td>The base key is one the game binds.</td></tr>
+<tr><td><code>key_twice</code></td><td>Another key of this mod has the same default.</td></tr>
+<tr><td><code>key_cap</code></td><td>This would be the mod’s fifth key.</td></tr>
+</tbody>
+</table>
+</div>
+<p>The game binds these base keys, and a mod default on one is refused whatever its modifiers, so <code>ctrl+F</code> is refused as well as <code>F</code>:</p>
+<p><code>A</code>, <code>B</code>, <code>D</code>, <code>E</code>, <code>F</code>, <code>G</code>, <code>K</code>, <code>M</code>, <code>O</code>, <code>Q</code>, <code>R</code>, <code>S</code>, <code>U</code>, <code>W</code>, <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>, <code>F1</code>, <code>F2</code>, <code>F4</code>, <code>F8</code>, <code>F10</code>, <code>F12</code>, and the keys Escape, Tab and Shift.</p>
+<p>That list can grow with the game. The source of truth is <code>RESERVED_BASE_KEYS</code> in <code>sim_core::mod_ui</code>, and <code>uptime-mod validate</code> reports a refused key with the code <code>key_reserved</code>.</p>
+<p>The game matches its own keys by the physical key and ignores modifiers, which is why a modifier does not free a reserved key. Among a mod’s own keys a modifier does count: <code>F6</code> and <code>ctrl+F6</code> are two separate keys and a press of one never fires the other.</p>
+<h3 id="what-the-player-controls"><a class="header" href="#what-the-player-controls">What the player controls</a></h3>
+<p>Only the default travels with the world. The binding is the player’s own, kept in their settings, so two players in one world can use different keys.</p>
+<ul>
+<li>A player can rebind a mod key, or turn it off, in Controls. The pane lists each mod’s keys under the mod.</li>
+<li>A default that the game already uses, or that an earlier mod in the world’s load order has taken, does not bind. The key starts unbound and the player picks one in Controls. A mod cannot take a key from the game or from another mod.</li>
+<li>A player’s own choice wins over another mod’s key: binding a chord to a mod key takes it from any other mod key. A key the game itself uses cannot be given to a mod key, whatever the modifiers.</li>
+</ul>
+<p>So write your panel and your button so they work without the key, and say nothing in the UI that depends on a particular key. The <code>alerts</code> example’s card says “open the board” and not “press F6”.</p>
+<h3 id="the-example"><a class="header" href="#the-example">The example</a></h3>
+<p><code>ModSDK/examples/com.uptime.example-alerts</code> declares a <code>hud</code> card, a dashboard panel that opens on <code>F6</code>, and an Acknowledge button on <code>F7</code>. It raises a toast too. See <a href="TOASTS.html">Toasts</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="SCRIPTS.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="TOASTS.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="SCRIPTS.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="TOASTS.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>
