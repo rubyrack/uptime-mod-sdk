@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-13b5f828.js";
+            window.path_to_searchindex_js = "searchindex-cf0f1fb6.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-5112729b.js"></script>
@@ -2222,10 +2222,10 @@ box: 1 model problem(s)
 <li>The upload needs Steam running and signed in to an account that owns Uptime. The <code>uptime-mod</code> in the game’s <code>ModSDK/bin</code> folder can reach Steam. A copy built without Steam stops with a message and still runs <code>--dry-run</code>.</li>
 <li><code>--dry-run</code> prints the plan and sends nothing. It also writes nothing into your folder. Run it first. The <a href="#quickstart">quickstart</a> does.</li>
 <li><code>--change-note</code> is the text Steam shows for this version. It may hold line breaks and is at most 8000 bytes.</li>
-<li><code>--preview</code> is the item’s picture. It must be a file of at most 1 MiB.</li>
+<li><code>--preview</code> is the item’s picture. It must be a JPG, PNG or GIF image of at most 1 MiB. Steam keeps the picture between uploads, so pass <code>--preview</code> again only to change it. An item uploaded without one has no picture until you add one.</li>
 <li>The exit code is 0 for a finished upload or dry run, 1 when the pack or Steam refuses it, and 2 when the command line is wrong. Nothing is sent when the pack has problems.</li>
 </ul>
-<p>Steam sets the item’s title and description on the first upload only. The title is your pack id and the description is the id and version. Edit them on the item’s Workshop page. Later uploads leave them alone.</p>
+<p>Steam sets the item’s title and description on the first upload only. The title is your pack id and the description is the id and version. Edit them on the item’s Workshop page. Later uploads leave them alone. Add more screenshots or a video on the item’s page too; the upload sets only the main picture.</p>
 <p>The item carries tags that come from your manifest: its kinds (for example <code>content</code> or <code>script</code>), its content categories, and <code>lua</code> or <code>rust</code> for a script mod. It also carries the key-value tags <code>mod_id</code> and <code>version</code>, so an item can be found by its pack id.</p>
 <h2 id="visibility"><a class="header" href="#visibility">Visibility</a></h2>
 <p>A new item is private. Only you can see it. Pass <code>--visibility friends</code> or <code>--visibility public</code> to change that. An upload without <code>--visibility</code> keeps the item’s current setting, so a public item stays public when you push an update.</p>
