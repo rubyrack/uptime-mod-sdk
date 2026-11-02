@@ -1070,6 +1070,7 @@ TuningParams.hours_per_month f64 optional
 TuningParams.incident_anomaly_dwell_secs f64 optional
 TuningParams.incident_anomaly_floor f64 optional
 TuningParams.incident_failed_jump_k f64 optional
+TuningParams.incident_p99_recover_frac f64 optional
 TuningParams.incident_p99_warn_frac f64 optional
 TuningParams.incident_recover_hysteresis f64 optional
 TuningParams.ingress_steer_alpha f64 optional

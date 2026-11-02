@@ -8,7 +8,7 @@ use serde::Deserialize;
 /// The mod API generation this module was generated from.
 pub const API_GENERATION: &str = "v1alpha1";
 /// The snapshot schema minor this module was generated from.
-pub const API_MINOR: u32 = 1;
+pub const API_MINOR: u32 = 2;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct ActiveAttackView {
@@ -142,6 +142,8 @@ pub struct AzView {
     pub host_count: u32,
     pub id: u32,
     pub name: String,
+    #[serde(default)]
+    pub open_to_customers: bool,
     pub rack_count: u32,
     pub region_id: u32,
     pub status: AzVisual,
@@ -1927,6 +1929,8 @@ pub struct RackView {
     #[serde(default)]
     pub floor_slot: Option<u32>,
     #[serde(default)]
+    pub full_strip_bands: Vec<StripBandView>,
+    #[serde(default)]
     pub held: bool,
     #[serde(default)]
     pub held_by: u32,
@@ -2379,6 +2383,13 @@ pub enum StripAnchorRole {
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct StripBandView {
+    pub lane: CableLane,
+    pub side: RackSide,
+    pub u_band: u32,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct SubnetView {
     #[serde(default)]
     pub carrier_host_ids: Vec<u32>,
@@ -2491,6 +2502,8 @@ pub struct SwitchView {
     pub total_egress_gbps: f64,
     #[serde(default)]
     pub total_ingress_gbps: f64,
+    #[serde(default)]
+    pub trunk_capacity_gbps: u32,
     pub u_size: u32,
 }
 

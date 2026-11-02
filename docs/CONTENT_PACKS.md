@@ -37,7 +37,7 @@ Each subfolder is one pack. If the folder does not exist, create it. Restart the
   "id": "com.example.my-hardware",
   "version": "1.0.0",
   "api_version": "v1alpha1",
-  "api_minor": 1,
+  "api_minor": 2,
   "game_version": ">=0.1.0, <0.3.0",
   "kind": ["content"],
   "content": ["hardware"],

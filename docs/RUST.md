@@ -5,7 +5,7 @@ A Rust mod is a WebAssembly component. You write it against the `uptime-mod` SDK
 ## What you need
 
 - A Rust toolchain with the `wasm32-wasip2` target: `rustup target add wasm32-wasip2`.
-- The SDK crate, `uptime-mod`. It ships in `ModSDK/rust/uptime-mod` and is published on crates.io under the same name. `uptime-mod new --template rust` writes a path dependency on the `ModSDK` copy into your `Cargo.toml`; pass `--sdk <ModSDK folder>` if the command cannot find the folder. To use crates.io instead, write `uptime-mod = "0.2"` with the version from [Versions](#versions).
+- The SDK crate, `uptime-mod`. It ships in `ModSDK/rust/uptime-mod` and is published on crates.io under the same name. `uptime-mod new --template rust` writes a path dependency on the `ModSDK` copy into your `Cargo.toml`; pass `--sdk <ModSDK folder>` if the command cannot find the folder. To use crates.io instead, write `uptime-mod = "0.3"` with the version from [Versions](#versions).
 - The WIT file `ModSDK/wit/uptime-mod.wit`. The crate carries its own copy in `wit/` and reads it for you.
 
 ## The WIT world
@@ -93,13 +93,13 @@ The crate's version follows the mod API it reads. Each crate release reads exact
 
 | Mod API | Crate version |
 |---|---|
-| `v1alpha1`, minor M | `0.(M+1).x`: minor 0 is `0.1.x`, minor 1 is `0.2.x` |
+| `v1alpha1`, minor M | `0.(M+1).x`: minor 0 is `0.1.x`, minor 1 is `0.2.x`, minor 2 is `0.3.x` |
 | a later alpha or beta generation | the next unused `0.y.x` |
 | `vN` (a stable generation), minor M | `N.M.x` |
 
 The last number, `x`, moves for an SDK fix that leaves the mod API alone.
 
-Under an alpha generation every minor may break, and cargo treats each `0.y` as incompatible with the one before, so `uptime-mod = "0.2"` never moves you to a new minor by itself. To move to a new minor, raise the crate version and `api_minor` together. From `v1` on, a minor only adds, so `uptime-mod = "N.M"` picks up the later minors of `N`. When it does, set `api_minor` to the new `uptime_mod::snapshot::API_MINOR`.
+Under an alpha generation every minor may break, and cargo treats each `0.y` as incompatible with the one before, so `uptime-mod = "0.3"` never moves you to a new minor by itself. To move to a new minor, raise the crate version and `api_minor` together. From `v1` on, a minor only adds, so `uptime-mod = "N.M"` picks up the later minors of `N`. When it does, set `api_minor` to the new `uptime_mod::snapshot::API_MINOR`.
 
 The SDK in `ModSDK/rust/uptime-mod` and the crate on crates.io for the same game release are the same code.
 
@@ -111,7 +111,7 @@ The SDK in `ModSDK/rust/uptime-mod` and the crate on crates.io for the same game
   "id": "com.example.my-mod",
   "version": "1.0.0",
   "api_version": "v1alpha1",
-  "api_minor": 1,
+  "api_minor": 2,
   "game_version": ">=0.1.0, <0.3.0",
   "kind": ["script"],
   "script": { "runtime": "component", "entry": "bin/mod.wasm" },

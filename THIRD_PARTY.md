@@ -37,29 +37,29 @@ script host includes, are in NOTICES.
 
 ### Apache-2.0 WITH LLVM-exception
 
-- cranelift-assembler-x64 0.136.4
-- cranelift-bforest 0.136.4
-- cranelift-bitset 0.136.4
-- cranelift-codegen 0.136.4
-- cranelift-codegen-shared 0.136.4
-- cranelift-control 0.136.4
-- cranelift-entity 0.136.4
-- cranelift-frontend 0.136.4
-- cranelift-native 0.136.4
-- pulley-interpreter 49.0.4
-- pulley-macros 49.0.4
+- cranelift-assembler-x64 0.136.5
+- cranelift-bforest 0.136.5
+- cranelift-bitset 0.136.5
+- cranelift-codegen 0.136.5
+- cranelift-codegen-shared 0.136.5
+- cranelift-control 0.136.5
+- cranelift-entity 0.136.5
+- cranelift-frontend 0.136.5
+- cranelift-native 0.136.5
+- pulley-interpreter 49.0.5
+- pulley-macros 49.0.5
 - regalloc2 0.15.2
 - target-lexicon 0.13.5
-- wasmtime 49.0.4
-- wasmtime-environ 49.0.4
-- wasmtime-internal-component-macro 49.0.4
-- wasmtime-internal-component-util 49.0.4
-- wasmtime-internal-core 49.0.4
-- wasmtime-internal-cranelift 49.0.4
-- wasmtime-internal-jit-icache-coherence 49.0.4
-- wasmtime-internal-unwinder 49.0.4
-- wasmtime-internal-versioned-export-macros 49.0.4
-- wasmtime-internal-wit-bindgen 49.0.4
+- wasmtime 49.0.5
+- wasmtime-environ 49.0.5
+- wasmtime-internal-component-macro 49.0.5
+- wasmtime-internal-component-util 49.0.5
+- wasmtime-internal-core 49.0.5
+- wasmtime-internal-cranelift 49.0.5
+- wasmtime-internal-jit-icache-coherence 49.0.5
+- wasmtime-internal-unwinder 49.0.5
+- wasmtime-internal-versioned-export-macros 49.0.5
+- wasmtime-internal-wit-bindgen 49.0.5
 
 ### Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT
 
@@ -403,7 +403,7 @@ END OF TERMS AND CONDITIONS
 
 ### Apache-2.0 WITH LLVM-exception
 
-From cranelift-bforest-0.136.4.
+From cranelift-bforest-0.136.5.
 
 ```text
 

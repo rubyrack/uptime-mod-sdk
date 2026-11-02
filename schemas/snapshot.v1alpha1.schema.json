@@ -440,6 +440,10 @@
         "name": {
           "type": "string"
         },
+        "open_to_customers": {
+          "description": "Whether customers' contracts count this zone: a closed zone adds no\nfault domain to any tenant's spread and is not a second zone for a\nmulti-zone ask. Placement may still use its hosts. A zone the player\nbuys starts closed; `SetAzOpenToCustomers` opens it.",
+          "type": "boolean"
+        },
         "rack_count": {
           "format": "int32",
           "minimum": 0,
@@ -5853,6 +5857,13 @@
             "null"
           ]
         },
+        "full_strip_bands": {
+          "description": "Cable-manager bands on this rack whose lane has no free slot, sorted by\nside, band, lane. A cable laid through one is moved to the whole strip,\nso the routing ghost refuses these bands while aiming. Empty when no\nband is full.",
+          "items": {
+            "$ref": "#/components/schemas/StripBandView"
+          },
+          "type": "array"
+        },
         "held": {
           "description": "Is anybody carrying it? Separate from `held_by` because\n`PlayerId::LOCAL` is `0` (see `DeliveryView::held`).",
           "type": "boolean"
@@ -7100,6 +7111,28 @@
       ],
       "type": "string"
     },
+    "StripBandView": {
+      "description": "One cable-manager band: a `(side, u_band, lane)` triple on a rack's strip.\n`side` and `lane` are the engine enums, spelled as their bare names\n(`\"Left\"`, `\"Copper\"`).",
+      "properties": {
+        "lane": {
+          "$ref": "#/components/schemas/CableLane"
+        },
+        "side": {
+          "$ref": "#/components/schemas/RackSide"
+        },
+        "u_band": {
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "side",
+        "u_band",
+        "lane"
+      ],
+      "type": "object"
+    },
     "SubnetView": {
       "description": "An L2 broadcast domain (subnet), the finer isolation grain BELOW the VRF: a\nVRF is the routed L3 boundary, a subnet is one L2 segment within it, keyed\none-per-`ServiceClass` (so a tenant running VMs + Functions + K8s + a managed\nDB has four sibling subnets, each independently dedicatable). Small top-level\nlist on `WorldSnapshot` (msgpack keyframe-only, exactly like `segments` /\n`host_pools`; subnets change rarely, so they never ride the per-tick capnp\ndelta). Empty until the network-isolation model mints any subnet.",
       "properties": {
@@ -7394,6 +7427,7 @@
           "description": "Topology-derived role: where this switch sits in the fabric.\nComputed each snapshot from cable wiring (NOT the SKU's static\n`sim_core::switch::SwitchRole`, which describes the catalog\nclass: `Desktop`/`Access`/`ToR`/`Leaf`/`Aggregation`/`Spine`).\nNetView uses this to pick \"edge switch\" / \"core switch\" sub-labels."
         },
         "saturated": {
+          "description": "`true` when the northbound trunk is full: `egress_gbps` over\n`trunk_capacity_gbps`. Independent of `fabric_saturated`.",
           "type": "boolean"
         },
         "sku_name": {
@@ -7414,6 +7448,12 @@
           "description": "Everything the switch received, server-to-server included.\nMirrors `total_egress_gbps`.",
           "format": "double",
           "type": "number"
+        },
+        "trunk_capacity_gbps": {
+          "description": "Northbound trunk (uplink) ceiling in Gbps: the summed negotiated speed\nof the live, unblocked links facing the edge\n(`Engine::northbound_capacity_gbps`). `saturated` is `egress_gbps`\njudged against THIS, never against `fabric_capacity_gbps`. 0 = no live\nuplink, which the trunk check treats as unconstrained.",
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
         },
         "u_size": {
           "format": "int32",
@@ -7988,6 +8028,6 @@
     }
   },
   "generation": "v1alpha1",
-  "minor": 1,
+  "minor": 2,
   "root": "ModSnapshot"
 }
