@@ -50,7 +50,7 @@ A panel has these fields:
 | Field | Meaning |
 |---|---|
 | `id` | The panel's name, unique in your mod. |
-| `title` | The heading, at most 64 bytes. |
+| `title` | The heading, at most 64 bytes and not blank. |
 | `point` | Where the panel appears. See the next section. |
 | `entity` | Required for `entity_tab` and refused for other points. |
 | `key` | Optional. A default key that opens the panel. `dashboard` panels only. See [Keys](#keys). |
@@ -131,7 +131,7 @@ Panel data lands with the step's commands, two quanta after the step that wrote 
 The game checks each update when the step returns:
 
 - The panel must be one your mod declares, and each widget id must belong to that panel.
-- Each value must fit its widget. A `Rows` row must have one cell per column. A `Choice` must name an option. A `Number` must be inside the slider's range.
+- Each value must fit its widget. A `Rows` row must have one cell per column. A `Choice` must name an option. A `Number` must be inside the slider's range. A `Number` between steps is shown at the nearest step above `min`, and a tie goes to the higher step, so a player can always send back what the panel shows. A player's own input must already be on a step.
 - A step may not return the same panel twice.
 
 A refused update writes one line to the host log and changes nothing. The previous data stands, and a refusal is never a strike. The game logs the first 8 refusals of a step and counts the rest.

@@ -5,7 +5,7 @@
 use serde::Serialize;
 
 /// The API generation, minor and ship state of the source.
-pub const LEDGER: &str = "v1alpha1, minor 2, shipped true";
+pub const LEDGER: &str = "v1alpha1, minor 3, shipped true";
 
 pub type ApplianceId = u32;
 pub type EddId = u32;
@@ -20,31 +20,46 @@ pub type SwitchId = u32;
 pub enum CableEndpoint {
     AppliancePort {
         appliance_id: ApplianceId,
-        port: u8,
+        port: u16,
     },
     EddPort {
         edd_id: EddId,
-        port: u8,
+        port: u16,
     },
     EdgeGatewayPort {
         gateway_id: GatewayId,
-        port: u8,
+        port: u16,
     },
     HostNic {
         host_id: HostId,
-        port: u8,
+        port: u16,
     },
     PatchPanelPort {
         panel_id: PatchPanelId,
-        port: u8,
+        port: u16,
     },
     RackPower {
         feed: u8,
         rack_id: RackId,
     },
     SwitchPort {
-        port: u8,
+        port: u16,
         switch_id: SwitchId,
+    },
+}
+
+/// A device slot a bought module is seated in. Serialises as the engine's `ModuleSlotRef`.
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub enum ModuleSlotRef {
+    Host {
+        family: String,
+        host_id: u32,
+        slot: u32,
+    },
+    Switch {
+        family: String,
+        slot: u32,
+        switch_id: u32,
     },
 }
 
@@ -109,9 +124,12 @@ pub enum ModCommand {
         sku_name: String,
     },
     /// Needs the `finance` category.
-    BuyHostNicModule {
-        host_id: u32,
-        module_sku: String,
+    BuyModule {
+        #[serde(skip_serializing_if = "Option::is_none")]
+        az_id: Option<u32>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        install: Option<ModuleSlotRef>,
+        sku_name: String,
     },
     /// Needs the `finance` category.
     BuyPatchPanel {
@@ -208,8 +226,10 @@ pub enum ModCommand {
     /// Needs the `incidents` category.
     DiagnoseCause {
         entity_id: u32,
+        entity_kind: String,
         incident_id: u64,
         root_kind: String,
+        sub_id: u32,
     },
     /// Needs the `infrastructure` category.
     DisbandLag {
@@ -514,7 +534,7 @@ impl ModCommand {
             ModCommand::BuyCage { .. } => "finance",
             ModCommand::BuyGateway { .. } => "finance",
             ModCommand::BuyHost { .. } => "finance",
-            ModCommand::BuyHostNicModule { .. } => "finance",
+            ModCommand::BuyModule { .. } => "finance",
             ModCommand::BuyPatchPanel { .. } => "finance",
             ModCommand::BuyPeering { .. } => "finance",
             ModCommand::BuyRack { .. } => "finance",

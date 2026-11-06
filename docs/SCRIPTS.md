@@ -16,7 +16,7 @@ A script mod sets `kind` to `["script"]` and adds a `script` block. A mod may be
   "id": "com.example.my-mod",
   "version": "1.0.0",
   "api_version": "v1alpha1",
-  "api_minor": 2,
+  "api_minor": 3,
   "game_version": ">=0.1.0, <0.3.0",
   "kind": ["script"],
   "script": { "runtime": "lua", "entry": "logic/main.lua" },
@@ -34,7 +34,7 @@ A script mod sets `kind` to `["script"]` and adds a `script` block. A mod may be
 - `state_schema` is a number that versions the mod's saved state. The game migrates a saved state of another schema before the mod sees it. A mod that changes its state shape sets a new number and handles the old one in `migrate`.
 - A script mod with no `commands` does not affect gameplay. `affects_gameplay` must then be `false`, unless the same mod also carries hardware, scenarios or customers.
 
-Set `api_minor` to the minor of the SDK you built against. The Rust SDK exports it as `uptime_mod::snapshot::API_MINOR`, currently `2`. The Lua types come from the same ledgers. A mod built against an older minor keeps loading unless a later minor broke a section its `reads` names; [Reference](REFERENCE.md) lists the breaks.
+Set `api_minor` to the minor of the SDK you built against. The Rust SDK exports it as `uptime_mod::snapshot::API_MINOR`, currently `3`. The Lua types come from the same ledgers. A mod built against an older minor keeps loading unless a later minor broke a section its `reads` names or a command it can send. A command break applies to every script mod, so minor 3 refuses all script mods built against minor 2 or earlier. [Reference](REFERENCE.md) lists the breaks.
 
 ## The quantum
 

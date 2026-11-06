@@ -38,4 +38,4 @@ The game's `ModSDK/examples` folder carries ten working mods (in the repository 
 
 ## Which API version this reads
 
-These guides describe API generation `v1alpha1`, minor `1`. Set `api_minor` in your manifest to the minor of the SDK you built against. [Reference](REFERENCE.md) explains the rule.
+These guides describe API generation `v1alpha1`, minor `3`. Set `api_minor` in your manifest to the minor of the SDK you built against. [Reference](REFERENCE.md) explains the rule.

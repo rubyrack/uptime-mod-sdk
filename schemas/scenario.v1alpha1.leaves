@@ -320,11 +320,9 @@ LoadBalancerPricing.egress_cost_microcents_per_gb i64 required
 LoadBalancerPricing.egress_revenue_microcents_per_gb i64 required
 LoadBalancerPricing.per_hour_microcents i64 required
 LoadBalancerPricing.per_lcu_hour_microcents i64 optional
-LoseCondition::AuditFailure unit optional
 LoseCondition::Bankruptcy unit optional
 LoseCondition::Custom String optional
 LoseCondition::CustomerCountBelow u32 optional
-LoseCondition::DataLossEvent unit optional
 LoseCondition::DebtUnpaid unit optional
 LoseCondition::MassChurn {..} optional
 LoseCondition::MassChurn.count u32 required

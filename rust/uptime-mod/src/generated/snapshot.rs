@@ -8,7 +8,7 @@ use serde::Deserialize;
 /// The mod API generation this module was generated from.
 pub const API_GENERATION: &str = "v1alpha1";
 /// The snapshot schema minor this module was generated from.
-pub const API_MINOR: u32 = 2;
+pub const API_MINOR: u32 = 3;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct ActiveAttackView {
@@ -448,11 +448,15 @@ pub struct CandidateCauseView {
     pub confirmed: bool,
     pub entity_id: u32,
     #[serde(default)]
+    pub entity_kind: String,
+    #[serde(default)]
     pub msg_args: Vec<MsgArgView>,
     #[serde(default)]
     pub msg_key: String,
     pub rack_id: u32,
     pub root_kind: String,
+    #[serde(default)]
+    pub sub_id: u32,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -839,6 +843,8 @@ pub struct DeliveryView {
     #[serde(default)]
     pub content_width_class: String,
     #[serde(default)]
+    pub fitted_modules: Vec<FittedModulesView>,
+    #[serde(default)]
     pub held: bool,
     #[serde(default)]
     pub held_by: u32,
@@ -884,6 +890,8 @@ pub struct EddView {
     pub chassis_depth_m: f32,
     #[serde(default)]
     pub display_name: String,
+    #[serde(default)]
+    pub display_name_plain: String,
     #[serde(default)]
     pub form: String,
     pub id: u32,
@@ -947,6 +955,12 @@ pub struct FinancingBreakdownView {
     pub quest_rewards_dollars: f64,
     pub relocation_grant_dollars: f64,
     pub total_financing_dollars: f64,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct FittedModulesView {
+    pub count: u32,
+    pub sku_name: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -1121,6 +1135,8 @@ pub struct GrowthRequestView {
     #[serde(default)]
     pub fit_can_serve_now: bool,
     #[serde(default)]
+    pub fit_mem_after_pct: f64,
+    #[serde(default)]
     pub fit_oversubscribed: bool,
     #[serde(default)]
     pub fit_recommendation: String,
@@ -1233,6 +1249,8 @@ pub struct HostView {
     pub mem_requested_pct: f32,
     #[serde(default)]
     pub model_sku: String,
+    #[serde(default)]
+    pub module_slots: Vec<ModuleSlotView>,
     #[serde(default)]
     pub mtbf_hours: u32,
     #[serde(default)]
@@ -1359,6 +1377,8 @@ pub struct IncidentView {
     pub resolved_at_ns: u64,
     pub revenue_at_risk_per_hour_dollars: f64,
     pub root_entity_id: u32,
+    #[serde(default)]
+    pub root_entity_kind: String,
     pub root_kind: String,
     #[serde(default)]
     pub root_msg_args: Vec<MsgArgView>,
@@ -1580,6 +1600,26 @@ pub struct ModSnapshot {
     pub topbar: Option<TopBarMetrics>,
     #[serde(default)]
     pub workloads: Option<Vec<WorkloadRefView>>,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct ModuleSlotView {
+    pub family: String,
+    #[serde(default)]
+    pub health_pct: u32,
+    #[serde(default)]
+    pub module_id: u32,
+    #[serde(default)]
+    pub port_base: u32,
+    #[serde(default)]
+    pub port_stride: u32,
+    #[serde(default)]
+    pub role: String,
+    #[serde(default)]
+    pub sku_name: String,
+    pub slot: u32,
+    #[serde(default)]
+    pub status: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -1921,6 +1961,8 @@ pub struct RackView {
     pub az_id: u32,
     #[serde(default)]
     pub binding_key: Option<String>,
+    #[serde(default)]
+    pub buy_limit_reached: bool,
     pub capacity_u: u32,
     #[serde(default)]
     pub depth_m: f32,
@@ -2038,17 +2080,12 @@ pub struct ReservationView {
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct RevenueBreakdownView {
-    pub cdn_dollars: f64,
-    pub functions_dollars: f64,
-    pub k8s_dollars: f64,
-    pub load_balancer_dollars: f64,
-    pub managed_db_dollars: f64,
-    pub object_store_dollars: f64,
     #[serde(default)]
     pub platform_fee: f64,
     pub reservation_prepay_dollars: f64,
+    #[serde(default)]
+    pub services: Vec<ServiceRevenueView>,
     pub signup_bonuses_dollars: f64,
-    pub vms_dollars: f64,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
@@ -2313,6 +2350,12 @@ pub struct ServiceRevenueRateView {
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct ServiceRevenueView {
+    pub class_tag: String,
+    pub dollars: f64,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct ServiceSettingsView {
     pub cdn: CdnSettingsView,
     pub db: DbSettingsView,
@@ -2458,6 +2501,8 @@ pub struct SwitchView {
     #[serde(default)]
     pub keepalive_port_index: Option<u32>,
     #[serde(default)]
+    pub line_card_capacity_gbps: u32,
+    #[serde(default)]
     pub link_capacity_gbps: u32,
     #[serde(default)]
     pub link_count: u32,
@@ -2466,9 +2511,13 @@ pub struct SwitchView {
     #[serde(default)]
     pub model_sku: String,
     #[serde(default)]
+    pub module_slots: Vec<ModuleSlotView>,
+    #[serde(default)]
     pub monthly_opex_dollars: f64,
     #[serde(default)]
     pub mtbf_hours: u32,
+    #[serde(default)]
+    pub no_control_plane: bool,
     #[serde(default)]
     pub on_shelf: bool,
     #[serde(default)]

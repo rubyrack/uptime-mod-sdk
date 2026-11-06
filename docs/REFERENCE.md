@@ -34,17 +34,21 @@ The ledgers do not cover a pack model's `.pips.json` sidecar. Its fields, limits
 
 ## How versions work
 
-Every part of the mod API shares one generation, `v1alpha1`, and one minor. The header of each ledger says `generation v1alpha1, minor 1, shipped true`. Minors 0 and 1 have shipped: their frozen copies are `<surface>.v1alpha1.0.fields` and `<surface>.v1alpha1.1.fields`. The next change to any ledger opens minor 2.
+Every part of the mod API shares one generation, `v1alpha1`, and one minor. The header of each ledger says `generation v1alpha1, minor 3`. Minors 0, 1 and 2 have shipped: their frozen copies are `<surface>.v1alpha1.0.fields`, `<surface>.v1alpha1.1.fields` and `<surface>.v1alpha1.2.fields`.
 
 When a minor ships, each ledger gets a frozen copy and a digest. After that, any change to any file moves the minor. The game then checks each mod's `api_minor`:
 
 - The game refuses by name a mod newer than the game.
-- The game refuses by name a mod older than the latest break on data it uses. A break in one snapshot section reaches only the script mods whose `reads` name that section. A break on one scenario field reaches only the packs whose scenario files set it. Any other break reaches every mod written against that part of the API.
+- The game refuses by name a mod older than the latest break on data it uses. A break in one snapshot section reaches only the script mods whose `reads` name that section. A break on one scenario field reaches only the packs whose scenario files set it, and a removed scenario enum variant reaches only the packs whose scenario files name it. Any other break reaches every mod written against that part of the API.
 - A mod built against an older minor, with no break on data it uses, still loads.
 
 Minor 1 breaks two things. In `active_incidents`, `articles` became `article_ids`. In scenario files, `pricing.load_balancer.per_million_requests_microcents` and `tuning.eviction_refund_cap_months` are gone. A mod built against minor 0 that reads `active_incidents`, or sets either field, must be rebuilt against minor 1. Every other minor-0 mod still loads.
 
-This SDK reads minor 1. Set `api_minor` in your manifest to the minor of the SDK you built against. In the Rust SDK that is `uptime_mod::snapshot::API_MINOR`. See [Content packs](CONTENT_PACKS.md) for the load rule.
+Minor 3 breaks port numbers, which are now 16-bit. Every `port` and `index` on the snapshot's port lists and cables changed, as did every `CableEndpoint` port in commands. `BuyHostNicModule` is removed; a host network card is bought with `BuyModule`, whose `install` names the cage to seat it in. Because commands changed, the game refuses every script mod built against minor 2 or earlier, whatever it reads. Rebuild a Rust mod with uptime-mod 0.4; a Lua mod sets `api_minor` to 3 in its manifest and replaces any `BuyHostNicModule` call. Minor 3 also removes the lose conditions `DataLossEvent` and `AuditFailure` from `rules.loses`, because nothing in the game could trigger them. A scenario pack built against minor 2 or earlier that names either one is refused by name and must be rebuilt against minor 3 without it. Other scenario packs are not affected.
+
+Slots count from 0 in every command field (`install.slot`, `InstallModule.slot`) and in the snapshot. The `slot` argument in a card command's reply or refusal text counts from 1, because it is the number the console shows the player; read the slot from the snapshot, not from reply text.
+
+This SDK reads minor 3. Set `api_minor` in your manifest to the minor of the SDK you built against. In the Rust SDK that is `uptime_mod::snapshot::API_MINOR`. See [Content packs](CONTENT_PACKS.md) for the load rule.
 
 While the generation is `v1alpha1`, a minor may contain a break. The loader then applies the rules in the list above.
 

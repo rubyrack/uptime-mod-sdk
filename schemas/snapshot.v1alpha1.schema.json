@@ -1057,6 +1057,10 @@
           "minimum": 0,
           "type": "integer"
         },
+        "entity_kind": {
+          "description": "The owning device's kind for a part or module fault (`\"Host\"` /\n`\"Switch\"` / `\"Gateway\"` / `\"Appliance\"`), else empty. Device ids are\nper-kind counters, so `entity_id` alone cannot say which box.",
+          "type": "string"
+        },
         "msg_args": {
           "description": "Facts for `msg_key`.",
           "items": {
@@ -1077,6 +1081,12 @@
         "root_kind": {
           "description": "Variant tag mirroring `IncidentRoot`, \"CableFailed\", \"SwitchTripped\".",
           "type": "string"
+        },
+        "sub_id": {
+          "description": "What tells siblings of one entity apart: the failed part's id for\n`ComponentFailed`, the far zone for `TrunkLaneSaturated`, the handoff\nport for `UplinkFailed` / `UplinkSaturated`, the gateway id for\n`MacFlapping`, the service's position in `ServiceClass::ALL` for\n`CustomerUnservable`, else 0. With `root_kind`, `entity_kind` and\n`entity_id` it names this one fault, which is what `DiagnoseCause` sends.",
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
         }
       },
       "required": [
@@ -2336,6 +2346,13 @@
           "description": "Footprint width class: \"Full\" (19\" rack-width gear → wide box, both\ntrolley columns) vs \"Small\" (desktop/wall/tower → fits two-per-row).",
           "type": "string"
         },
+        "fitted_modules": {
+          "description": "The cards in the box with a fitted host, one row per card SKU\n(`2 x 25G SFP28`). For a re-mount crate, the cards seated in the device\nit holds. Empty for every other box. `capex_dollars` already includes\nwhat fresh cards cost.",
+          "items": {
+            "$ref": "#/components/schemas/FittedModulesView"
+          },
+          "type": "array"
+        },
         "held": {
           "description": "Is anybody carrying it? Separate from `held_by` because\n`PlayerId::LOCAL` is `0`, so a box held by the HOST would otherwise\nread as unheld to every other player.",
           "type": "boolean"
@@ -2455,6 +2472,10 @@
         },
         "display_name": {
           "description": "Player-facing identity like `edd-01`. See `HostView::display_name`.",
+          "type": "string"
+        },
+        "display_name_plain": {
+          "description": "Plain-mode counterpart: `patch panel 1` vs `edd-01`.",
           "type": "string"
         },
         "form": {
@@ -2643,6 +2664,25 @@
         "bailout_injection_dollars",
         "relocation_grant_dollars",
         "total_financing_dollars"
+      ],
+      "type": "object"
+    },
+    "FittedModulesView": {
+      "description": "`count` cards of one module SKU, fitted in (or boxed with) a device.",
+      "properties": {
+        "count": {
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "sku_name": {
+          "description": "Catalog module name, the `BuyModule.sku_name` key.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sku_name",
+        "count"
       ],
       "type": "object"
     },
@@ -3195,6 +3235,11 @@
           "description": "True when the fleet can absorb the ask at 1:1 right now (fits within\nphysical headroom, low contention). No new hardware needed.",
           "type": "boolean"
         },
+        "fit_mem_after_pct": {
+          "description": "Projected fleet RAM utilization after the ask lands, the memory twin of\n`fit_vcpu_after_pct`. The verdict's tightness reads the larger of the\ntwo.",
+          "format": "double",
+          "type": "number"
+        },
         "fit_oversubscribed": {
           "description": "True when approving would push the fleet PAST physical into overcommit:\nit still fits under the host overcommit ceiling, but CPU is shared and\ntenants may slow under load. Never a false \"can't fit\".",
           "type": "boolean"
@@ -3509,6 +3554,13 @@
           "description": "The base SKU whose model renders this one: a content-pack SKU borrows\na built-in chassis. Empty means `sku_name` itself.",
           "type": "string"
         },
+        "module_slots": {
+          "description": "Every NIC cage the host declares, one row per cage, seated or empty.\nSame shape and purpose as `SwitchView::module_slots`: what the client\nneeds to address `InstallModule` (an empty row) and `RemoveModule` (a\nseated row's `module_id`). Empty for a host with no cages.",
+          "items": {
+            "$ref": "#/components/schemas/ModuleSlotView"
+          },
+          "type": "array"
+        },
         "mtbf_hours": {
           "description": "SKU MTBF in hours, so the inspector can show \"120k\nexpected, 18k used\" without re-resolving the catalog.",
           "format": "int32",
@@ -3528,7 +3580,7 @@
           "type": "integer"
         },
         "nic_modules_installed": {
-          "description": "NIC modules currently installed (`Host.nic_modules.len()`), bounded\nby `nic_module_slots`.",
+          "description": "NIC cages with a card seated (`Engine::seated_module_count` over the\nhost's `NicCage` slots), bounded by `nic_module_slots`.",
           "format": "int32",
           "minimum": 0,
           "type": "integer"
@@ -3938,6 +3990,10 @@
           "format": "int32",
           "minimum": 0,
           "type": "integer"
+        },
+        "root_entity_kind": {
+          "description": "Which device kind `root_entity_id` names when the root is a part on a\ndevice (`ComponentFailed`, `ModuleFailed`): `\"Host\"` / `\"Switch\"` /\n`\"Gateway\"` / `\"Appliance\"`. Device ids are per-kind counters, so the\nid alone cannot say which box. Empty for every other root, whose\n`root_kind` already fixes the kind.",
+          "type": "string"
         },
         "root_kind": {
           "description": "Variant tag mirroring `IncidentRoot`, \"HostFailed\", \"CableFailed\", etc.",
@@ -4798,6 +4854,62 @@
       ],
       "type": "object"
     },
+    "ModuleSlotView": {
+      "description": "One slot of a modular device, as `SwitchView::module_slots` lists it.",
+      "properties": {
+        "family": {
+          "description": "`\"LineCard\"` / `\"Fabric\"` / `\"Supervisor\"` / `\"NicCage\"`: the family\n`InstallModule` names.",
+          "type": "string"
+        },
+        "health_pct": {
+          "description": "The seated module's last sampled health, 0..=100, on the same curve as\na part's. 0 when the slot is empty.",
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "module_id": {
+          "description": "The seated module covering this slot, or 0 when the slot is empty.\nModule ids are minted from 1, so 0 is never a real module. A module\nwider than one slot is listed on every slot it covers.",
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "port_base": {
+          "description": "First flat port index this slot owns (`sim_core::module::slot_base`),\nfixed by the SKU's slot layout whatever is seated. Unused while\n`port_stride` is 0.",
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "port_stride": {
+          "description": "Port indices this slot reserves: a seated card's ports past it are not\nminted. 0 for a portless family.",
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "role": {
+          "description": "For a working control-plane module (a supervisor): `\"Active\"` for the\none running the chassis, `\"Standby\"` for one ready to take over. Empty\nfor every other module, a Failed supervisor and an empty slot.",
+          "type": "string"
+        },
+        "sku_name": {
+          "description": "The seated module's SKU name; empty when the slot is empty.",
+          "type": "string"
+        },
+        "slot": {
+          "description": "Slot ordinal within the family, from 0.",
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "status": {
+          "description": "`\"Healthy\"` / `\"Degraded\"` / `\"Failed\"`, the seated module's status\nband; empty when the slot is empty. A Failed module still fills its\nslot but contributes nothing: no ports, no fabric, no control plane.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "family",
+        "slot"
+      ],
+      "type": "object"
+    },
     "MsgArgView": {
       "description": "One argument for a localized message.\n\nThe engine sends a stable message key plus these arguments, and the client\nchooses the words.\n\nA list of typed pairs stands in for a map, which the wire format lacks.\n\n`is_number` picks the live slot. Numbers stay numbers on the wire because\nFluent needs a real number for plural selection and locale-aware number\nformatting. A pre-formatted string would fix en-US grouping and break\nplural rules in every language that inflects.",
       "properties": {
@@ -5303,7 +5415,7 @@
       "description": "Per-physical-port readout. `peer` is the *other end* of the cable on this\nport, None when the port is dark. The renderer uses `peer` to draw the\nport label tooltip (\"→ Switch S2 port 17\") without needing the cable list.",
       "properties": {
         "active": {
-          "description": "LINK TRUTH: a cable is seated AND this device is operational AND the\nfar-end device is operational (`build_world_ports_for_owner`:\n`p.is_occupied() && entity_up && peer_live`).\n\n**IT IS NOT A TRAFFIC FLAG, AND THREE PLACES SAID IT WAS.** The 59-batch\nbrief, and the `Uncovered` notes on this leaf in `fp_coverage.rs`, both\ndescribed it as \"port-level traffic flag; derived from gbps\" and\nscheduled it for removal beside `gbps_tx` / `gbps_rx` on that basis. It\nhas never touched a throughput figure. `PortLed.activity` computes its\nOWN `active` client-side from `state` plus flow and never reads this\nfield, which is what made the mix-up survivable and invisible.\n\n**So it was KEPT when the two rates were removed.** It has a live reader\n(`equipment_tooltip.gd`, the port link line), it costs one bit in capnp,\nand `link` and `state` are both DERIVED FROM IT in the projection, a\nport whose `port.state` is `Up` is published `Down` when this is false.\nRemoving it would have silently changed a link readout while claiming to\ndelete a duplicate of a throughput field.\n\nClassified `Immediate` for the same reason `state` is: every input\n(occupancy, own power, peer power) is in the port signature or behind a\ndiscrete site.",
+          "description": "LINK TRUTH, the one rule every port surface reads\n(`PortLookup::port_link_active`, sim-project): a cable is seated AND\nthis end is live AND the far end is live. A cable with no far end yet\nfollows this end alone. \"Live\" is `PortLookup::endpoint_live`: a powered\ndevice must be operational, an EDD port asks\n`Engine::edd_port_link_live` (a WAN handoff needs a subscribed circuit),\nand a panel jack or rack power feed is\npassive and always live.\n\nNOT a traffic flag: it reads no throughput. `link` and `state` derive\nfrom it in the projection, so a port whose `port.state` is `Up` is\npublished `Down` when this is false. `PortLed.activity` computes traffic\nclient-side from `state` plus flow; `equipment_tooltip.gd` reads this\nfield for the port link line.\n\nClassified `Immediate` for the same reason `state` is: every input\n(occupancy, own power, peer power) is in the port signature or behind a\ndiscrete site.",
           "type": "boolean"
         },
         "activity": {
@@ -5832,6 +5944,10 @@
             "null"
           ]
         },
+        "buy_limit_reached": {
+          "description": "True when the engine refuses more powered gear in this rack: its\nNAMEPLATE draw has reached `power_budget_w * power_budget_buy_limit`.\nAlways false while power capacity is off. \"Near breaker\" counts these.",
+          "type": "boolean"
+        },
         "capacity_u": {
           "format": "int32",
           "minimum": 0,
@@ -6186,34 +6302,10 @@
       "type": "object"
     },
     "RevenueBreakdownView": {
-      "description": "Lifetime revenue ledger split by service kind, projected from\n`Engine::revenue_breakdown`. Sum of fields equals\n`topbar.total_revenue_dollars`. Drives the dashboard's Services\ndrilldown: each service's row reads its bucket here, tier-locked\nservices that haven't been sold yet render at $0.",
+      "description": "Lifetime revenue ledger split by service kind, projected from\n`Engine::revenue_breakdown`. Sum of `services[].dollars` plus the three\nscalars equals `topbar.total_revenue_dollars`. Drives the dashboard's\nServices drilldown: tier-locked services that haven't been sold yet\nstill have a row, at $0.",
       "properties": {
-        "cdn_dollars": {
-          "format": "double",
-          "type": "number"
-        },
-        "functions_dollars": {
-          "format": "double",
-          "type": "number"
-        },
-        "k8s_dollars": {
-          "format": "double",
-          "type": "number"
-        },
-        "load_balancer_dollars": {
-          "format": "double",
-          "type": "number"
-        },
-        "managed_db_dollars": {
-          "format": "double",
-          "type": "number"
-        },
-        "object_store_dollars": {
-          "format": "double",
-          "type": "number"
-        },
         "platform_fee": {
-          "description": "Flat per-tier platform/support fee, itemised out of `vms_dollars`.",
+          "description": "Flat per-tier platform/support fee, itemised apart from VM revenue.",
           "format": "double",
           "type": "number"
         },
@@ -6221,23 +6313,19 @@
           "format": "double",
           "type": "number"
         },
-        "signup_bonuses_dollars": {
-          "format": "double",
-          "type": "number"
+        "services": {
+          "description": "Recurring (opex) running totals, one row per service class in\n`ServiceClass::ALL` order, every class present.",
+          "items": {
+            "$ref": "#/components/schemas/ServiceRevenueView"
+          },
+          "type": "array"
         },
-        "vms_dollars": {
+        "signup_bonuses_dollars": {
           "format": "double",
           "type": "number"
         }
       },
       "required": [
-        "functions_dollars",
-        "vms_dollars",
-        "object_store_dollars",
-        "load_balancer_dollars",
-        "managed_db_dollars",
-        "cdn_dollars",
-        "k8s_dollars",
         "signup_bonuses_dollars",
         "reservation_prepay_dollars"
       ],
@@ -6868,6 +6956,24 @@
       ],
       "type": "object"
     },
+    "ServiceRevenueView": {
+      "description": "One service class's lifetime recurring revenue. See\n[`RevenueBreakdownView::services`]; the class's names are on\n`CatalogSnapshot::service_kinds`.",
+      "properties": {
+        "class_tag": {
+          "description": "`ServiceClass` tag, \"vm\" / \"fn\" / \"obj\" / \"db\" / \"cdn\" / \"k8s\" / \"lb\".",
+          "type": "string"
+        },
+        "dollars": {
+          "format": "double",
+          "type": "number"
+        }
+      },
+      "required": [
+        "class_tag",
+        "dollars"
+      ],
+      "type": "object"
+    },
     "ServiceSettingsView": {
       "description": "Renderer-friendly mirror of `sim_core::service_settings::ServiceSettings`.\nStrings instead of enums so the GDScript schema can consume them\nwithout a separate enum class. One sub-view per service section.",
       "properties": {
@@ -7324,6 +7430,12 @@
             "null"
           ]
         },
+        "line_card_capacity_gbps": {
+          "description": "Summed front-port capacity of the working line cards seated in this\nchassis, in Gbps: what the fabric would need to carry them all at line\nrate. Read against `fabric_capacity_gbps` it shows an under-populated\nfabric. 0 for a fixed-config switch.",
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
         "link_capacity_gbps": {
           "description": "Modal negotiated link capacity. See `HostView::link_capacity_gbps`.",
           "format": "int32",
@@ -7344,8 +7456,15 @@
           "description": "The base SKU whose model renders this one. Empty means `sku_name`.\nSee `HostView::model_sku`.",
           "type": "string"
         },
+        "module_slots": {
+          "description": "Every module slot the switch declares, one row per slot in\n`(family, slot)` order, seated or empty. Empty for a fixed-config\nswitch. What the client needs to address `InstallModule` (an empty\nrow) and `RemoveModule` (a seated row's `module_id`).",
+          "items": {
+            "$ref": "#/components/schemas/ModuleSlotView"
+          },
+          "type": "array"
+        },
         "monthly_opex_dollars": {
-          "description": "Live projected monthly opex ($/mo), running fee + chassis power +\nthis switch's seated-optic draw. Mirrors the host console's\n`monthly_opex_dollars` read.",
+          "description": "Live projected monthly opex ($/mo), running fee + chassis power +\nthis switch's seated-optic draw, plus every seated module's running\nfee and draw on a modular chassis. Mirrors the host console's\n`monthly_opex_dollars` read.",
           "format": "double",
           "type": "number"
         },
@@ -7353,6 +7472,10 @@
           "format": "int32",
           "minimum": 0,
           "type": "integer"
+        },
+        "no_control_plane": {
+          "description": "`true` for a modular chassis with no working supervisor seated: no\ncontrol plane, so it forwards nothing, and `indicator` reads `Red`.\nAlways `false` for a fixed-config or stackable switch, whose control\nplane is built in.",
+          "type": "boolean"
         },
         "on_shelf": {
           "description": "True when this is a Desktop-class switch sitting on a 1U cantilever\nshelf inside a rack. The renderer spawns a `shelf_1u_cantilever.glb`\nin the same U slot and centers the switch on the tray; engine-side\nthe implicit shelf occupies the slot via `effective_u_size()`.\nMutually exclusive with `on_wall` (a switch can't be both).",
@@ -8028,6 +8151,6 @@
     }
   },
   "generation": "v1alpha1",
-  "minor": 2,
+  "minor": 3,
   "root": "ModSnapshot"
 }

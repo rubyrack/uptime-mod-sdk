@@ -93,7 +93,7 @@ The crate's version follows the mod API it reads. Each crate release reads exact
 
 | Mod API | Crate version |
 |---|---|
-| `v1alpha1`, minor M | `0.(M+1).x`: minor 0 is `0.1.x`, minor 1 is `0.2.x`, minor 2 is `0.3.x` |
+| `v1alpha1`, minor M | `0.(M+1).x`: minor 0 is `0.1.x`, minor 1 is `0.2.x`, minor 2 is `0.3.x`, minor 3 is `0.4.x` |
 | a later alpha or beta generation | the next unused `0.y.x` |
 | `vN` (a stable generation), minor M | `N.M.x` |
 
@@ -111,7 +111,7 @@ The SDK in `ModSDK/rust/uptime-mod` and the crate on crates.io for the same game
   "id": "com.example.my-mod",
   "version": "1.0.0",
   "api_version": "v1alpha1",
-  "api_minor": 2,
+  "api_minor": 3,
   "game_version": ">=0.1.0, <0.3.0",
   "kind": ["script"],
   "script": { "runtime": "component", "entry": "bin/mod.wasm" },
