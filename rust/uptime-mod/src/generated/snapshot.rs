@@ -8,7 +8,7 @@ use serde::Deserialize;
 /// The mod API generation this module was generated from.
 pub const API_GENERATION: &str = "v1alpha1";
 /// The snapshot schema minor this module was generated from.
-pub const API_MINOR: u32 = 3;
+pub const API_MINOR: u32 = 4;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct ActiveAttackView {
@@ -121,6 +121,22 @@ pub struct AttackZoneView {
     pub az_id: u32,
     pub az_name: String,
     pub scrubbed_upstream_gbps: f64,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct AzServiceRoomView {
+    pub az_id: u32,
+    pub class_tag: String,
+    #[serde(default)]
+    pub dedicated_hosts: u32,
+    #[serde(default)]
+    pub room_units: u32,
+    #[serde(default)]
+    pub unit_mem_mb: u32,
+    #[serde(default)]
+    pub unit_ssd_gb: u32,
+    #[serde(default)]
+    pub unit_vcpu_milli: u32,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -462,6 +478,8 @@ pub struct CandidateCauseView {
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct CapacityView {
     #[serde(default)]
+    pub az_service_room: Vec<AzServiceRoomView>,
+    #[serde(default)]
     pub cash_minute: Vec<u32>,
     #[serde(default)]
     pub cost_minute: Vec<u32>,
@@ -725,6 +743,8 @@ pub struct CustomerRankView {
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct CustomerRequestView {
     pub accept_label: String,
+    #[serde(default)]
+    pub bulk_in_scope: bool,
     pub customer_id: u32,
     pub customer_name: String,
     pub decline_label: String,
@@ -2038,6 +2058,8 @@ pub struct RelocationGateView {
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct RelocationOfferView {
     pub available: bool,
+    #[serde(default)]
+    pub cash_dollars: f64,
     pub estimated_liquidation_dollars: f64,
     pub funding_grant_dollars: f64,
     pub gates: Vec<RelocationGateView>,
@@ -2060,9 +2082,13 @@ pub struct RelocationTenantView {
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct RelocationWindowView {
+    #[serde(default)]
+    pub clawback_dollars: f64,
     pub hours: u32,
     pub key: String,
     pub label: String,
+    #[serde(default)]
+    pub new_capital_dollars: f64,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -2076,6 +2102,10 @@ pub struct ReservationView {
     pub scope_kind: String,
     pub scope_tier: String,
     pub service: String,
+    #[serde(default)]
+    pub ssd_total_gb: u64,
+    #[serde(default)]
+    pub ssd_used_gb: u64,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -2300,6 +2330,8 @@ pub struct ServiceDemandView {
     pub state: String,
     #[serde(default)]
     pub state_tag: String,
+    #[serde(default)]
+    pub storage_gb: u32,
     pub vcpu: u32,
 }
 

@@ -3,7 +3,7 @@
   "id": "com.uptime.example-alerts",
   "version": "1.0.0",
   "api_version": "v1alpha1",
-  "api_minor": 3,
+  "api_minor": 4,
   "game_version": ">=0.1.0, <0.3.0",
   "kind": ["script"],
   "script": { "runtime": "lua", "entry": "logic/main.lua" },

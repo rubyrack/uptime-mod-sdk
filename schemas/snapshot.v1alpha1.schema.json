@@ -358,6 +358,51 @@
       ],
       "type": "object"
     },
+    "AzServiceRoomView": {
+      "description": "How many more units of one service placement would seat in one zone right\nnow, counted host by host with the solver's gates and capacity predicate,\nfor a new ungrouped Bronze tenant on the default network segment. A higher\ntier or a tenant on its own segment admits differently, so it can be refused\nin a zone with room here, or fit where this reads 0.\n\nThe unit is the largest one any signed contract or queued prospect of the\nservice stands up (no architecture or accelerator pin). When nothing in play\nuses the service it is not measured and has no row.",
+      "properties": {
+        "az_id": {
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "class_tag": {
+          "description": "`ServiceClass::tag` (\"vm\", \"db\", ...); names live on the catalog's\n`service_kinds`.",
+          "type": "string"
+        },
+        "dedicated_hosts": {
+          "description": "Hosts in this zone set up to run the service but dedicated to a tier or a\nnetwork, so they are not in `room_units`. A zone with 0 room and dedicated\nhosts has no SHARED room; a matching tenant may still fit. A host homed to\nanother service is not counted: no tenant of this service can use it.",
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "room_units": {
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "unit_mem_mb": {
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "unit_ssd_gb": {
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "unit_vcpu_milli": {
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "az_id",
+        "class_tag"
+      ],
+      "type": "object"
+    },
     "AzTrunkView": {
       "description": "One inter-zone trunk: the virtual fibre between two zones of one region,\nwith a LANE each way. Cross-zone east-west, database\nreplication and egress failover ride it per crossing; a pair whose trunk\nis down reroutes through a third zone or partitions. `a < b` always, so\nthe `ab_*` lane runs from the lower zone id to the higher and `ba_*` the\nother way. Per-tick `EntityDelta`-carried section `az_trunks` (see\n`DeltaSnapshot::az_trunks`), one row per zone pair\nin a region. The REST by-id form (`/api/v1/network/trunks/{id}`) and the\nwire delta's `EntityDelta::removed` both address a trunk as `a * 65536 +\nb` (the two zone ids, `a < b`) via [`az_trunk_key`], since a pair has no\nid of its own.",
       "properties": {
@@ -1102,6 +1147,13 @@
     "CapacityView": {
       "description": "Capacity + burn-rate projection. Drives the dashboard's Capacity tab.\n`monthly_burn_dollars` is the *current operating rate*, not an average\nover history, it answers \"if nothing changes, what does this month\ncost?\" `months_until_cash_out` uses (burn − revenue) so a profitable\nop reports a very large runway sentinel (renderer formats it as \"∞\").",
       "properties": {
+        "az_service_room": {
+          "description": "Room per availability zone per service: one row per zone per MEASURED\nservice class. A class nothing in play uses has no row, so the row count\nvaries; key rows by (`az_id`, `class_tag`), never by position. Free space\nsummed over the fleet hides a full zone; a multi-zone tenant cannot place\nthere even while the totals look fine. Engine-computed with placement's\nown rule.",
+          "items": {
+            "$ref": "#/components/schemas/AzServiceRoomView"
+          },
+          "type": "array"
+        },
         "cash_minute": {
           "description": "Cash balance sampled once per simulated minute. 60-deep ring,\n\"last hour\" sparkline on the Money lens. Log-encoded via\n`q_gbps_log` (unit-agnostic: mantissa × 10^exp).",
           "items": {
@@ -1969,6 +2021,10 @@
           "description": "Plain-words label for the accept action (\"Provision for it\" / \"Match\nthe offer\" / \"Grant discount\" / \"Support it\").",
           "type": "string"
         },
+        "bulk_in_scope": {
+          "description": "True when Approve all / Refuse all answer this request; false when it\nwaits for a person. Says nothing about whether it is still open.",
+          "type": "boolean"
+        },
         "customer_id": {
           "format": "int32",
           "minimum": 0,
@@ -2108,7 +2164,7 @@
           "type": "boolean"
         },
         "p50_latency_ms": {
-          "description": "Median (p50) request latency in milliseconds, the \"typical\"\nnumber players read as \"how's this customer doing\", distinct from\nthe p99 tail. Float, so lightly-loaded customers don't all collapse\nto the same whole-ms value. `None` until the window has samples.",
+          "description": "Median (p50) request latency in milliseconds, the \"typical\"\nnumber players read as \"how's this customer doing\", distinct from\nthe p99 tail. Float, so lightly-loaded customers don't all collapse\nto the same whole-ms value. `None` while the window is empty or has no\nsample within `Engine::latency_live_horizon_ns`, as `p99_latency_ms`.",
           "format": "double",
           "type": [
             "number",
@@ -2116,7 +2172,7 @@
           ]
         },
         "p99_latency_ms": {
-          "description": "p99 request latency over the LONG window (`CustomerState::latency`,\n`tuning.latency_window_secs`: a rolling 5 game-minutes). REQUEST-WEIGHTED:\n99% of the tenant's requests in the window were faster\nthan this, and a failed request counts at the request timeout, so this\nreaches the timeout once more than 1% of the window's requests failed.\n(It was the worst ~10 of 1000 per-sweep samples, ~4 game-hours.) This is\nthe SLA figure shown against `sla_p99_budget_ms`, stickier than\n`p99_recent_ms` and never to be relabelled \"now\".",
+          "description": "p99 request latency over the LONG window (`CustomerState::latency`,\n`tuning.latency_window_secs`: a rolling 5 game-minutes). REQUEST-WEIGHTED:\n99% of the tenant's requests in the window were faster\nthan this, and a failed request counts at the request timeout, so this\nreaches the timeout once more than 1% of the window's requests failed.\n(It was the worst ~10 of 1000 per-sweep samples, ~4 game-hours.) This is\nthe SLA figure shown against `sla_p99_budget_ms`, stickier than\n`p99_recent_ms` and never to be relabelled \"now\".\n\n`None` while the tenant has no current latency: the window is empty, or\nno request has been sampled within `Engine::latency_live_horizon_ns`\n(one `tuning.incident_anomaly_dwell_secs`), so its samples are stale.",
           "format": "double",
           "type": [
             "number",
@@ -2124,7 +2180,7 @@
           ]
         },
         "p99_recent_ms": {
-          "description": "p99 request latency over the SHORT window (`CustomerState::latency_recent`,\n`tuning.latency_recent_secs`: the last game-minute, request-weighted the\nsame way), cached by the engine once per metrics tick as\n`CustomerState::recent_p99_ms`, which is also what the incident anomaly\nmachine opens and recovers on and what SLA latency money accrues against.\n\nThis is the \"right now\" number; the long window above holds a spike for\nup to its 5 minutes after the tenant has recovered. Both ship so the\nreadout can be honest about which is which.\n\n`None` until the first metrics tick after load (`load_reported` clears\nthe cached value because it describes a window that no longer exists).\nWhole milliseconds, the engine caches it as `u64` ms and re-deriving it\nhere would mean a clone+sort of the window per customer per snapshot.",
+          "description": "p99 request latency over the SHORT window (`CustomerState::latency_recent`,\n`tuning.latency_recent_secs`: the last game-minute, request-weighted the\nsame way), cached by the engine once per metrics tick as\n`CustomerState::recent_p99_ms`, which is also what the incident anomaly\nmachine opens and recovers on and what SLA latency money accrues against.\n\nThis is the \"right now\" number; the long window above holds a spike for\nup to its 5 minutes after the tenant has recovered. Both ship so the\nreadout can be honest about which is which.\n\n`None` until the first metrics tick after load (`load_reported` clears\nthe cached value because it describes a window that no longer exists),\nand, like `p99_latency_ms`, while no request has been sampled within\n`Engine::latency_live_horizon_ns`. Whole milliseconds, the engine caches it as `u64` ms and re-deriving it\nhere would mean a clone+sort of the window per customer per snapshot.",
           "format": "double",
           "type": [
             "number",
@@ -3232,7 +3288,7 @@
           "type": "string"
         },
         "fit_can_serve_now": {
-          "description": "True when the fleet can absorb the ask at 1:1 right now (fits within\nphysical headroom, low contention). No new hardware needed.",
+          "description": "True when the engine's verdict says this ask can be served now: its\ncontract absorbs it and it needs no new room, or the room it needs fits\nthe hosts it lands on. Approve all reads the same verdict. An ask that\nneeds no new room serves now whatever the fleet's load.",
           "type": "boolean"
         },
         "fit_mem_after_pct": {
@@ -3245,7 +3301,7 @@
           "type": "boolean"
         },
         "fit_recommendation": {
-          "description": "Contention-tier one-liner: \"Comfortable\" / \"Tight fit\" / \"Will run\noversubscribed (CPU shared under load)\" / \"Over capacity, add hardware\nfirst\" / \"No VM load\".",
+          "description": "Contention-tier one-liner: \"Comfortable\" / \"Tight fit\" / \"Will run\noversubscribed (CPU shared under load)\" / \"Over capacity, add hardware\nfirst\" / \"Contract cannot grow further\" / \"No VM load\". \"No VM load\" is\nan ask that places nothing and cannot be served now; a serving one reads\n\"Comfortable\" or its tightness.",
           "type": "string"
         },
         "fit_vcpu_after_pct": {
@@ -5237,7 +5293,7 @@
       "description": "**The gate that bound a placement, with its numbers.** It answers \"why is\nmy service short\" with structured data.\n\n`needed` and `available` are numbers in `unit`s of whatever the gate\nmeasures: distinct hosts for a spread contract, MB for memory, GB for disk.\nThe client writes the wording. A capacity figure reported for a gate that\ncounts distinct hosts would send the player to buy RAM that fixes nothing.\n\nThe empty state is `code: \"\"`. It means the last placement attempt for this\nservice did not fail, so there is no gate to name.",
       "properties": {
         "available": {
-          "description": "How many were actually available. For a capacity gate this is the MOST\nany single surviving candidate had, so the difference reads as a real\ngap rather than a fleet-wide total the unit cannot use anyway.",
+          "description": "How many were actually available. For a capacity gate this is the MOST\nany single surviving candidate had, so the difference reads as a real\ngap rather than a fleet-wide total the unit cannot use anyway. A striped\nbucket CAN use the total, so when one holds its placement for lack of disk\n(`reason_tag` `ObjectStoreCapacityShort` on a `Healthy` service) `needed` is\none copy and this is what the whole fleet could lay of it.",
           "format": "int64",
           "type": "integer"
         },
@@ -6142,6 +6198,11 @@
         "available": {
           "type": "boolean"
         },
+        "cash_dollars": {
+          "description": "The cash on hand `projected_new_capital_dollars` was summed from, read at\nthe same instant, so `cash + funding_grant + estimated_liquidation` equals\nthe capital exactly.",
+          "format": "double",
+          "type": "number"
+        },
         "estimated_liquidation_dollars": {
           "format": "double",
           "type": "number"
@@ -6163,7 +6224,7 @@
           "type": "string"
         },
         "projected_new_capital_dollars": {
-          "description": "`cash + funding_grant + estimated_liquidation`, the starting capital\non the new floor, shown on the switch screen.",
+          "description": "`cash + funding_grant + estimated_liquidation`, the starting capital on\nthe new floor before any clawback. What lands depends on the window:\nsee `RelocationWindowView::new_capital_dollars`.",
           "format": "double",
           "type": "number"
         },
@@ -6236,6 +6297,11 @@
     "RelocationWindowView": {
       "description": "One migration-window choice on the relocation screen. `key` is the\n`MigrationWindow` variant name sent back as `UpgradeFacility { window }`.",
       "properties": {
+        "clawback_dollars": {
+          "description": "Signup bonuses and Reserved prepays the commit takes back from tenants\nstill onboarding who won't wait out this window.",
+          "format": "double",
+          "type": "number"
+        },
         "hours": {
           "format": "int32",
           "minimum": 0,
@@ -6248,6 +6314,11 @@
         "label": {
           "description": "Display label (\"Rushed cutover\").",
           "type": "string"
+        },
+        "new_capital_dollars": {
+          "description": "The cash the commit lands on this window: `cash_dollars +\nfunding_grant_dollars + estimated_liquidation_dollars - clawback_dollars`.",
+          "format": "double",
+          "type": "number"
         }
       },
       "required": [
@@ -6292,6 +6363,18 @@
         "service": {
           "description": "\"any\" or the `ServiceClass` tag (\"vm\"/\"db\"/\"obj\"/\"fn\"/\"k8s\"/\"cdn\"/\"lb\").",
           "type": "string"
+        },
+        "ssd_total_gb": {
+          "description": "Effective storage (GB) across the pool's hosts, summed from each\nhost's `eff_ssd_gb()` (the host console's `ssd_total_gb`).",
+          "format": "int64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "ssd_used_gb": {
+          "description": "Storage (GB) in use across the pool's hosts, summed from each host's\n`ssd_used_gb` (the host console's `ssd_used_gb`).",
+          "format": "int64",
+          "minimum": 0,
+          "type": "integer"
         }
       },
       "required": [
@@ -6689,7 +6772,7 @@
           "type": "integer"
         },
         "reason": {
-          "description": "`ProbeReason::label()`, why `state` isn't `Healthy`/`Ok`. A\nPRE-RENDERED English sentence with no magnitudes; kept for\ncompatibility, but `placement` is what a card should size a remedy\nfrom.\n\nPROSE. Display fallback only, branch on `reason_tag`.",
+          "description": "`ProbeReason::label()`, why `state` isn't `Healthy`, or the advisory on a\nservice that is: `Healthy` with a reason other than `Ok` means it serves\nand something needs the player (a spread short of its cap, a bucket\nholding its placement because the fleet is out of disk). A\nPRE-RENDERED English sentence with no magnitudes; kept for\ncompatibility, but `placement` is what a card should size a remedy\nfrom.\n\nPROSE. Display fallback only, branch on `reason_tag`.",
           "type": "string"
         },
         "reason_args": {
@@ -6700,7 +6783,7 @@
           "type": "array"
         },
         "reason_key": {
-          "description": "Message key for the reason sentence when it carries NUMBERS the static\n`label-probe-<reason_tag>` line cannot (the spread advisory, key\n`label-spread-note`); empty otherwise. With `reason_args` it is the\nsentence the client resolves in the reader's language; `reason` above is\nits pre-rendered English twin for consumers that resolve no keys.",
+          "description": "Message key for the reason sentence when it carries NUMBERS the static\n`label-probe-<reason_tag>` line cannot (the spread advisory, key\n`label-spread-note`; a held bucket, key `label-bucket-held`); empty\notherwise. With `reason_args` it is the sentence the client resolves in the\nreader's language. For the spread advisory `reason` above is its\npre-rendered English twin; a held bucket's `reason` is the numberless label\nand `placement` carries its numbers.",
           "type": "string"
         },
         "reason_tag": {
@@ -6742,6 +6825,12 @@
         "state_tag": {
           "description": "`ProbeState::tag()`, the STABLE slug behind `state` (`\"Healthy\"` /\n`\"Degraded\"` / `\"Down\"` / `\"Unservable\"`). This is what a client\nbranches on; it resolves its own word through\n`label-probe-state-<state_tag>`. Rewording or localizing `state` must\nnever change what renders.",
           "type": "string"
+        },
+        "storage_gb": {
+          "description": "Contracted storage per unit, GB (`ServiceShape::storage_gb`, the table\nthe prospect card reads): a bucket's logical size, a database's data plus\nbackup, a VM's block volume. 0 when the service carries no storage ask.\nMoves only when the contract is amended.",
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
         },
         "vcpu": {
           "description": "Per-unit vCPU requested. 0 when the service kind has no compute\nshape of its own (Object Store, CDN, LB).",
@@ -8151,6 +8240,6 @@
     }
   },
   "generation": "v1alpha1",
-  "minor": 3,
+  "minor": 4,
   "root": "ModSnapshot"
 }
