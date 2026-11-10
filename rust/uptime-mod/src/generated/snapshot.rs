@@ -8,7 +8,7 @@ use serde::Deserialize;
 /// The mod API generation this module was generated from.
 pub const API_GENERATION: &str = "v1alpha1";
 /// The snapshot schema minor this module was generated from.
-pub const API_MINOR: u32 = 4;
+pub const API_MINOR: u32 = 5;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct ActiveAttackView {
@@ -2005,6 +2005,8 @@ pub struct RackView {
     #[serde(default)]
     pub resale_dollars: f64,
     #[serde(default)]
+    pub reserved_segment_id: Option<u32>,
+    #[serde(default)]
     pub used_u: u32,
     pub visual: RackVisual,
     #[serde(default)]
@@ -2110,6 +2112,8 @@ pub struct ReservationView {
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct RevenueBreakdownView {
+    #[serde(default)]
+    pub burst_last_hour_cents: u64,
     #[serde(default)]
     pub platform_fee: f64,
     pub reservation_prepay_dollars: f64,

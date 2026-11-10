@@ -5,7 +5,7 @@
 use serde::Serialize;
 
 /// The API generation, minor and ship state of the source.
-pub const LEDGER: &str = "v1alpha1, minor 4, shipped true";
+pub const LEDGER: &str = "v1alpha1, minor 5, shipped true";
 
 pub type ApplianceId = u32;
 pub type EddId = u32;
@@ -328,6 +328,10 @@ pub enum ModCommand {
     ReleaseHosts {
         host_ids: Vec<u32>,
     },
+    /// Needs the `customers` category.
+    ReleaseRackReservation {
+        rack_id: u32,
+    },
     /// Needs the `infrastructure` category.
     RemoveBreakout {
         trunk: CableEndpoint,
@@ -365,6 +369,11 @@ pub enum ModCommand {
         component_id: u32,
         owner_id: u32,
         owner_kind: String,
+    },
+    /// Needs the `customers` category.
+    ReserveRackToSegment {
+        rack_id: u32,
+        segment_id: u32,
     },
     /// Needs the `customers` category.
     ResolveCustomerRequest {
@@ -573,6 +582,7 @@ impl ModCommand {
             ModCommand::RejectProspect { .. } => "customers",
             ModCommand::ReleaseHostDedication { .. } => "infrastructure",
             ModCommand::ReleaseHosts { .. } => "customers",
+            ModCommand::ReleaseRackReservation { .. } => "customers",
             ModCommand::RemoveBreakout { .. } => "infrastructure",
             ModCommand::RemoveCable { .. } => "infrastructure",
             ModCommand::RemoveCableFromLag { .. } => "infrastructure",
@@ -581,6 +591,7 @@ impl ModCommand {
             ModCommand::RenameHostPool { .. } => "infrastructure",
             ModCommand::RenameSegment { .. } => "customers",
             ModCommand::RepairPart { .. } => "incidents",
+            ModCommand::ReserveRackToSegment { .. } => "customers",
             ModCommand::ResolveCustomerRequest { .. } => "customers",
             ModCommand::SetApplianceInspection { .. } => "infrastructure",
             ModCommand::SetApplianceLicense { .. } => "finance",

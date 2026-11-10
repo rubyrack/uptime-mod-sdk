@@ -359,7 +359,7 @@
       "type": "object"
     },
     "AzServiceRoomView": {
-      "description": "How many more units of one service placement would seat in one zone right\nnow, counted host by host with the solver's gates and capacity predicate,\nfor a new ungrouped Bronze tenant on the default network segment. A higher\ntier or a tenant on its own segment admits differently, so it can be refused\nin a zone with room here, or fit where this reads 0.\n\nThe unit is the largest one any signed contract or queued prospect of the\nservice stands up (no architecture or accelerator pin). When nothing in play\nuses the service it is not measured and has no row.",
+      "description": "How many more units of one service placement would seat in one zone right\nnow, counted host by host with the solver's gates and capacity predicate,\nfor a new ungrouped Bronze tenant on the default network segment. A higher\ntier or a tenant on its own segment admits differently, so it can be refused\nin a zone with room here, or fit where this reads 0.\n\nThe unit is the typical one: the median signed contract's unit of the service\n(lower middle on an even count, ordered by memory, then CPU, then disk), so\nthe `unit_*` fields are one real contract's shape. A service no signed\ncontract uses takes the queued prospects' median. Shapes that pin an\narchitecture or accelerator are left out. When nothing in play uses the\nservice it is not measured and has no row.",
       "properties": {
         "az_id": {
           "format": "int32",
@@ -6073,6 +6073,15 @@
           "format": "double",
           "type": "number"
         },
+        "reserved_segment_id": {
+          "description": "The segment this rack is reserved to: every host mounted in it admits\nonly that segment. `None` for an open rack.",
+          "format": "int32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
         "used_u": {
           "description": "U slots actually consumed in this rack, counting EVERY rack occupant:\nhosts, switches, patch panels, security appliances, EDDs and gateways.\nSame population as `Engine::occupied_u`, sourced from the one-pass\n`Engine::occupied_u_by_rack`.\n\nDo not re-derive this client-side by summing `u_size` over the `hosts`\narray: that misses everything racked that is not a server, and a second\ncopy of the occupant list drifts.",
           "format": "int32",
@@ -6385,8 +6394,14 @@
       "type": "object"
     },
     "RevenueBreakdownView": {
-      "description": "Lifetime revenue ledger split by service kind, projected from\n`Engine::revenue_breakdown`. Sum of `services[].dollars` plus the three\nscalars equals `topbar.total_revenue_dollars`. Drives the dashboard's\nServices drilldown: tier-locked services that haven't been sold yet\nstill have a row, at $0.",
+      "description": "Lifetime revenue ledger split by service kind, projected from\n`Engine::revenue_breakdown`. Sum of `services[].dollars` plus `platform_fee`,\n`signup_bonuses_dollars` and `reservation_prepay_dollars` equals\n`topbar.total_revenue_dollars`; `burst_last_hour_cents` is a memo and is not\npart of the sum. Drives the dashboard's\nServices drilldown: tier-locked services that haven't been sold yet\nstill have a row, at $0.",
       "properties": {
+        "burst_last_hour_cents": {
+          "description": "VM and managed-DB burst vCPU billing in the hour `topbar.\nlast_hour_revenue_dollars` covers, in cents. A memo, already inside the\nvm row (a managed database's compute books into the vm bucket, so its\nburst is there too) and inside the MRR figures, which extrapolate that\nsame hour: add it to nothing. It falls as a higher overcommit target leaves\nhosts less spare to grant bursts from.",
+          "format": "int64",
+          "minimum": 0,
+          "type": "integer"
+        },
         "platform_fee": {
           "description": "Flat per-tier platform/support fee, itemised apart from VM revenue.",
           "format": "double",
@@ -8183,6 +8198,7 @@
     "VmSettingsView": {
       "properties": {
         "anti_affinity_enabled": {
+          "description": "Inert: VMs always spread (every tenant is held to the Host grain), so\nthis echoes the last `SetVmSettings.anti_affinity` and changes nothing.",
           "type": "boolean"
         },
         "reserved_headroom_pct": {
@@ -8240,6 +8256,6 @@
     }
   },
   "generation": "v1alpha1",
-  "minor": 4,
+  "minor": 5,
   "root": "ModSnapshot"
 }
