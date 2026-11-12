@@ -5,7 +5,7 @@
 use serde::Serialize;
 
 /// The API generation, minor and ship state of the source.
-pub const LEDGER: &str = "v1alpha1, minor 5, shipped true";
+pub const LEDGER: &str = "v1alpha1, minor 6, shipped true";
 
 pub type ApplianceId = u32;
 pub type EddId = u32;

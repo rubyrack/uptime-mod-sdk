@@ -8,7 +8,7 @@ use serde::Deserialize;
 /// The mod API generation this module was generated from.
 pub const API_GENERATION: &str = "v1alpha1";
 /// The snapshot schema minor this module was generated from.
-pub const API_MINOR: u32 = 5;
+pub const API_MINOR: u32 = 6;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct ActiveAttackView {
