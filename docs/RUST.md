@@ -93,7 +93,7 @@ The crate's version follows the mod API it reads. Each crate release reads exact
 
 | Mod API | Crate version |
 |---|---|
-| `v1alpha1`, minor M | `0.(M+1).x`: minor 0 is `0.1.x`, minor 1 is `0.2.x`, minor 2 is `0.3.x`, minor 3 is `0.4.x`, minor 4 is `0.5.x`, minor 5 is `0.6.x`, minor 6 is `0.7.x` |
+| `v1alpha1`, minor M | `0.(M+1).x`: minor 0 is `0.1.x`, minor 1 is `0.2.x`, minor 2 is `0.3.x`, minor 3 is `0.4.x`, minor 4 is `0.5.x`, minor 5 is `0.6.x`, minor 6 is `0.7.x`, minor 7 is `0.8.x` |
 | a later alpha or beta generation | the next unused `0.y.x` |
 | `vN` (a stable generation), minor M | `N.M.x` |
 

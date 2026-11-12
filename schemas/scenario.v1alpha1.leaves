@@ -106,6 +106,7 @@ ChannelKind::Network unit optional
 ChannelKind::News unit optional
 ChannelKind::NpcDm String optional
 ChannelKind::Ops unit optional
+ChannelKind::Prospects unit optional
 ChannelKind::StaffDm StaffId optional
 ChannelMember::Bot BotKind optional
 ChannelMember::Customer CustomerId optional
@@ -194,6 +195,7 @@ CustomerId u32 required
 CustomerRef::ByArchetype String optional
 CustomerRef::ById CustomerId optional
 CustomerRef::ByName String optional
+CustomerRequestId u64 required
 DbQueryWorkload {..} required
 DbQueryWorkload.cpu_secs_per_query f64 required
 DbQueryWorkload.egress_kb_per_query u32 required
@@ -384,8 +386,10 @@ MessageMood::Resigned unit optional
 MessageMood::Sarcastic unit optional
 MessageReference::Cable CableId optional
 MessageReference::Customer CustomerId optional
+MessageReference::CustomerRequest CustomerRequestId optional
 MessageReference::Host HostId optional
 MessageReference::Incident IncidentId optional
+MessageReference::Prospect ProspectId optional
 MessageReference::WorkOrder WorkOrderId optional
 MessageTemplateId String required
 Money i64 required
@@ -500,6 +504,7 @@ ProspectArchetypeRule.min_rep f64 optional
 ProspectArchetypeRule.min_site Option<String> optional
 ProspectConfig {..} required
 ProspectConfig.archetypes Vec<ProspectArchetypeRule> optional
+ProspectId u64 required
 ProspectTemplate {..} required
 ProspectTemplate.compliance_required ComplianceTier required
 ProspectTemplate.extra_workloads Vec<WorkloadSpec> optional

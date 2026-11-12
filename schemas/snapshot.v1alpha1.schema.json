@@ -54,6 +54,56 @@
       ],
       "type": "object"
     },
+    "AdmitNamingView": {
+      "description": "One pool's naming: the filter as `ReservationView` spells it, the\n`{admit}` word its hosts read, its device pattern (\"\" for none) and its\nhosts in `{auto_number}` order.",
+      "properties": {
+        "host_ids": {
+          "description": "The pool's hosts, by id ascending.",
+          "items": {
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        "numbers": {
+          "description": "`numbers[i]` is the `{auto_number}` of `host_ids[i]`: the lowest number\nfree in the pool when the host joined, kept until it leaves.",
+          "items": {
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        "scope_id": {
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "scope_kind": {
+          "description": "\"any\" | \"default\" | \"vrf\" | \"tier\".",
+          "type": "string"
+        },
+        "scope_tier": {
+          "type": "string"
+        },
+        "service": {
+          "description": "\"any\" or the `ServiceClass` tag.",
+          "type": "string"
+        },
+        "template": {
+          "type": "string"
+        },
+        "word": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "scope_kind",
+        "service"
+      ],
+      "type": "object"
+    },
     "ApplianceView": {
       "properties": {
         "appliance_kind": {
@@ -2475,6 +2525,65 @@
       ],
       "type": "object"
     },
+    "DeviceNamingView": {
+      "description": "The name patterns (`SetNameTemplate`) at every level and what they need that\nno other section carries. A mounted device's name is the nearest pattern\nexpanded at where it sits, the same in both voices; the client expands it on\ndemand exactly as the engine does, so no device carries its full name on the\nwire. Nearest is a host's pool, then its rack, then its zone, then the world\n(`sim_engine::engine::naming::template::nearest` states the rule). A rack's\nown name is already resolved on `RackView.name`.",
+      "properties": {
+        "admits": {
+          "description": "Each pool with a host or a pattern: its filter, `{admit}` word, pattern,\nand its hosts (ascending id) with their `{auto_number}`.",
+          "items": {
+            "$ref": "#/components/schemas/AdmitNamingView"
+          },
+          "type": "array"
+        },
+        "kind_words": {
+          "description": "The `{kind}` word of every device kind the world holds, by key ascending:\na family by its snapshot section (`hosts` -> `srv`), an appliance by\n`appliances.<appliance_kind>` (`appliances.firewall` -> `fw`). The\nengine's words, so the client keeps no copy of the rule.",
+          "items": {
+            "$ref": "#/components/schemas/KindWordView"
+          },
+          "type": "array"
+        },
+        "rack_rows": {
+          "description": "The `{row}` of each rack that stands in a row, by rack id ascending. A\nrack absent here has no row and `{row}` drops from its devices' names.",
+          "items": {
+            "$ref": "#/components/schemas/RackRowView"
+          },
+          "type": "array"
+        },
+        "rack_template": {
+          "description": "The world's rack pattern, e.g. `Rack {n}`. Placeholders: region, zone,\nrow, n.",
+          "type": "string"
+        },
+        "racks": {
+          "description": "Each rack that has a `{n}` or overrides the device pattern, by rack id\nascending.",
+          "items": {
+            "$ref": "#/components/schemas/RackNamingView"
+          },
+          "type": "array"
+        },
+        "suffixed": {
+          "description": "Each mounted device whose pattern name a device earlier in id order\nalready reads, by section then id: the client appends `suffix` to the\nname it resolves, so every device reads its own name.",
+          "items": {
+            "$ref": "#/components/schemas/SuffixedNameView"
+          },
+          "type": "array"
+        },
+        "template": {
+          "description": "The world's device pattern, e.g. `{zone}-{rack}-u{u}-{server}`.\nPlaceholders: region, zone, row, rack, n (the rack's number), u, kind,\nserver, admit; a number pads with `{u:3}`.",
+          "type": "string"
+        },
+        "zones": {
+          "description": "Each zone that overrides a pattern, by zone id ascending; an empty\npattern is not overridden.",
+          "items": {
+            "$ref": "#/components/schemas/ZoneNamingView"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "template"
+      ],
+      "type": "object"
+    },
     "DeviceTransitView": {
       "description": "Forwarding-derived per-device VNI transit, the REAL set of subnets (L2VNIs)\nwhose traffic transits a given forwarding device (switch / gateway /\nappliance), so the switch/gateway/appliance consoles and the netview can show\n\"carrying {service} for {tenant}\" from the actual forwarding path instead of\nthe first-hop guess.\n\nBuilt in the projection from the SHARED forwarding graph\n(`Engine::host_forwarding_device_path`): for every host carrying a subnet\n(the inverse of `SubnetView.carrier_host_ids`), the ordered forwarding\ndevices on its path to the demarc each take that host's subnet ids; unioned\nacross hosts → this per-device set. `subnet_ids` (not parallel vrf/service\nvecs) so each id joins back to its `SubnetView` for BOTH the service class\nAND the tenant/VRF, preserving the pairing a flat pair of vecs would lose.\n\nMsgpack keyframe-only (like `subnets` / `reservations` / `segments`), off\nthe per-tick capnp delta, no per-tick cost. `device_kind` is a plain string\n(\"switch\" / \"gateway\" / \"appliance\"), so no new wire enum. Empty until any\nsubnet is minted AND a carrier host's path resolves.",
       "properties": {
@@ -2510,7 +2619,8 @@
         "Offline",
         "Outage",
         "Saturated",
-        "Online"
+        "Online",
+        "LinesNotConnected"
       ],
       "type": "string"
     },
@@ -3601,6 +3711,10 @@
           "description": "More than one distinct negotiated speed among the cabled ports, so a\nlabel can say \"25G+\" instead of claiming every link runs at the mode.",
           "type": "boolean"
         },
+        "locating": {
+          "description": "The locator light is lit (`SetDeviceLocate`): the power lamp blinks so a\nplayer can walk to this server. Never saved.",
+          "type": "boolean"
+        },
         "mem_requested_pct": {
           "description": "REQUESTED (reserved/committed) share, NOT live usage: numerator is\n`vm_used_* + service_reserved_*`, denominator NAMEPLATE `sku.*`. Live\ndemand rides `used_millivcpu` on this same struct, the two answer\ndifferent questions, hence the explicit `requested` in the name.",
           "format": "float",
@@ -3906,11 +4020,22 @@
           "type": "integer"
         },
         "detail": {
-          "description": "Free-form details for variants that carry a payload (customer\nname, work-order id, factor description). Empty for variants\nthat are pure transitions.",
+          "description": "Free-form details for variants that carry a payload (customer\nname, work-order id, factor description). Empty for variants\nthat are pure transitions. The English fallback when `msg_key` is set.",
           "type": "string"
         },
         "kind": {
           "description": "Variant tag mirroring `IncidentEventKind`, \"Detected\",\n\"CustomerImpactStarted\", \"AggravatingFactor\", etc.",
+          "type": "string"
+        },
+        "msg_args": {
+          "description": "Facts for `msg_key`.",
+          "items": {
+            "$ref": "#/components/schemas/MsgArgView"
+          },
+          "type": "array"
+        },
+        "msg_key": {
+          "description": "Localization key for the entry's detail, `incident-timeline-<kind>`;\nempty for an entry not keyed yet, which renders `detail`. Left off the\nframe when empty, so an unkeyed entry costs no bytes.",
           "type": "string"
         }
       },
@@ -4145,6 +4270,22 @@
       },
       "required": [
         "pod_density_cap"
+      ],
+      "type": "object"
+    },
+    "KindWordView": {
+      "description": "One `{kind}` word, keyed as `DeviceNamingView::kind_words` says.",
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "word": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "word"
       ],
       "type": "object"
     },
@@ -4522,6 +4663,16 @@
           "type": [
             "array",
             "null"
+          ]
+        },
+        "device_naming": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/components/schemas/DeviceNamingView"
+            }
           ]
         },
         "device_transit": {
@@ -5538,6 +5689,10 @@
           "description": "Physical media at the port face, from `Port.media`. One of\n`\"Rj45\"` / `\"SfpPlus\"` / `\"Sfp28\"` / `\"Qsfp28\"` / `\"QsfpDD\"` /\n`\"Carrier\"` / `\"IecPower\"` / `\"PatchKeystone\"`. Drives the\nrenderer's per-port plug geometry + boot offset.",
           "type": "string"
         },
+        "no_line": {
+          "description": "True when this port reads Down because the carrier handoff it is, or is\ncabled to, has no internet line: an EDD WAN handoff with no purchased\nline bound to it (a legacy unbound line covers every handoff), set on\nthe EDD port and on the gateway port cabled to it. False during an\noutage only for the gateway-less first handoff, which the engine lights\noff any live line; with a gateway an unlined handoff stays flagged. False\nfor a LAN port and for every other owner. The projection computes it from\n`Engine::edd_port_has_purchased_line`; the client names the reason from\nthis flag alone.",
+          "type": "boolean"
+        },
         "peer": {
           "oneOf": [
             {
@@ -5978,6 +6133,50 @@
       "minimum": 0,
       "type": "integer"
     },
+    "RackNamingView": {
+      "description": "One rack's `{n}` and device pattern override.",
+      "properties": {
+        "n": {
+          "description": "The rack's number for `{n}` (a rack named `Rack N`); 0 for a rack the\nplayer named, which keeps that name under every rack pattern.",
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "rack_id": {
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "template": {
+          "description": "The device pattern for this rack, or \"\" to follow its zone's.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rack_id"
+      ],
+      "type": "object"
+    },
+    "RackRowView": {
+      "description": "One rack's 1-based row in its building, for `{row}`.",
+      "properties": {
+        "rack_id": {
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "row": {
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "rack_id",
+        "row"
+      ],
+      "type": "object"
+    },
     "RackSide": {
       "description": "Vertical-strip side of a rack. Used for both cable-manager strips\n(left or right of the U column) and the matching corner of a rack-edge\nanchor. Distinct from `RoutingSide`, which is a single choice per\nendpoint. A route can reference this side several times.",
       "enum": [
@@ -6052,6 +6251,7 @@
           "type": "integer"
         },
         "name": {
+          "description": "What the rack is called: a name the player gave it, or for a rack\nnumbered `Rack N` its zone's rack pattern (else the world's,\n`DeviceNamingView::rack_template`) filled in with `{n}` = N.",
           "type": "string"
         },
         "pending_placement": {
@@ -6081,6 +6281,10 @@
             "integer",
             "null"
           ]
+        },
+        "sku": {
+          "description": "The catalog SKU name the rack was bought as (\"24U Half Rack\"): the\nrack's model; `name` is its `Rack N` label. Empty for a rack\nwith no SKU, such as the wall cabinet. Set when the rack is minted.",
+          "type": "string"
         },
         "used_u": {
           "description": "U slots actually consumed in this rack, counting EVERY rack occupant:\nhosts, switches, patch panels, security appliances, EDDs and gateways.\nSame population as `Engine::occupied_u`, sourced from the one-pass\n`Engine::occupied_u_by_rack`.\n\nDo not re-derive this client-side by summing `u_size` over the `hosts`\narray: that misses everything racked that is not a server, and a second\ncopy of the occupant list drifts.",
@@ -7404,6 +7608,28 @@
       ],
       "type": "object"
     },
+    "SuffixedNameView": {
+      "description": "One device the resolver makes unique: `section` is its snapshot section\n(`hosts`, `switches`, `gateways`, `appliances`, `edds`), `suffix` what\nfollows its pattern name, like `-srv-12`.",
+      "properties": {
+        "id": {
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "section": {
+          "type": "string"
+        },
+        "suffix": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "section",
+        "id",
+        "suffix"
+      ],
+      "type": "object"
+    },
     "SwitchPairView": {
       "description": "An MLAG pair, two switches peered to present one LACP partner.\n\nSmall top-level list, msgpack-only, exactly like `lags`: pair counts are\nsingle-digit and the content only moves on a structural change, so it is\nkeyframe-only and costs nothing per tick. Per-switch membership rides\n`SwitchView.pair_id` for the cheap \"which pair is this box in\" question.",
       "properties": {
@@ -7554,6 +7780,10 @@
         },
         "link_mixed": {
           "description": "Mixed-speed fabric marker. See `HostView::link_mixed`.",
+          "type": "boolean"
+        },
+        "locating": {
+          "description": "The locator light is lit (`SetDeviceLocate`): the power lamp blinks so a\nplayer can walk to this switch. Never saved.",
           "type": "boolean"
         },
         "model_sku": {
@@ -8253,9 +8483,31 @@
         "host_id"
       ],
       "type": "object"
+    },
+    "ZoneNamingView": {
+      "description": "One zone's pattern overrides, for its devices and its racks.",
+      "properties": {
+        "az_id": {
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "rack_template": {
+          "description": "The rack pattern for this zone, or \"\" to follow the world's.",
+          "type": "string"
+        },
+        "template": {
+          "description": "The device pattern for this zone, or \"\" to follow the world's.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "az_id"
+      ],
+      "type": "object"
     }
   },
   "generation": "v1alpha1",
-  "minor": 6,
+  "minor": 7,
   "root": "ModSnapshot"
 }

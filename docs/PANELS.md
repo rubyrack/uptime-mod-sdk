@@ -332,7 +332,7 @@ A mod declares at most 4 keys in all its panel files. The pack check refuses the
 
 The game binds these base keys, and a mod default on one is refused whatever its modifiers, so `ctrl+F` is refused as well as `F`:
 
-`A`, `B`, `D`, `E`, `F`, `G`, `K`, `M`, `O`, `Q`, `R`, `S`, `U`, `W`, `1`, `2`, `3`, `4`, `F1`, `F2`, `F4`, `F8`, `F10`, `F12`, and the keys Escape, Tab and Shift.
+`A`, `B`, `D`, `E`, `F`, `G`, `K`, `M`, `O`, `Q`, `R`, `S`, `U`, `W`, `1`, `2`, `3`, `4`, `F1`, `F2`, `F4`, `F5`, `F8`, `F10`, `F12`, and the keys Escape, Tab and Shift.
 
 That list can grow with the game. The source of truth is `RESERVED_BASE_KEYS` in `sim_core::mod_ui`, and `uptime-mod validate` reports a refused key with the code `key_reserved`.
 

@@ -8,7 +8,7 @@ use serde::Deserialize;
 /// The mod API generation this module was generated from.
 pub const API_GENERATION: &str = "v1alpha1";
 /// The snapshot schema minor this module was generated from.
-pub const API_MINOR: u32 = 6;
+pub const API_MINOR: u32 = 7;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct ActiveAttackView {
@@ -24,6 +24,24 @@ pub struct ActiveAttackView {
     pub summary: String,
     #[serde(default)]
     pub zones: Vec<AttackZoneView>,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct AdmitNamingView {
+    #[serde(default)]
+    pub host_ids: Vec<u32>,
+    #[serde(default)]
+    pub numbers: Vec<u32>,
+    #[serde(default)]
+    pub scope_id: u32,
+    pub scope_kind: String,
+    #[serde(default)]
+    pub scope_tier: String,
+    pub service: String,
+    #[serde(default)]
+    pub template: String,
+    #[serde(default)]
+    pub word: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -885,6 +903,25 @@ pub struct DeliveryView {
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct DeviceNamingView {
+    #[serde(default)]
+    pub admits: Vec<AdmitNamingView>,
+    #[serde(default)]
+    pub kind_words: Vec<KindWordView>,
+    #[serde(default)]
+    pub rack_rows: Vec<RackRowView>,
+    #[serde(default)]
+    pub rack_template: String,
+    #[serde(default)]
+    pub racks: Vec<RackNamingView>,
+    #[serde(default)]
+    pub suffixed: Vec<SuffixedNameView>,
+    pub template: String,
+    #[serde(default)]
+    pub zones: Vec<ZoneNamingView>,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct DeviceTransitView {
     pub device_id: u32,
     pub device_kind: String,
@@ -898,6 +935,7 @@ pub enum EddStatus {
     Outage,
     Saturated,
     Online,
+    LinesNotConnected,
     /// A value this SDK was not generated with.
     #[serde(other)]
     Unknown,
@@ -1266,6 +1304,8 @@ pub struct HostView {
     pub link_count: u32,
     #[serde(default)]
     pub link_mixed: bool,
+    #[serde(default)]
+    pub locating: bool,
     pub mem_requested_pct: f32,
     #[serde(default)]
     pub model_sku: String,
@@ -1359,6 +1399,10 @@ pub struct IncidentTimelineEntryView {
     pub at_ns: u64,
     pub detail: String,
     pub kind: String,
+    #[serde(default)]
+    pub msg_args: Vec<MsgArgView>,
+    #[serde(default)]
+    pub msg_key: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -1434,6 +1478,12 @@ pub enum IndicatorLed {
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct K8sSettingsView {
     pub pod_density_cap: u32,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct KindWordView {
+    pub kind: String,
+    pub word: String,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
@@ -1537,6 +1587,8 @@ pub struct ModSnapshot {
     pub degraded_control_planes: Option<Vec<String>>,
     #[serde(default)]
     pub deliveries: Option<Vec<DeliveryView>>,
+    #[serde(default)]
+    pub device_naming: Option<DeviceNamingView>,
     #[serde(default)]
     pub device_transit: Option<Vec<DeviceTransitView>>,
     #[serde(default)]
@@ -1818,6 +1870,8 @@ pub struct PortView {
     #[serde(default)]
     pub media: String,
     #[serde(default)]
+    pub no_line: bool,
+    #[serde(default)]
     pub peer: Option<CableEndpointView>,
     #[serde(default)]
     pub port_id: u64,
@@ -1967,6 +2021,21 @@ pub enum RackFace {
 
 pub type RackId = u32;
 
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct RackNamingView {
+    #[serde(default)]
+    pub n: u32,
+    pub rack_id: u32,
+    #[serde(default)]
+    pub template: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct RackRowView {
+    pub rack_id: u32,
+    pub row: u32,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
 pub enum RackSide {
     Left,
@@ -2006,6 +2075,8 @@ pub struct RackView {
     pub resale_dollars: f64,
     #[serde(default)]
     pub reserved_segment_id: Option<u32>,
+    #[serde(default)]
+    pub sku: String,
     #[serde(default)]
     pub used_u: u32,
     pub visual: RackVisual,
@@ -2485,6 +2556,13 @@ pub struct SubnetView {
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct SuffixedNameView {
+    pub id: u32,
+    pub section: String,
+    pub suffix: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct SwitchPairView {
     pub id: u32,
     pub members: Vec<u32>,
@@ -2544,6 +2622,8 @@ pub struct SwitchView {
     pub link_count: u32,
     #[serde(default)]
     pub link_mixed: bool,
+    #[serde(default)]
+    pub locating: bool,
     #[serde(default)]
     pub model_sku: String,
     #[serde(default)]
@@ -2768,6 +2848,15 @@ pub struct WorkloadRefView {
     pub unit_id: u64,
 }
 
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct ZoneNamingView {
+    pub az_id: u32,
+    #[serde(default)]
+    pub rack_template: String,
+    #[serde(default)]
+    pub template: String,
+}
+
 /// Every section a manifest's `reads` may name, in name order. A script mod
 /// is handed only the sections it declares; the rest decode as `None`.
 pub const SECTIONS: &[&str] = &[
@@ -2788,6 +2877,7 @@ pub const SECTIONS: &[&str] = &[
     "customers_summary",
     "degraded_control_planes",
     "deliveries",
+    "device_naming",
     "device_transit",
     "difficulty",
     "edds",
@@ -2885,6 +2975,9 @@ impl ModSnapshot {
         }
         if self.deliveries.is_some() {
             out.push("deliveries");
+        }
+        if self.device_naming.is_some() {
+            out.push("device_naming");
         }
         if self.device_transit.is_some() {
             out.push("device_transit");
