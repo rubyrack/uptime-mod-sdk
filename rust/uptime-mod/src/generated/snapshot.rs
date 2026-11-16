@@ -8,7 +8,7 @@ use serde::Deserialize;
 /// The mod API generation this module was generated from.
 pub const API_GENERATION: &str = "v1alpha1";
 /// The snapshot schema minor this module was generated from.
-pub const API_MINOR: u32 = 7;
+pub const API_MINOR: u32 = 8;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct ActiveAttackView {
@@ -29,10 +29,6 @@ pub struct ActiveAttackView {
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct AdmitNamingView {
     #[serde(default)]
-    pub host_ids: Vec<u32>,
-    #[serde(default)]
-    pub numbers: Vec<u32>,
-    #[serde(default)]
     pub scope_id: u32,
     pub scope_kind: String,
     #[serde(default)]
@@ -40,8 +36,6 @@ pub struct AdmitNamingView {
     pub service: String,
     #[serde(default)]
     pub template: String,
-    #[serde(default)]
-    pub word: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -51,10 +45,6 @@ pub struct ApplianceView {
     pub az_id: u32,
     #[serde(default)]
     pub carried_by: u32,
-    #[serde(default)]
-    pub display_name: String,
-    #[serde(default)]
-    pub display_name_plain: String,
     #[serde(default)]
     pub dropped_per_sec: f64,
     #[serde(default)]
@@ -95,6 +85,10 @@ pub struct ApplianceView {
     #[serde(default)]
     pub monthly_opex_dollars: f64,
     #[serde(default)]
+    pub name: String,
+    #[serde(default)]
+    pub name_plain: String,
+    #[serde(default)]
     pub owned_functions: Vec<String>,
     #[serde(default)]
     pub ports: Vec<PortView>,
@@ -109,6 +103,8 @@ pub struct ApplianceView {
     pub scrubbed_gbps: f64,
     pub sku_name: String,
     pub start_u: u32,
+    #[serde(default)]
+    pub stored_name: String,
     #[serde(default)]
     pub threats: Vec<ThreatMitigationView>,
     pub u_size: u32,
@@ -176,6 +172,8 @@ pub struct AzView {
     pub host_count: u32,
     pub id: u32,
     pub name: String,
+    #[serde(default)]
+    pub name_plain: String,
     #[serde(default)]
     pub open_to_customers: bool,
     pub rack_count: u32,
@@ -803,6 +801,8 @@ pub struct CustomerView {
     pub max_units_on_host: u32,
     pub name: String,
     #[serde(default)]
+    pub name_plain: String,
+    #[serde(default)]
     pub on_probation: bool,
     #[serde(default)]
     pub p50_latency_ms: Option<f64>,
@@ -907,15 +907,9 @@ pub struct DeviceNamingView {
     #[serde(default)]
     pub admits: Vec<AdmitNamingView>,
     #[serde(default)]
-    pub kind_words: Vec<KindWordView>,
-    #[serde(default)]
-    pub rack_rows: Vec<RackRowView>,
-    #[serde(default)]
     pub rack_template: String,
     #[serde(default)]
     pub racks: Vec<RackNamingView>,
-    #[serde(default)]
-    pub suffixed: Vec<SuffixedNameView>,
     pub template: String,
     #[serde(default)]
     pub zones: Vec<ZoneNamingView>,
@@ -947,16 +941,16 @@ pub struct EddView {
     #[serde(default)]
     pub chassis_depth_m: f32,
     #[serde(default)]
-    pub display_name: String,
-    #[serde(default)]
-    pub display_name_plain: String,
-    #[serde(default)]
     pub form: String,
     pub id: u32,
     #[serde(default)]
     pub lan_port_count: u32,
     #[serde(default)]
     pub max_wan_port_gbps: u32,
+    #[serde(default)]
+    pub name: String,
+    #[serde(default)]
+    pub name_plain: String,
     pub port_count: u32,
     #[serde(default)]
     pub ports: Vec<PortView>,
@@ -972,6 +966,8 @@ pub struct EddView {
     pub start_u: u32,
     #[serde(default)]
     pub status: Option<EddStatus>,
+    #[serde(default)]
+    pub stored_name: String,
     pub total_uplink_capacity_gbps: f64,
     #[serde(default)]
     pub u_size: u32,
@@ -1108,10 +1104,6 @@ pub struct GatewayView {
     #[serde(default)]
     pub carried_by: u32,
     #[serde(default)]
-    pub display_name: String,
-    #[serde(default)]
-    pub display_name_plain: String,
-    #[serde(default)]
     pub egress_gbps: f64,
     #[serde(default)]
     pub fabric_capacity_gbps: u32,
@@ -1143,6 +1135,10 @@ pub struct GatewayView {
     #[serde(default)]
     pub multi_az_capable: bool,
     #[serde(default)]
+    pub name: String,
+    #[serde(default)]
+    pub name_plain: String,
+    #[serde(default)]
     pub ports: Vec<PortView>,
     #[serde(default)]
     pub power_feeds: u32,
@@ -1158,6 +1154,8 @@ pub struct GatewayView {
     pub sku_name: String,
     #[serde(default)]
     pub start_u: u32,
+    #[serde(default)]
+    pub stored_name: String,
     #[serde(default)]
     pub threats: Vec<ThreatMitigationView>,
     #[serde(default)]
@@ -1273,10 +1271,6 @@ pub struct HostView {
     pub contention_state: String,
     pub cpu_requested_pct: f32,
     #[serde(default)]
-    pub display_name: String,
-    #[serde(default)]
-    pub display_name_plain: String,
-    #[serde(default)]
     pub effective_nic_gbps: u32,
     #[serde(default)]
     pub egress_gbps: f64,
@@ -1297,7 +1291,6 @@ pub struct HostView {
     pub inv_status: String,
     pub iops_actual: u32,
     pub iops_capacity: u32,
-    pub label: String,
     #[serde(default)]
     pub link_capacity_gbps: u32,
     #[serde(default)]
@@ -1313,6 +1306,10 @@ pub struct HostView {
     pub module_slots: Vec<ModuleSlotView>,
     #[serde(default)]
     pub mtbf_hours: u32,
+    #[serde(default)]
+    pub name: String,
+    #[serde(default)]
+    pub name_plain: String,
     #[serde(default)]
     pub nic_count: u32,
     #[serde(default)]
@@ -1478,12 +1475,6 @@ pub enum IndicatorLed {
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct K8sSettingsView {
     pub pod_density_cap: u32,
-}
-
-#[derive(Debug, Clone, PartialEq, Deserialize)]
-pub struct KindWordView {
-    pub kind: String,
-    pub word: String,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
@@ -1729,6 +1720,8 @@ pub struct NetworkSegmentView {
     pub member_count: u32,
     pub name: String,
     #[serde(default)]
+    pub name_plain: String,
+    #[serde(default)]
     pub tier_rule: Option<String>,
     pub vni: u32,
 }
@@ -1759,6 +1752,10 @@ pub struct PatchPanelView {
     pub id: u32,
     #[serde(default)]
     pub inv_status: String,
+    #[serde(default)]
+    pub name: String,
+    #[serde(default)]
+    pub name_plain: String,
     pub port_count: u32,
     #[serde(default)]
     pub ports: Vec<PortView>,
@@ -2023,17 +2020,9 @@ pub type RackId = u32;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct RackNamingView {
-    #[serde(default)]
-    pub n: u32,
     pub rack_id: u32,
     #[serde(default)]
     pub template: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Deserialize)]
-pub struct RackRowView {
-    pub rack_id: u32,
-    pub row: u32,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
@@ -2067,6 +2056,8 @@ pub struct RackView {
     pub held_by: u32,
     pub id: u32,
     pub name: String,
+    #[serde(default)]
+    pub name_plain: String,
     #[serde(default)]
     pub pending_placement: bool,
     pub power_budget_w: u32,
@@ -2117,6 +2108,8 @@ pub struct RegionView {
     pub backbone_saturated: bool,
     pub id: u32,
     pub name: String,
+    #[serde(default)]
+    pub name_plain: String,
     pub status: AzVisual,
 }
 
@@ -2516,8 +2509,10 @@ pub struct StrandedVmView {
     pub block_iops: u32,
     pub customer_id: u32,
     pub customer_name: String,
-    pub host_display_name: String,
     pub host_id: u32,
+    pub host_name: String,
+    #[serde(default)]
+    pub host_name_plain: String,
     pub memory_mb: u32,
     pub vcpu: u32,
     pub vm_id: u64,
@@ -2556,13 +2551,6 @@ pub struct SubnetView {
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
-pub struct SuffixedNameView {
-    pub id: u32,
-    pub section: String,
-    pub suffix: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct SwitchPairView {
     pub id: u32,
     pub members: Vec<u32>,
@@ -2593,10 +2581,6 @@ pub struct SwitchView {
     pub carried_by: u32,
     #[serde(default)]
     pub condition_pct: u32,
-    #[serde(default)]
-    pub display_name: String,
-    #[serde(default)]
-    pub display_name_plain: String,
     pub egress_gbps: f64,
     #[serde(default)]
     pub fabric_capacity_gbps: u32,
@@ -2633,6 +2617,10 @@ pub struct SwitchView {
     #[serde(default)]
     pub mtbf_hours: u32,
     #[serde(default)]
+    pub name: String,
+    #[serde(default)]
+    pub name_plain: String,
+    #[serde(default)]
     pub no_control_plane: bool,
     #[serde(default)]
     pub on_shelf: bool,
@@ -2663,6 +2651,8 @@ pub struct SwitchView {
     pub saturated: bool,
     pub sku_name: String,
     pub start_u: u32,
+    #[serde(default)]
+    pub stored_name: String,
     #[serde(default)]
     pub total_egress_gbps: f64,
     #[serde(default)]

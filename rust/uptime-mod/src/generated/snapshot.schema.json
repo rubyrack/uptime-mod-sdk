@@ -55,26 +55,8 @@
       "type": "object"
     },
     "AdmitNamingView": {
-      "description": "One pool's naming: the filter as `ReservationView` spells it, the\n`{admit}` word its hosts read, its device pattern (\"\" for none) and its\nhosts in `{auto_number}` order.",
+      "description": "One pool's device pattern, by the filter as `ReservationView` spells it.",
       "properties": {
-        "host_ids": {
-          "description": "The pool's hosts, by id ascending.",
-          "items": {
-            "format": "int32",
-            "minimum": 0,
-            "type": "integer"
-          },
-          "type": "array"
-        },
-        "numbers": {
-          "description": "`numbers[i]` is the `{auto_number}` of `host_ids[i]`: the lowest number\nfree in the pool when the host joined, kept until it leaves.",
-          "items": {
-            "format": "int32",
-            "minimum": 0,
-            "type": "integer"
-          },
-          "type": "array"
-        },
         "scope_id": {
           "format": "int32",
           "minimum": 0,
@@ -92,9 +74,6 @@
           "type": "string"
         },
         "template": {
-          "type": "string"
-        },
-        "word": {
           "type": "string"
         }
       },
@@ -121,14 +100,6 @@
           "format": "int32",
           "minimum": 0,
           "type": "integer"
-        },
-        "display_name": {
-          "description": "Player-facing identity like `fw-01` / `ids-01` / `lb-01` (per-kind\nsequence). Empty on saves whose appliances were never named;\nclients fall back to `kind` + `id`.",
-          "type": "string"
-        },
-        "display_name_plain": {
-          "description": "Plain-mode counterpart: `firewall 1` / `intrusion detector 1`.\nSee `HostView::display_name_plain`.",
-          "type": "string"
         },
         "dropped_per_sec": {
           "description": "Live filtering throughput, latest ring sample. ONE FIELD PER ATTACK\nCLASS, in that class's own unit, never combined, and a dual-licensed\n(Scrub + Firewall) box populates more than one:\n- `dropped_per_sec`, stateful-firewall Protocol drops, **Kpps**\n- `scrubbed_gbps`, scrubber Volumetric absorb, **Gbps**\n- `events_per_sec`, IDS/IPS Intrusion detections, **events/s**\n\nA box without the matching licence enabled reports 0 for that class.\nOff-path kinds (HSM/SIEM) report 0 for all three. Abstract magnitudes\n(spec §9.1).",
@@ -230,6 +201,14 @@
           "format": "double",
           "type": "number"
         },
+        "name": {
+          "description": "The displayed name, engineering voice. See `HostView::name`.",
+          "type": "string"
+        },
+        "name_plain": {
+          "description": "The displayed name, plain voice. See `HostView::name_plain`.",
+          "type": "string"
+        },
         "owned_functions": {
           "description": "Function-license slugs whose one-time capex has already been paid on this\nbox (the ownership ledger, superset of `enabled_functions`). An owned\nlicense that's been unsubscribed (not in `enabled_functions`) can be\nre-enabled for FREE; the console reads this to show `Resubscribe (free)`\nvs `Buy $X`.",
           "items": {
@@ -274,6 +253,10 @@
           "format": "int32",
           "minimum": 0,
           "type": "integer"
+        },
+        "stored_name": {
+          "description": "The appliance's own stored name (`fw-01`), what `RenameDevice` edits.\nSee `SwitchView::stored_name`.",
+          "type": "string"
         },
         "threats": {
           "description": "Per-device threat handling, ONLY the classes THIS box defends, with\nwhat reached it, what it absorbed, and what it passed on. Replaces the\nconfusing fleet-wide read: a firewall shows Protocol only, an IDS shows\nIntrusion only. Empty for off-path boxes (HSM / SIEM). From the engine\npositional cascade.",
@@ -533,6 +516,11 @@
           "type": "integer"
         },
         "name": {
+          "description": "The displayed name, engineering voice (`Engine::names`).",
+          "type": "string"
+        },
+        "name_plain": {
+          "description": "The displayed name, plain voice.",
           "type": "string"
         },
         "open_to_customers": {
@@ -912,20 +900,20 @@
         "a": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/CableEndpointView"
             },
             {
-              "$ref": "#/components/schemas/CableEndpointView"
+              "type": "null"
             }
           ]
         },
         "b": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/CableEndpointView"
             },
             {
-              "$ref": "#/components/schemas/CableEndpointView"
+              "type": "null"
             }
           ]
         },
@@ -2172,11 +2160,11 @@
         "detail": {
           "oneOf": [
             {
-              "type": "null"
-            },
-            {
               "$ref": "#/components/schemas/CustomerDetailView",
               "description": "**The drilldown half of a tenant.** The host withholds it from every\nsession that has not subscribed to this tenant (`Request::SubscribeCustomer`),\nunder the same gate as `services` and `service_margins`.\n\n`None` means withheld. An `Option` is used because a zeroed scalar cannot\nsay it was withheld: `margin_dollars: 0.0` is a legal margin and\n`requirements_unmet_mask: 0` means every requirement is met.\n`detail_omitted` covers `services` and `service_margins`, which are\n`Vec`s. One gate sets both, so `detail_omitted == detail.is_none()`.\n\n`CustomerDetail::All` populates it, which is what the HTTP API's\n`/api/v1/customers` route uses."
+            },
+            {
+              "type": "null"
             }
           ]
         },
@@ -2207,6 +2195,11 @@
           "type": "integer"
         },
         "name": {
+          "description": "The displayed name, engineering voice (`Engine::names`).",
+          "type": "string"
+        },
+        "name_plain": {
+          "description": "The displayed name, plain voice.",
           "type": "string"
         },
         "on_probation": {
@@ -2526,26 +2519,12 @@
       "type": "object"
     },
     "DeviceNamingView": {
-      "description": "The name patterns (`SetNameTemplate`) at every level and what they need that\nno other section carries. A mounted device's name is the nearest pattern\nexpanded at where it sits, the same in both voices; the client expands it on\ndemand exactly as the engine does, so no device carries its full name on the\nwire. Nearest is a host's pool, then its rack, then its zone, then the world\n(`sim_engine::engine::naming::template::nearest` states the rule). A rack's\nown name is already resolved on `RackView.name`.",
+      "description": "The name patterns (`SetNameTemplate`) as stored at every level, for the\nfields that edit them. The engine resolves every name (each row's `name` /\n`name_plain`) and answers a pattern still being typed\n(`Request::PreviewNamePattern`); the client expands nothing.",
       "properties": {
         "admits": {
-          "description": "Each pool with a host or a pattern: its filter, `{admit}` word, pattern,\nand its hosts (ascending id) with their `{auto_number}`.",
+          "description": "Each pool that sets a pattern: its filter and pattern.",
           "items": {
             "$ref": "#/components/schemas/AdmitNamingView"
-          },
-          "type": "array"
-        },
-        "kind_words": {
-          "description": "The `{kind}` word of every device kind the world holds, by key ascending:\na family by its snapshot section (`hosts` -> `srv`), an appliance by\n`appliances.<appliance_kind>` (`appliances.firewall` -> `fw`). The\nengine's words, so the client keeps no copy of the rule.",
-          "items": {
-            "$ref": "#/components/schemas/KindWordView"
-          },
-          "type": "array"
-        },
-        "rack_rows": {
-          "description": "The `{row}` of each rack that stands in a row, by rack id ascending. A\nrack absent here has no row and `{row}` drops from its devices' names.",
-          "items": {
-            "$ref": "#/components/schemas/RackRowView"
           },
           "type": "array"
         },
@@ -2554,16 +2533,9 @@
           "type": "string"
         },
         "racks": {
-          "description": "Each rack that has a `{n}` or overrides the device pattern, by rack id\nascending.",
+          "description": "Each rack that overrides the device pattern, by rack id ascending.",
           "items": {
             "$ref": "#/components/schemas/RackNamingView"
-          },
-          "type": "array"
-        },
-        "suffixed": {
-          "description": "Each mounted device whose pattern name a device earlier in id order\nalready reads, by section then id: the client appends `suffix` to the\nname it resolves, so every device reads its own name.",
-          "items": {
-            "$ref": "#/components/schemas/SuffixedNameView"
           },
           "type": "array"
         },
@@ -2636,14 +2608,6 @@
           "format": "float",
           "type": "number"
         },
-        "display_name": {
-          "description": "Player-facing identity like `edd-01`. See `HostView::display_name`.",
-          "type": "string"
-        },
-        "display_name_plain": {
-          "description": "Plain-mode counterpart: `patch panel 1` vs `edd-01`.",
-          "type": "string"
-        },
         "form": {
           "description": "Form factor tag, \"WallMount\" or \"Rack\".",
           "type": "string"
@@ -2664,6 +2628,14 @@
           "format": "int32",
           "minimum": 0,
           "type": "integer"
+        },
+        "name": {
+          "description": "The displayed name, engineering voice. See `HostView::name`.",
+          "type": "string"
+        },
+        "name_plain": {
+          "description": "The displayed name, plain voice. See `HostView::name_plain`.",
+          "type": "string"
         },
         "port_count": {
           "description": "Total physical port count exposed by this edd.",
@@ -2707,6 +2679,10 @@
         "status": {
           "$ref": "#/components/schemas/EddStatus",
           "description": "See [`EddStatus`]. Folded from `uplinks` below, never a client\nthreshold."
+        },
+        "stored_name": {
+          "description": "The EDD's own stored name (`edd-01`), what `RenameDevice` edits. See\n`SwitchView::stored_name`.",
+          "type": "string"
         },
         "total_uplink_capacity_gbps": {
           "format": "double",
@@ -3184,13 +3160,6 @@
           "minimum": 0,
           "type": "integer"
         },
-        "display_name": {
-          "type": "string"
-        },
-        "display_name_plain": {
-          "description": "Plain-mode counterpart: `gateway 1` vs `gw-01`.",
-          "type": "string"
-        },
         "egress_gbps": {
           "description": "Smoothed directional egress (LAN-side outbound) in Gbps.",
           "format": "double",
@@ -3265,6 +3234,14 @@
           "description": "Whether the SKU can be a multi-AZ region border (implies `bgp_capable`).",
           "type": "boolean"
         },
+        "name": {
+          "description": "The displayed name, engineering voice. See `HostView::name`.",
+          "type": "string"
+        },
+        "name_plain": {
+          "description": "The displayed name, plain voice. See `HostView::name_plain`.",
+          "type": "string"
+        },
         "ports": {
           "items": {
             "$ref": "#/components/schemas/PortView"
@@ -3304,6 +3281,10 @@
           "format": "int32",
           "minimum": 0,
           "type": "integer"
+        },
+        "stored_name": {
+          "description": "The gateway's own stored name (`gw-01`), what `RenameDevice` edits. See\n`SwitchView::stored_name`.",
+          "type": "string"
         },
         "threats": {
           "description": "Per-class threat rows for THIS gateway, one row per class reaching it,\ndefended or not. Defended classes are the built-in L3/L4 firewall's\n(Protocol / Volumetric / Intrusion) plus any enabled add-on's (Intrusion\nvia Basic IPS, Volumetric via Basic Scrub); undefended classes (L7\nApplication, or anything whose defence is switched off) still appear at\n`mitigated: 0, capacity: 0` with `defense_capable` telling them apart.\nSame shape + shared `ThreatMitigationView` as `ApplianceView::threats`,\nso the gateway console renders the identical per-class Threats\nbreakdown the appliance does. The built-in firewall's Protocol share is\nthe row with `class == \"protocol\"`. Empty only when the gateway is off\nthe internet path entirely.",
@@ -3619,14 +3600,6 @@
           "format": "float",
           "type": "number"
         },
-        "display_name": {
-          "description": "Player-facing identity like `srv-01`. Unique per host; survives\nSKU upgrades and moves. Prefer this over `sku_name` when labelling\nthe host in UI: `sku_name` is the model designation, shared\nacross many hosts.",
-          "type": "string"
-        },
-        "display_name_plain": {
-          "description": "Plain-mode counterpart: `server 1` vs `srv-01`. Two-voice per\n`[[two_voice_labels_2026]]`. Empty on legacy saves; clients should\nfall back to `display_name`.",
-          "type": "string"
-        },
         "effective_nic_gbps": {
           "description": "The line rate this host can ACTUALLY push (Gbps): the LAG\naggregate when its NICs are bonded, else the forwarding link's\nnegotiated rate, else the SKU nameplate when unwired. Same figure and\nsame meaning as `HostConsoleSnapshot::effective_nic_gbps` (the\nfocused-host twin), folded here so a fleet-wide reader (the Network\npage's busiest-hosts ranking) has a real per-host denominator.\n\n0 on the first tick after a load, before the engine's metrics sweep has\nrun once (`Engine::traffic.host_effective_nic_gbps` is rebuilt on the first\nsweep, `#[serde(skip)]`, never persisted). A CLIENT MUST NEVER DIVIDE\nBY THIS RAW: treat 0 as \"not yet known\" and fall back to the SKU\nnameplate rather than producing NaN or an infinite share.",
           "format": "int32",
@@ -3692,9 +3665,6 @@
           "minimum": 0,
           "type": "integer"
         },
-        "label": {
-          "type": "string"
-        },
         "link_capacity_gbps": {
           "description": "Modal NEGOTIATED link capacity among the `link_count` cabled ports, ties\nbroken toward the FASTER speed. 0 when nothing is patched.\n\nSame quantity and same name as `PortView::link_capacity_gbps`, one level\nup, never a SKU nameplate. `SwitchView::port_capacity_gbps` is the\nnameplate and reads differently on purpose: a 32x400G spine with one 25G\npatch lead has `port_capacity_gbps == 400` and `link_capacity_gbps == 25`.",
           "format": "int32",
@@ -3736,6 +3706,14 @@
           "format": "int32",
           "minimum": 0,
           "type": "integer"
+        },
+        "name": {
+          "description": "What every surface and message calls the host, engineering voice\n(`Engine::names`): mounted, the nearest pattern expanded where it sits\n(`az1-rack37-u07-srv-899`); else its own name (`srv-01`). Never empty.",
+          "type": "string"
+        },
+        "name_plain": {
+          "description": "The same name in the plain voice (`server 1`); equal to `name` while\nmounted.",
+          "type": "string"
         },
         "nic_count": {
           "description": "Physical NIC port count. T1-T2 SKUs are single-NIC; T3+ ship\nmulti-NIC for LACP redundancy. Defaulted via serde.",
@@ -3898,7 +3876,6 @@
         "u_size",
         "sku_name",
         "arch",
-        "label",
         "visual",
         "mem_requested_pct",
         "cpu_requested_pct",
@@ -4059,7 +4036,7 @@
           "type": "array"
         },
         "affected_host_ids": {
-          "description": "The MACHINES this incident is about, sorted ascending, capped at\n`sim_core::incident::AFFECTED_HOSTS_CAP`. Empty for roots with no host\nscope (DDoS, uplink saturation, customer-observation): those degrade\neveryone, so naming hosts would be a lie. Resolve names against\n`hosts[].display_name`.",
+          "description": "The MACHINES this incident is about, sorted ascending, capped at\n`sim_core::incident::AFFECTED_HOSTS_CAP`. Empty for roots with no host\nscope (DDoS, uplink saturation, customer-observation): those degrade\neveryone, so naming hosts would be a lie. Resolve names against\n`hosts[].name` / `hosts[].name_plain`.",
           "items": {
             "format": "int32",
             "minimum": 0,
@@ -4270,22 +4247,6 @@
       },
       "required": [
         "pod_density_cap"
-      ],
-      "type": "object"
-    },
-    "KindWordView": {
-      "description": "One `{kind}` word, keyed as `DeviceNamingView::kind_words` says.",
-      "properties": {
-        "kind": {
-          "type": "string"
-        },
-        "word": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "kind",
-        "word"
       ],
       "type": "object"
     },
@@ -4508,10 +4469,10 @@
         "active_attack": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/ActiveAttackView"
             },
             {
-              "$ref": "#/components/schemas/ActiveAttackView"
+              "type": "null"
             }
           ]
         },
@@ -4563,10 +4524,10 @@
         "business_policy": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/BusinessPolicyView"
             },
             {
-              "$ref": "#/components/schemas/BusinessPolicyView"
+              "type": "null"
             }
           ]
         },
@@ -4591,40 +4552,40 @@
         "cage_offer": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/CageOfferView"
             },
             {
-              "$ref": "#/components/schemas/CageOfferView"
+              "type": "null"
             }
           ]
         },
         "capacity": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/CapacityView"
             },
             {
-              "$ref": "#/components/schemas/CapacityView"
+              "type": "null"
             }
           ]
         },
         "cost_breakdown": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/CostBreakdownView"
             },
             {
-              "$ref": "#/components/schemas/CostBreakdownView"
+              "type": "null"
             }
           ]
         },
         "cost_rates": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/CostRatesView"
             },
             {
-              "$ref": "#/components/schemas/CostRatesView"
+              "type": "null"
             }
           ]
         },
@@ -4640,10 +4601,10 @@
         "customers_summary": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/CustomersSummary"
             },
             {
-              "$ref": "#/components/schemas/CustomersSummary"
+              "type": "null"
             }
           ]
         },
@@ -4668,10 +4629,10 @@
         "device_naming": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/DeviceNamingView"
             },
             {
-              "$ref": "#/components/schemas/DeviceNamingView"
+              "type": "null"
             }
           ]
         },
@@ -4702,30 +4663,30 @@
         "financing_breakdown": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/FinancingBreakdownView"
             },
             {
-              "$ref": "#/components/schemas/FinancingBreakdownView"
+              "type": "null"
             }
           ]
         },
         "flood_protection": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/FloodProtectionView"
             },
             {
-              "$ref": "#/components/schemas/FloodProtectionView"
+              "type": "null"
             }
           ]
         },
         "function_pool": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/FunctionPoolView"
             },
             {
-              "$ref": "#/components/schemas/FunctionPoolView"
+              "type": "null"
             }
           ]
         },
@@ -4759,10 +4720,10 @@
         "hostility": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/HostilityView"
             },
             {
-              "$ref": "#/components/schemas/HostilityView"
+              "type": "null"
             }
           ]
         },
@@ -4787,10 +4748,10 @@
         "migration": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/MigrationStatusView"
             },
             {
-              "$ref": "#/components/schemas/MigrationStatusView"
+              "type": "null"
             }
           ]
         },
@@ -4885,10 +4846,10 @@
         "relocation": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/RelocationOfferView"
             },
             {
-              "$ref": "#/components/schemas/RelocationOfferView"
+              "type": "null"
             }
           ]
         },
@@ -4904,10 +4865,10 @@
         "revenue_breakdown": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/RevenueBreakdownView"
             },
             {
-              "$ref": "#/components/schemas/RevenueBreakdownView"
+              "type": "null"
             }
           ]
         },
@@ -4950,10 +4911,10 @@
         "service_settings": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/ServiceSettingsView"
             },
             {
-              "$ref": "#/components/schemas/ServiceSettingsView"
+              "type": "null"
             }
           ]
         },
@@ -4966,10 +4927,10 @@
         "spares": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/SpareInventoryView"
             },
             {
-              "$ref": "#/components/schemas/SpareInventoryView"
+              "type": "null"
             }
           ]
         },
@@ -4991,10 +4952,10 @@
         "status": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/GameStatusView"
             },
             {
-              "$ref": "#/components/schemas/GameStatusView"
+              "type": "null"
             }
           ]
         },
@@ -5037,10 +4998,10 @@
         "topbar": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/TopBarMetrics"
             },
             {
-              "$ref": "#/components/schemas/TopBarMetrics"
+              "type": "null"
             }
           ]
         },
@@ -5242,6 +5203,11 @@
           "type": "integer"
         },
         "name": {
+          "description": "The displayed name, engineering voice (`Engine::names`).",
+          "type": "string"
+        },
+        "name_plain": {
+          "description": "The displayed name, plain voice.",
           "type": "string"
         },
         "tier_rule": {
@@ -5343,6 +5309,14 @@
         },
         "inv_status": {
           "description": "Lifecycle status, see `HostView::inv_status`.",
+          "type": "string"
+        },
+        "name": {
+          "description": "The displayed name, engineering voice. See `HostView::name`.",
+          "type": "string"
+        },
+        "name_plain": {
+          "description": "The displayed name, plain voice. See `HostView::name_plain`.",
           "type": "string"
         },
         "port_count": {
@@ -5696,10 +5670,10 @@
         "peer": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/components/schemas/CableEndpointView"
             },
             {
-              "$ref": "#/components/schemas/CableEndpointView"
+              "type": "null"
             }
           ]
         },
@@ -6134,14 +6108,8 @@
       "type": "integer"
     },
     "RackNamingView": {
-      "description": "One rack's `{n}` and device pattern override.",
+      "description": "One rack's device pattern override.",
       "properties": {
-        "n": {
-          "description": "The rack's number for `{n}` (a rack named `Rack N`); 0 for a rack the\nplayer named, which keeps that name under every rack pattern.",
-          "format": "int32",
-          "minimum": 0,
-          "type": "integer"
-        },
         "rack_id": {
           "format": "int32",
           "minimum": 0,
@@ -6154,26 +6122,6 @@
       },
       "required": [
         "rack_id"
-      ],
-      "type": "object"
-    },
-    "RackRowView": {
-      "description": "One rack's 1-based row in its building, for `{row}`.",
-      "properties": {
-        "rack_id": {
-          "format": "int32",
-          "minimum": 0,
-          "type": "integer"
-        },
-        "row": {
-          "format": "int32",
-          "minimum": 0,
-          "type": "integer"
-        }
-      },
-      "required": [
-        "rack_id",
-        "row"
       ],
       "type": "object"
     },
@@ -6251,7 +6199,11 @@
           "type": "integer"
         },
         "name": {
-          "description": "What the rack is called: a name the player gave it, or for a rack\nnumbered `Rack N` its zone's rack pattern (else the world's,\n`DeviceNamingView::rack_template`) filled in with `{n}` = N.",
+          "description": "What the rack is called, engineering voice (`Engine::names`): a name the\nplayer gave it, or for a rack numbered `Rack N` its zone's rack pattern\n(else the world's, `DeviceNamingView::rack_template`) filled in with\n`{n}` = N. Also what the rack's rename field prefills.",
+          "type": "string"
+        },
+        "name_plain": {
+          "description": "The displayed name, plain voice.",
           "type": "string"
         },
         "pending_placement": {
@@ -6365,6 +6317,11 @@
           "type": "integer"
         },
         "name": {
+          "description": "The displayed name, engineering voice (`Engine::names`).",
+          "type": "string"
+        },
+        "name_plain": {
+          "description": "The displayed name, plain voice.",
           "type": "string"
         },
         "status": {
@@ -6662,11 +6619,11 @@
                 "lane": {
                   "oneOf": [
                     {
-                      "type": "null"
-                    },
-                    {
                       "$ref": "#/components/schemas/CableLane",
                       "description": "The engine assigns this from `CableKind::lane()` at lay time. The\nplayer never sets it, so it is `None` on every player-submitted\ncommand and filled in once the engine groups this into a\n`RackAnchor`."
+                    },
+                    {
+                      "type": "null"
                     }
                   ]
                 },
@@ -6676,11 +6633,11 @@
                 "role": {
                   "oneOf": [
                     {
-                      "type": "null"
-                    },
-                    {
                       "$ref": "#/components/schemas/StripAnchorRole",
                       "description": "Marker/channel role: see `StripAnchorRole`. `None` from the player\nand on every anchor the engine stores; only a role-bearing anchor\nfrom an older save carries a value."
+                    },
+                    {
+                      "type": "null"
                     }
                   ]
                 },
@@ -6730,11 +6687,11 @@
                 "roof_hole_side": {
                   "oneOf": [
                     {
-                      "type": "null"
-                    },
-                    {
                       "$ref": "#/components/schemas/RoofHoleSide",
                       "description": "Front vs Rear roof cutout for `face: Top` anchors. `None`\nlets the renderer pick (Front by convention). Player commands\nfrom a clipped roof-hole pin set this to the marker's\nauthored side."
+                    },
+                    {
+                      "type": "null"
                     }
                   ]
                 },
@@ -7476,14 +7433,19 @@
         "customer_name": {
           "type": "string"
         },
-        "host_display_name": {
-          "type": "string"
-        },
         "host_id": {
           "description": "The host the VM is currently pinned to, unreachable but still\npowered up. Renderer displays it as the \"from\" side of the\nmigration picker.",
           "format": "int32",
           "minimum": 0,
           "type": "integer"
+        },
+        "host_name": {
+          "description": "The host's displayed name, engineering voice (`HostView::name`).",
+          "type": "string"
+        },
+        "host_name_plain": {
+          "description": "The host's displayed name, plain voice (`HostView::name_plain`).",
+          "type": "string"
         },
         "memory_mb": {
           "format": "int32",
@@ -7508,7 +7470,7 @@
         "customer_id",
         "customer_name",
         "host_id",
-        "host_display_name",
+        "host_name",
         "az_id",
         "vcpu",
         "memory_mb",
@@ -7608,28 +7570,6 @@
       ],
       "type": "object"
     },
-    "SuffixedNameView": {
-      "description": "One device the resolver makes unique: `section` is its snapshot section\n(`hosts`, `switches`, `gateways`, `appliances`, `edds`), `suffix` what\nfollows its pattern name, like `-srv-12`.",
-      "properties": {
-        "id": {
-          "format": "int32",
-          "minimum": 0,
-          "type": "integer"
-        },
-        "section": {
-          "type": "string"
-        },
-        "suffix": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "section",
-        "id",
-        "suffix"
-      ],
-      "type": "object"
-    },
     "SwitchPairView": {
       "description": "An MLAG pair, two switches peered to present one LACP partner.\n\nSmall top-level list, msgpack-only, exactly like `lags`: pair counts are\nsingle-digit and the content only moves on a structural change, so it is\nkeyframe-only and costs nothing per tick. Per-switch membership rides\n`SwitchView.pair_id` for the cheap \"which pair is this box in\" question.",
       "properties": {
@@ -7699,14 +7639,6 @@
           "format": "int32",
           "minimum": 0,
           "type": "integer"
-        },
-        "display_name": {
-          "description": "Player-facing identity like `sw-01`. See `HostView::display_name`.",
-          "type": "string"
-        },
-        "display_name_plain": {
-          "description": "Plain-mode counterpart: `switch 1` vs `sw-01`.",
-          "type": "string"
         },
         "egress_gbps": {
           "description": "Smoothed directional egress in Gbps, **NORTHBOUND ONLY**: what this\nswitch sends toward its uplinks. Pairs with `ingress_gbps`.\n\n**This is not \"what the switch transmitted\" and must not be shown as\nif it were; use `total_egress_gbps` for that.** Two deliberate facts make them\ndiffer. It is OFFERED load and uncapped, where a port counter is\nclamped to what the wire negotiated (`sim_core::port::clamp_to_ceiling`),\nso a saturated switch reads higher here than its ports can sum to. And\neast-west is kept out of it by the plane decision in\n`traffic::east_west`, because `Switch::saturated`, the edge `dio`\naggregation and the uplink waterfall all read it as a northbound trunk\nmeter; a leaf whose server-to-server chatter never heads north would\notherwise report trunk saturation and inflate the WAN line.",
@@ -7807,6 +7739,14 @@
           "minimum": 0,
           "type": "integer"
         },
+        "name": {
+          "description": "The displayed name, engineering voice. See `HostView::name`.",
+          "type": "string"
+        },
+        "name_plain": {
+          "description": "The displayed name, plain voice. See `HostView::name_plain`.",
+          "type": "string"
+        },
         "no_control_plane": {
           "description": "`true` for a modular chassis with no working supervisor seated: no\ncontrol plane, so it forwards nothing, and `indicator` reads `Red`.\nAlways `false` for a fixed-config or stackable switch, whose control\nplane is built in.",
           "type": "boolean"
@@ -7895,6 +7835,10 @@
           "format": "int32",
           "minimum": 0,
           "type": "integer"
+        },
+        "stored_name": {
+          "description": "The switch's own stored name (`sw-01`), what `RenameDevice` edits. Only\na rename field reads it; every display reads `name` / `name_plain`.",
+          "type": "string"
         },
         "total_egress_gbps": {
           "description": "**Everything the switch sent, server-to-server included.**\n\nThe sum of the switch's own ports' TX, both planes: exactly what its\nport table adds up to. It is the figure a console charts, because\n`egress_gbps` alone cannot move for traffic that never heads north: a\nleaf pushing server-to-server showed every port row alive under a flat\nline.\n\nIt is NOT `egress_gbps + east_west/2` (the backplane row credits a\nswitched byte once, not in and out). `snapshot::switch_port_totals` is\nthe guard that pins it to the port rows.",
@@ -8508,6 +8452,6 @@
     }
   },
   "generation": "v1alpha1",
-  "minor": 7,
+  "minor": 8,
   "root": "ModSnapshot"
 }

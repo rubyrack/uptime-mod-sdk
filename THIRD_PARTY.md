@@ -9,74 +9,75 @@ release build, with the Steam feature on, across all target platforms. It
 excludes the Uptime workspace's own crates. Lua and dlmalloc, which the game's
 script host includes, are in NOTICES.
 
-162 crates, 13 licence expressions, 8 distinct licences.
+163 crates, 14 licence expressions, 8 distinct licences.
 
 ## Crates by licence
 
 ### (Apache-2.0 OR MIT) AND BSD-3-Clause
 
-- encoding_rs 0.8.42
+- encoding_rs 0.8.44
 
 ### (MIT OR Apache-2.0) AND Unicode-3.0
 
-- unicode-ident 1.0.24
+- unicode-ident 1.0.27
 
 ### Apache-2.0 OR MIT
 
 - cmov 0.5.4
-- const-oid 0.10.2
-- ctutils 0.4.6
-- equivalent 1.0.2
+- const-oid 0.10.3
+- ctutils 0.4.8
+- equivalent 1.0.3
 - fluent-syntax 0.12.0
 - fnv 1.0.7
 - indexmap 2.14.2
 - multiversion_no_op 1.0.0
 - object 0.40.0
 - rustc-hash 2.1.3
-- utf8_iter 1.0.4
+- utf8_iter 1.1.0
+- utf_types 1.0.0
 
 ### Apache-2.0 WITH LLVM-exception
 
-- cranelift-assembler-x64 0.136.5
-- cranelift-bforest 0.136.5
-- cranelift-bitset 0.136.5
-- cranelift-codegen 0.136.5
-- cranelift-codegen-shared 0.136.5
-- cranelift-control 0.136.5
-- cranelift-entity 0.136.5
-- cranelift-frontend 0.136.5
-- cranelift-native 0.136.5
-- pulley-interpreter 49.0.5
-- pulley-macros 49.0.5
+- cranelift-assembler-x64 0.137.1
+- cranelift-bforest 0.137.1
+- cranelift-bitset 0.137.1
+- cranelift-codegen 0.137.1
+- cranelift-codegen-shared 0.137.1
+- cranelift-control 0.137.1
+- cranelift-entity 0.137.1
+- cranelift-frontend 0.137.1
+- cranelift-native 0.137.1
+- pulley-interpreter 50.0.1
+- pulley-macros 50.0.1
 - regalloc2 0.15.2
-- target-lexicon 0.13.5
-- wasmtime 49.0.5
-- wasmtime-environ 49.0.5
-- wasmtime-internal-component-macro 49.0.5
-- wasmtime-internal-component-util 49.0.5
-- wasmtime-internal-core 49.0.5
-- wasmtime-internal-cranelift 49.0.5
-- wasmtime-internal-jit-icache-coherence 49.0.5
-- wasmtime-internal-unwinder 49.0.5
-- wasmtime-internal-versioned-export-macros 49.0.5
-- wasmtime-internal-wit-bindgen 49.0.5
+- target-lexicon 0.13.6
+- wasmtime 50.0.1
+- wasmtime-environ 50.0.1
+- wasmtime-internal-component-macro 50.0.1
+- wasmtime-internal-component-util 50.0.1
+- wasmtime-internal-core 50.0.1
+- wasmtime-internal-cranelift 50.0.1
+- wasmtime-internal-jit-icache-coherence 50.0.1
+- wasmtime-internal-unwinder 50.0.1
+- wasmtime-internal-versioned-export-macros 50.0.1
+- wasmtime-internal-wit-bindgen 50.0.1
 
 ### Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT
 
 - linux-raw-sys 0.12.1
-- rustix 1.1.5
+- rustix 1.1.6
 - wasi 0.11.1+wasi-snapshot-preview1
-- wasm-encoder 0.258.3
-- wasm-metadata 0.258.3
-- wasmparser 0.258.3
-- wasmprinter 0.258.3
-- wit-component 0.258.3
-- wit-parser 0.258.3
+- wasm-encoder 0.261.0
+- wasm-metadata 0.261.0
+- wasmparser 0.261.0
+- wasmprinter 0.261.0
+- wit-component 0.261.0
+- wit-parser 0.261.0
 
 ### BSD-2-Clause OR Apache-2.0 OR MIT
 
-- zerocopy 0.8.56
-- zerocopy-derive 0.8.56
+- zerocopy 0.8.63
+- zerocopy-derive 0.8.63
 
 ### BSD-2-Clause OR MIT OR Apache-2.0
 
@@ -84,13 +85,16 @@ script host includes, are in NOTICES.
 
 ### BSD-3-Clause
 
-- zstd 0.14.3
-- zstd-safe 8.2.0
-- zstd-sys 2.1.2+zstd.1.5.7
+- zstd 0.14.4
+- zstd-safe 8.3.0
+
+### BSD-3-Clause AND BSD-2-Clause
+
+- zstd-sys 2.1.3+zstd.1.5.7
 
 ### MIT
 
-- capnp 0.27.1
+- capnp 0.27.3
 - generic-array 0.14.7
 - include_dir 0.7.4
 - include_dir_macros 0.7.4
@@ -98,7 +102,7 @@ script host includes, are in NOTICES.
 - libm 0.2.16
 - rmp 0.8.15
 - rmp-serde 1.3.1
-- synstructure 0.13.2
+- synstructure 0.14.0
 - zmij 1.0.23
 
 ### MIT OR Apache-2.0
@@ -107,16 +111,16 @@ script host includes, are in NOTICES.
 - anyhow 1.0.104
 - arbitrary 1.5.0
 - async-trait 0.1.92
-- bitflags 2.13.1
+- bitflags 2.13.2
 - block-buffer 0.10.4
 - block-buffer 0.12.1
 - bumpalo 3.20.3
-- cfg-if 1.0.4
+- cfg-if 1.0.5
 - cobs 0.3.0
 - core_detect 1.0.0
 - cpufeatures 0.2.17
 - cpufeatures 0.3.1
-- crc32fast 1.5.1
+- crc32fast 1.5.5
 - crossbeam-deque 0.8.8
 - crossbeam-epoch 0.9.21
 - crossbeam-utils 0.8.23
@@ -126,7 +130,7 @@ script host includes, are in NOTICES.
 - digest 0.11.3
 - displaydoc 0.2.7
 - either 1.19.0
-- errno 0.3.14
+- errno 0.3.15
 - getrandom 0.2.17
 - gimli 0.33.0
 - gltf 1.4.1
@@ -135,14 +139,14 @@ script host includes, are in NOTICES.
 - hashbrown 0.16.1
 - hashbrown 0.17.1
 - heck 0.5.0
-- hybrid-array 0.4.14
+- hybrid-array 0.4.15
 - id-arena 2.3.0
 - itertools 0.14.0
-- itoa 1.0.18
+- itoa 1.0.19
 - lazy_static 1.5.1
 - leb128fmt 0.1.0
-- libc 0.2.189
-- log 0.4.34
+- libc 0.2.191
+- log 0.4.35
 - memfd 0.6.6
 - num-traits 0.2.19
 - once_cell 1.21.4
@@ -163,45 +167,45 @@ script host includes, are in NOTICES.
 - serde_bytes 0.11.19
 - serde_core 1.0.229
 - serde_derive 1.0.229
-- serde_json 1.0.151
+- serde_json 1.0.154
 - serde_path_to_error 0.1.20
 - sha2 0.10.9
-- sha2 0.11.0
+- sha2 0.11.1
 - simdutf8 0.1.5
-- smallvec 1.16.0
+- smallvec 1.16.5
 - stable_deref_trait 1.2.1
 - steamworks 0.13.1
 - steamworks-sys 0.13.0
 - syn 2.0.119
-- syn 3.0.5
-- thiserror 2.0.20
-- thiserror-impl 2.0.20
+- syn 3.0.10
+- thiserror 2.0.21
+- thiserror-impl 2.0.21
 - typenum 1.20.1
-- utoipa 5.5.0
-- utoipa-gen 5.5.0
+- utoipa 6.0.0
+- utoipa-gen 6.0.1
 - windows-link 0.2.1
 - windows-sys 0.61.2
 
 ### Unicode-3.0
 
-- icu_collections 2.3.0
-- icu_locale_core 2.3.0
-- icu_normalizer 2.3.0
-- icu_normalizer_data 2.3.0
-- icu_properties 2.3.0
-- icu_properties_data 2.3.0
-- icu_provider 2.3.1
+- icu_collections 2.4.0
+- icu_locale_core 2.4.0
+- icu_normalizer 2.4.0
+- icu_normalizer_data 2.4.0
+- icu_properties 2.4.0
+- icu_properties_data 2.4.0
+- icu_provider 2.4.0
 - litemap 0.8.3
 - potential_utf 0.1.6
-- tinystr 0.8.4
+- tinystr 0.8.5
 - writeable 0.6.4
-- yoke 0.8.3
-- yoke-derive 0.8.2
+- yoke 0.8.4
+- yoke-derive 0.8.4
 - zerofrom 0.1.8
-- zerofrom-derive 0.1.7
+- zerofrom-derive 0.1.8
 - zerotrie 0.2.5
-- zerovec 0.11.8
-- zerovec-derive 0.11.6
+- zerovec 0.11.9
+- zerovec-derive 0.11.7
 
 ### Unlicense OR MIT
 
@@ -403,7 +407,7 @@ END OF TERMS AND CONDITIONS
 
 ### Apache-2.0 WITH LLVM-exception
 
-From cranelift-bforest-0.136.5.
+From cranelift-bforest-0.137.1.
 
 ```text
 
@@ -693,7 +697,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 For more information, please refer to <http://unlicense.org/>
 ```
 
-### capnp 0.27.1 (MIT): LICENSE
+### capnp 0.27.3 (MIT): LICENSE
 
 ```text
 Copyright (c) 2013-2018 Sandstorm Development Group, Inc. and contributors
@@ -717,7 +721,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
-### encoding_rs 0.8.42 ((Apache-2.0 OR MIT) AND BSD-3-Clause): LICENSE-APACHE
+### encoding_rs 0.8.44 ((Apache-2.0 OR MIT) AND BSD-3-Clause): LICENSE-APACHE
 
 ```text
 
@@ -924,7 +928,7 @@ THE SOFTWARE.
    limitations under the License.
 ```
 
-### encoding_rs 0.8.42 ((Apache-2.0 OR MIT) AND BSD-3-Clause): LICENSE-MIT
+### encoding_rs 0.8.44 ((Apache-2.0 OR MIT) AND BSD-3-Clause): LICENSE-MIT
 
 ```text
 Copyright Mozilla Foundation
@@ -954,7 +958,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-### encoding_rs 0.8.42 ((Apache-2.0 OR MIT) AND BSD-3-Clause): LICENSE-WHATWG
+### encoding_rs 0.8.44 ((Apache-2.0 OR MIT) AND BSD-3-Clause): LICENSE-WHATWG
 
 ```text
 Copyright © WHATWG (Apple, Google, Mozilla, Microsoft).
@@ -1035,7 +1039,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-### icu_collections 2.3.0 (Unicode-3.0): LICENSE
+### icu_collections 2.4.0 (Unicode-3.0): LICENSE
 
 ```text
 UNICODE LICENSE V3
@@ -1086,7 +1090,7 @@ Portions of ICU4X may have been adapted from ICU4C and/or ICU4J.
 ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others.
 ```
 
-### icu_locale_core 2.3.0 (Unicode-3.0): LICENSE
+### icu_locale_core 2.4.0 (Unicode-3.0): LICENSE
 
 ```text
 UNICODE LICENSE V3
@@ -1137,7 +1141,7 @@ Portions of ICU4X may have been adapted from ICU4C and/or ICU4J.
 ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others.
 ```
 
-### icu_normalizer 2.3.0 (Unicode-3.0): LICENSE
+### icu_normalizer 2.4.0 (Unicode-3.0): LICENSE
 
 ```text
 UNICODE LICENSE V3
@@ -1188,7 +1192,7 @@ Portions of ICU4X may have been adapted from ICU4C and/or ICU4J.
 ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others.
 ```
 
-### icu_normalizer_data 2.3.0 (Unicode-3.0): LICENSE
+### icu_normalizer_data 2.4.0 (Unicode-3.0): LICENSE
 
 ```text
 UNICODE LICENSE V3
@@ -1239,7 +1243,7 @@ Portions of ICU4X may have been adapted from ICU4C and/or ICU4J.
 ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others.
 ```
 
-### icu_properties 2.3.0 (Unicode-3.0): LICENSE
+### icu_properties 2.4.0 (Unicode-3.0): LICENSE
 
 ```text
 UNICODE LICENSE V3
@@ -1290,7 +1294,7 @@ Portions of ICU4X may have been adapted from ICU4C and/or ICU4J.
 ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others.
 ```
 
-### icu_properties_data 2.3.0 (Unicode-3.0): LICENSE
+### icu_properties_data 2.4.0 (Unicode-3.0): LICENSE
 
 ```text
 UNICODE LICENSE V3
@@ -1341,7 +1345,7 @@ Portions of ICU4X may have been adapted from ICU4C and/or ICU4J.
 ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others.
 ```
 
-### icu_provider 2.3.1 (Unicode-3.0): LICENSE
+### icu_provider 2.4.0 (Unicode-3.0): LICENSE
 
 ```text
 UNICODE LICENSE V3
@@ -1961,7 +1965,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-### synstructure 0.13.2 (MIT): LICENSE
+### synstructure 0.14.0 (MIT): LICENSE
 
 ```text
 Copyright 2016 Nika Layzell
@@ -2036,7 +2040,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 For more information, please refer to <http://unlicense.org/>
 ```
 
-### tinystr 0.8.4 (Unicode-3.0): LICENSE
+### tinystr 0.8.5 (Unicode-3.0): LICENSE
 
 ```text
 UNICODE LICENSE V3
@@ -2087,7 +2091,7 @@ Portions of ICU4X may have been adapted from ICU4C and/or ICU4J.
 ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others.
 ```
 
-### unicode-ident 1.0.24 ((MIT OR Apache-2.0) AND Unicode-3.0): LICENSE-APACHE
+### unicode-ident 1.0.27 ((MIT OR Apache-2.0) AND Unicode-3.0): LICENSE-APACHE
 
 ```text
                               Apache License
@@ -2268,7 +2272,7 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 END OF TERMS AND CONDITIONS
 ```
 
-### unicode-ident 1.0.24 ((MIT OR Apache-2.0) AND Unicode-3.0): LICENSE-MIT
+### unicode-ident 1.0.27 ((MIT OR Apache-2.0) AND Unicode-3.0): LICENSE-MIT
 
 ```text
 Permission is hereby granted, free of charge, to any
@@ -2296,7 +2300,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-### unicode-ident 1.0.24 ((MIT OR Apache-2.0) AND Unicode-3.0): LICENSE-UNICODE
+### unicode-ident 1.0.27 ((MIT OR Apache-2.0) AND Unicode-3.0): LICENSE-UNICODE
 
 ```text
 UNICODE LICENSE V3
@@ -2454,7 +2458,7 @@ Portions of ICU4X may have been adapted from ICU4C and/or ICU4J.
 ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others.
 ```
 
-### yoke 0.8.3 (Unicode-3.0): LICENSE
+### yoke 0.8.4 (Unicode-3.0): LICENSE
 
 ```text
 UNICODE LICENSE V3
@@ -2505,7 +2509,7 @@ Portions of ICU4X may have been adapted from ICU4C and/or ICU4J.
 ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others.
 ```
 
-### yoke-derive 0.8.2 (Unicode-3.0): LICENSE
+### yoke-derive 0.8.4 (Unicode-3.0): LICENSE
 
 ```text
 UNICODE LICENSE V3
@@ -2607,7 +2611,7 @@ Portions of ICU4X may have been adapted from ICU4C and/or ICU4J.
 ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others.
 ```
 
-### zerofrom-derive 0.1.7 (Unicode-3.0): LICENSE
+### zerofrom-derive 0.1.8 (Unicode-3.0): LICENSE
 
 ```text
 UNICODE LICENSE V3
@@ -2709,7 +2713,7 @@ Portions of ICU4X may have been adapted from ICU4C and/or ICU4J.
 ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others.
 ```
 
-### zerovec 0.11.8 (Unicode-3.0): LICENSE
+### zerovec 0.11.9 (Unicode-3.0): LICENSE
 
 ```text
 UNICODE LICENSE V3
@@ -2760,7 +2764,7 @@ Portions of ICU4X may have been adapted from ICU4C and/or ICU4J.
 ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others.
 ```
 
-### zerovec-derive 0.11.6 (Unicode-3.0): LICENSE
+### zerovec-derive 0.11.7 (Unicode-3.0): LICENSE
 
 ```text
 UNICODE LICENSE V3
@@ -2839,7 +2843,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-### zstd 0.14.3 (BSD-3-Clause): LICENSE
+### zstd 0.14.4 (BSD-3-Clause): LICENSE
 
 ```text
 BSD 3-Clause License
@@ -2872,7 +2876,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
-### zstd-safe 8.2.0 (BSD-3-Clause): LICENSE
+### zstd-safe 8.3.0 (BSD-3-Clause): LICENSE
 
 ```text
 BSD 3-Clause License
@@ -2905,7 +2909,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
-### zstd-sys 2.1.2+zstd.1.5.7 (BSD-3-Clause): LICENSE
+### zstd-sys 2.1.3+zstd.1.5.7 (BSD-3-Clause AND BSD-2-Clause): LICENSE
 
 ```text
 BSD 3-Clause License
@@ -2938,7 +2942,41 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
-### zstd-sys 2.1.2+zstd.1.5.7 (BSD-3-Clause): LICENSE.BSD-3-Clause
+### zstd-sys 2.1.3+zstd.1.5.7 (BSD-3-Clause AND BSD-2-Clause): LICENSE.BSD-2-Clause
+
+```text
+The decoders for legacy formats, in zstd/lib/legacy/, include code under the
+2-clause BSD license:
+
+BSD 2-Clause License
+
+Copyright (C) 2013-2016, Yann Collet.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+    * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+```
+
+### zstd-sys 2.1.3+zstd.1.5.7 (BSD-3-Clause AND BSD-2-Clause): LICENSE.BSD-3-Clause
 
 ```text
 The auto-generated bindings are under the 3-clause BSD license:

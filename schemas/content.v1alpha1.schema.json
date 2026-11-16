@@ -322,11 +322,11 @@
         "tier": {
           "oneOf": [
             {
-              "type": "null"
-            },
-            {
               "$ref": "#/$defs/TierRow",
               "description": "The SLA tier the archetype signs at, replacing the model's tier band."
+            },
+            {
+              "type": "null"
             }
           ]
         },
@@ -446,10 +446,10 @@
         "when": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/$defs/EventWhenRow"
             },
             {
-              "$ref": "#/$defs/EventWhenRow"
+              "type": "null"
             }
           ]
         }
@@ -686,11 +686,11 @@
         "entity": {
           "oneOf": [
             {
-              "type": "null"
-            },
-            {
               "$ref": "#/$defs/EntityRow",
               "description": "Required when `point` is `entity_tab`, absent otherwise."
+            },
+            {
+              "type": "null"
             }
           ]
         },
@@ -815,11 +815,11 @@
         "spread_grain": {
           "oneOf": [
             {
-              "type": "null"
-            },
-            {
               "$ref": "#/$defs/SpreadGrainRow",
               "description": "The grain the kind's own spread is held at. Only for kinds that spread\ntheir units: `obj`, `db`, `cdn`, `k8s` and `lb`."
+            },
+            {
+              "type": "null"
             }
           ]
         },
@@ -1066,10 +1066,10 @@
         "tone": {
           "oneOf": [
             {
-              "type": "null"
+              "$ref": "#/$defs/ToneRow"
             },
             {
-              "$ref": "#/$defs/ToneRow"
+              "type": "null"
             }
           ]
         }
