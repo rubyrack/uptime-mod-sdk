@@ -255,7 +255,7 @@
           "type": "integer"
         },
         "stored_name": {
-          "description": "The appliance's own stored name (`fw-01`), what `RenameDevice` edits.\nSee `SwitchView::stored_name`.",
+          "description": "The appliance's own stored name (`sg-01`), what `RenameDevice` edits.\nSee `SwitchView::stored_name`.",
           "type": "string"
         },
         "threats": {
@@ -1163,6 +1163,14 @@
         },
         "root_kind": {
           "description": "Variant tag mirroring `IncidentRoot`, \"CableFailed\", \"SwitchTripped\".",
+          "type": "string"
+        },
+        "ruled_out": {
+          "description": "Checked where it stands and found not to be the cause. Listed after\nevery live hypothesis; the card shows it struck off and offers no\naction on it.",
+          "type": "boolean"
+        },
+        "ruled_out_by": {
+          "description": "What ruled it out, as the pushable kind tag whose kit checked it:\n`\"CrashCart\"` (a crash cart's field diagnostics kit). Empty while\n`ruled_out` is false.",
           "type": "string"
         },
         "sub_id": {
@@ -2476,7 +2484,7 @@
           "type": "string"
         },
         "location": {
-          "description": "Box location class: \"DeliveryZone\" / \"Floor\" / \"Trolley\". The\nrenderer dispatches off this, a Floor/Trolley box is drawn out in\nthe world at `position`; a DeliveryZone box uses the authored\nstaging-zone layout.",
+          "description": "Box location class: \"DeliveryZone\" / \"Floor\" / \"Trolley\" / \"Pushable\".\nThe renderer dispatches off this, a Floor/Trolley box is drawn out in\nthe world at `position`; a DeliveryZone box uses the authored\nstaging-zone layout. A \"Pushable\" box rides a pushable's top: draw it\nfrom that row's `PushableView::on_top`; `position` is the cart's\nstamped point.",
           "type": "string"
         },
         "position": {
@@ -3896,7 +3904,7 @@
           "$ref": "#/components/schemas/FanSpeed"
         },
         "fault": {
-          "description": "Any installed part (PSU / disk / fan / DIMM / CPU) is\n`ComponentStatus::Failed`. `Degraded` does not set this: only a\nFailed part is a \"problem\" for lamp purposes. Drives the front power\nlamp red (solid) while the box still has power, and the PSU squares'\nflash-red while at least one cord is fed. Single source of truth:\n`sim_project::parts_fault_map`.",
+          "description": "Any installed part (PSU / disk / fan / DIMM / CPU) is\n`ComponentStatus::Failed`. `Degraded` does not set this: only a\nFailed part is a \"problem\" for lamp purposes. Drives the front power\nlamp red (solid) while the box still has power, and the PSU squares'\nflash-red while at least one cord is fed. Single source of truth:\n`sim_project::indicator::parts_fault_of`.",
           "type": "boolean"
         },
         "indicator": {
@@ -8016,7 +8024,7 @@
           "type": "integer"
         },
         "busiest_host_label": {
-          "description": "That host's label, the same text as `HostView::label`, so a wall can\nname it without holding the host rows.",
+          "description": "That host's name, the same text as its `HostView::name`, so a wall can\nname it without holding the host rows.",
           "type": "string"
         },
         "busiest_host_load": {
@@ -8452,6 +8460,6 @@
     }
   },
   "generation": "v1alpha1",
-  "minor": 8,
+  "minor": 9,
   "root": "ModSnapshot"
 }

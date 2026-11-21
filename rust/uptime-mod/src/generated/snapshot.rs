@@ -8,7 +8,7 @@ use serde::Deserialize;
 /// The mod API generation this module was generated from.
 pub const API_GENERATION: &str = "v1alpha1";
 /// The snapshot schema minor this module was generated from.
-pub const API_MINOR: u32 = 8;
+pub const API_MINOR: u32 = 9;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct ActiveAttackView {
@@ -487,6 +487,10 @@ pub struct CandidateCauseView {
     pub msg_key: String,
     pub rack_id: u32,
     pub root_kind: String,
+    #[serde(default)]
+    pub ruled_out: bool,
+    #[serde(default)]
+    pub ruled_out_by: String,
     #[serde(default)]
     pub sub_id: u32,
 }

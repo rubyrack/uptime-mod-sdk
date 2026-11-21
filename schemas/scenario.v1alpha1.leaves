@@ -562,6 +562,8 @@ QuestTrigger::CanAdvanceTo {..} optional
 QuestTrigger::CanAdvanceTo.step u32 required
 QuestTrigger::ConsoleOpened {..} optional
 QuestTrigger::ConsoleOpened.kind String required
+QuestTrigger::CrashCartRacksReach {..} optional
+QuestTrigger::CrashCartRacksReach.count u32 required
 QuestTrigger::EddHasUplinkCable unit optional
 QuestTrigger::EventResolved {..} optional
 QuestTrigger::EventResolved.key String required
