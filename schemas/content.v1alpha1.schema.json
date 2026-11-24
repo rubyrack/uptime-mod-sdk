@@ -1,5 +1,37 @@
 {
   "$defs": {
+    "AcceleratorRow": {
+      "description": "A host's accelerator, or `none`.",
+      "enum": [
+        "none",
+        "gpu",
+        "tpu",
+        "fpga"
+      ],
+      "type": "string"
+    },
+    "ArchRow": {
+      "description": "A host's CPU architecture.",
+      "enum": [
+        "x86_64",
+        "arm64",
+        "riscv",
+        "mainframe"
+      ],
+      "type": "string"
+    },
+    "CategoryRow": {
+      "description": "A host's catalog category.",
+      "enum": [
+        "balanced",
+        "memory_opt",
+        "compute_dense",
+        "storage",
+        "gpu",
+        "network_appliance"
+      ],
+      "type": "string"
+    },
     "ChoiceRow": {
       "additionalProperties": false,
       "description": "One option of a select.",
@@ -538,12 +570,40 @@
       "description": "One host SKU entry in a pack's `hosts` file.",
       "properties": {
         "accel_count": {
-          "description": "Number of physical accelerators. The loader allows more than 0 only when\nthe base model carries an accelerator.",
+          "description": "Number of physical accelerators. The loader allows more than 0 only when\nthe row's resolved accelerator is set: its `accelerator`, else its\n`model`'s.",
           "format": "int32",
           "maximum": 64,
           "minimum": 0,
           "type": [
             "integer",
+            "null"
+          ]
+        },
+        "accelerator": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/AcceleratorRow",
+              "description": "The accelerator, or `none`. A GPU needs `gpu_mem_mb_per_gpu`, from the\nrow or its base."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "arch": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ArchRow"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "art": {
+          "description": "Another new host of this pack whose model draws this one. Both rows\nresolve to the same physical shape. New rows only.",
+          "type": [
+            "string",
             "null"
           ]
         },
@@ -554,6 +614,33 @@
           "minimum": 0,
           "type": [
             "integer",
+            "null"
+          ]
+        },
+        "category": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/CategoryRow"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "depth_mm": {
+          "description": "Chassis depth in millimetres.",
+          "format": "int32",
+          "maximum": 1070,
+          "minimum": 100,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "description": {
+          "description": "One line about the item, in the same form as `name`, at most 200 bytes.",
+          "type": [
+            "string",
             "null"
           ]
         },
@@ -568,7 +655,7 @@
           ]
         },
         "gpu_mem_mb_per_gpu": {
-          "description": "Frame-buffer memory per accelerator, in MB. The loader allows it only when\nthe base model carries an accelerator.",
+          "description": "Frame-buffer memory per accelerator, in MB. The loader allows it only when\nthe row carries an accelerator.",
           "format": "int32",
           "maximum": 1048576,
           "minimum": 1,
@@ -604,12 +691,29 @@
           "description": "The base host SKU this row starts from.",
           "type": "string"
         },
+        "module_slots": {
+          "description": "Cages that take a bought NIC module. 0 is a fixed factory port set.",
+          "format": "int32",
+          "maximum": 4,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
         "mtbf_hours": {
           "format": "int32",
           "maximum": 1000000,
           "minimum": 0,
           "type": [
             "integer",
+            "null"
+          ]
+        },
+        "name": {
+          "description": "The name the game shows: plain text of at most 48 bytes, or `@key`\nnaming one of the pack's own `en` messages (`@@` starts plain text with\n`@`). Absent shows the SKU name, `<mod_id>:<id>`.",
+          "type": [
+            "string",
             "null"
           ]
         },
@@ -620,10 +724,42 @@
             "null"
           ]
         },
+        "ports": {
+          "description": "The numbered data ports, bank by bank: port 1 is the first port of the\nfirst bank. Management and BMC ports are not data ports and are not listed.",
+          "items": {
+            "$ref": "#/$defs/PortBankRow"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "type": [
+            "array",
+            "null"
+          ]
+        },
         "power_w": {
           "format": "int32",
           "maximum": 20000,
           "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "psu_count": {
+          "description": "Power supplies, one rear power inlet each.",
+          "format": "int32",
+          "maximum": 8,
+          "minimum": 1,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "rack_units": {
+          "description": "Height in rack units. New rows only, as is every field below.",
+          "format": "int32",
+          "maximum": 10,
+          "minimum": 1,
           "type": [
             "integer",
             "null"
@@ -751,6 +887,49 @@
       ],
       "type": "string"
     },
+    "PortBankRow": {
+      "additionalProperties": false,
+      "description": "One bank of identical data ports, numbered on from the bank before it.",
+      "properties": {
+        "count": {
+          "format": "int32",
+          "maximum": 255,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "media": {
+          "$ref": "#/$defs/PortMediaRow"
+        },
+        "speed_gbps": {
+          "description": "Line rate of every port in the bank. At most the cage's own rate (10\nfor RJ45).",
+          "format": "int32",
+          "maximum": 400,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "media",
+        "speed_gbps",
+        "count"
+      ],
+      "type": "object"
+    },
+    "PortMediaRow": {
+      "description": "The cage of one bank of data ports.",
+      "enum": [
+        "rj45",
+        "sfp_plus",
+        "sfp28",
+        "sfp56",
+        "sfp112",
+        "qsfp_plus",
+        "qsfp28",
+        "qsfp56",
+        "qsfp_dd"
+      ],
+      "type": "string"
+    },
     "PropertyType": {
       "description": "The type of one config property.",
       "enum": [
@@ -868,10 +1047,25 @@
       ],
       "type": "string"
     },
+    "SwitchClassRow": {
+      "description": "A switch's management class: `l2` parks loops, `l3` also routes.",
+      "enum": [
+        "l2",
+        "l3"
+      ],
+      "type": "string"
+    },
     "SwitchPackRow": {
       "additionalProperties": false,
       "description": "One switch SKU entry in a pack's `switches` file.",
       "properties": {
+        "art": {
+          "description": "Another new switch of this pack whose model draws this one. Both rows\nresolve to the same physical shape. New rows only.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "capex": {
           "description": "Purchase price, in the engine's money minor units.",
           "format": "int64",
@@ -879,6 +1073,33 @@
           "minimum": 0,
           "type": [
             "integer",
+            "null"
+          ]
+        },
+        "class": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SwitchClassRow"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "depth_mm": {
+          "description": "Chassis depth in millimetres.",
+          "format": "int32",
+          "maximum": 1070,
+          "minimum": 100,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "description": {
+          "description": "One line about the item, as a host row's `description`.",
+          "type": [
+            "string",
             "null"
           ]
         },
@@ -906,6 +1127,13 @@
           "description": "The item name inside the pack; the SKU is stored as `<mod_id>:<id>`.",
           "type": "string"
         },
+        "mlag": {
+          "description": "Whether two of these pair into one MLAG system. A pair needs two data\nports, and adds the rear `Port_MlagKeepalive` jack.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
         "model": {
           "description": "The base switch SKU this row starts from.",
           "type": "string"
@@ -919,10 +1147,29 @@
             "null"
           ]
         },
+        "name": {
+          "description": "The name the game shows, as a host row's `name`.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "overrides": {
           "description": "A base SKU this row replaces, as `base:<name>`. Absent adds a new SKU.",
           "type": [
             "string",
+            "null"
+          ]
+        },
+        "port_groups": {
+          "description": "The numbered front ports, bank by bank. Declaring them without\n`fabric_capacity_gbps` makes the fabric non-blocking over them. A\nmodular chassis grows its ports from cards and declares none.",
+          "items": {
+            "$ref": "#/$defs/PortBankRow"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "type": [
+            "array",
             "null"
           ]
         },
@@ -944,6 +1191,36 @@
             "integer",
             "null"
           ]
+        },
+        "psu_count": {
+          "description": "Power supplies, one rear power inlet each.",
+          "format": "int32",
+          "maximum": 8,
+          "minimum": 1,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "rack_units": {
+          "description": "Height in rack units. New rows only, as is every field below.",
+          "format": "int32",
+          "maximum": 10,
+          "minimum": 1,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "role": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SwitchRoleRow"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -951,6 +1228,17 @@
         "model"
       ],
       "type": "object"
+    },
+    "SwitchRoleRow": {
+      "description": "A switch's network role, a label for grouping and the shop.",
+      "enum": [
+        "access",
+        "tor",
+        "leaf",
+        "aggregation",
+        "spine"
+      ],
+      "type": "string"
     },
     "SwitchesFile": {
       "additionalProperties": false,

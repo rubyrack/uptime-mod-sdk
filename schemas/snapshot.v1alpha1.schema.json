@@ -3711,7 +3711,7 @@
           "type": "number"
         },
         "model_sku": {
-          "description": "The base SKU whose model renders this one: a content-pack SKU borrows\na built-in chassis. Empty means `sku_name` itself.",
+          "description": "What draws this device, the ONE authority for its model. Empty means\n`sku_name`. `X`: the pack's own model for `sku_name` when installed,\nelse SKU `X`'s. `procedural`: the pack's own model, else a plain\nchassis. `pinned:X` / `pinned:procedural@<shape key>`: SKU `X`'s\nbuilt-in model or a plain chassis, never the pack's model; a kept copy whose shape\ndiffers from its catalog row's carries it. Grammar: `sim_core::drawn_model`.",
           "type": "string"
         },
         "module_slots": {
@@ -7764,7 +7764,7 @@
           "type": "boolean"
         },
         "model_sku": {
-          "description": "The base SKU whose model renders this one. Empty means `sku_name`.\nSee `HostView::model_sku`.",
+          "description": "What draws this device. Empty means `sku_name`. See\n`HostView::model_sku`.",
           "type": "string"
         },
         "module_slots": {

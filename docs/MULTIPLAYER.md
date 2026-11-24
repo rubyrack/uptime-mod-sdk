@@ -11,11 +11,15 @@ A joiner needs only the packs that change what their own screen draws: packs tha
 | Hardware, scenarios or both | No. The world carries the catalog. |
 | A script mod | No. The script runs on the host. |
 | A script mod with panels, a HUD card, keys or toasts | No. They travel in the world's data. |
-| Anything with `art` or `locale` content | Yes, at the same version as the host. |
+| Anything with `art` or `locale` content | Yes, with the same files as the host. |
 
 The game loads two kinds of art file, a pack icon under `art/icons/` and an equipment model under `art/models/`, and Fluent text under `locale/`. See [Content packs](CONTENT_PACKS.md) and [Equipment models](MODELS.md).
 
-The host's world records each client-required pack with its version and hash. A joiner's game states which of these packs it holds when it connects, and the host's game compares. A copy that differs in a single file has a different hash and is refused.
+The host's world records each client-required pack with its version and hash. A joiner's game states which of these packs it holds when it connects, and the host's game compares the hash and nothing else. The version is not compared on its own: a copy at the same version with one changed file has a different hash and is refused, and a copy at a different version always has a different hash too, since `manifest.json` is hashed. Only client-required packs are checked, so a gameplay-only pack never refuses a joiner.
+
+The hash covers every file of the pack except `uptime-package.json` and `workshop.json`, so a change to `manifest.json`, including a new `version`, changes it.
+
+**The host publishes a new hash only when it loads the world.** The game reads the installed copy of each pack and records its version and hash when a world loads. If the host updates a pack in the middle of a session, the world still carries the old hash, and a joiner with the new copy is refused as a mismatch. The host loads the world again, and the world then records the new copy. A joiner has to hold that same copy, so tell players who host your mod to update it and reload before they invite anyone.
 
 ### A pack cannot carry art and a script
 

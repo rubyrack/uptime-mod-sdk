@@ -12,6 +12,8 @@ uptime-mod run <dir> (--scenario <id> | --world <save>) --quanta <n>
 uptime-mod upload <dir> [--visibility private|friends|public]
                   [--change-note <text>] [--preview <image>] [--dry-run]
 uptime-mod model <source.glb> --proxy <proxy.glb> --pack <dir> --item <item id>
+uptime-mod bases [--json] [<sku>]
+uptime-mod version
 ```
 
 `uptime-mod --help` prints this usage with a line on each command, and `uptime-mod <command> --help` prints the same text.
@@ -179,10 +181,57 @@ refused [model_over_limit]:
 box: 1 model problem(s)
 ```
 
-A clean model prints `ok: the game's checks pass box's model`. The counts must match the base model the row names: the same number of cabled ports, one inlet per PSU, and no bays or the base model's bays. The model must fit the base model's rack slot, with at most 32 materials. [Equipment models](MODELS.md) lists every limit and the `.pips.json` fields. A default export usually needs work before it passes:
+A clean model prints `ok: the game's checks pass box's model`. The counts must match the row's resolved shape: the same number of cabled ports, one inlet per PSU, and no bays or one bay per module slot. The model must fit the rack slot the row's `rack_units` and `depth_mm` make (the base's when the row declares none), with at most 32 materials. [Equipment models](MODELS.md) lists every limit and the `.pips.json` fields. A default export usually needs work before it passes:
 
 - Join or reuse materials until there are 32 or fewer. The command merges by material, so the material count is the primitive count.
 - The game draws the lights from the sidecar, so no material needs to glow. The game refuses a material that emits light or blends its alpha.
 - A texture is a PNG inside the GLB, at most 2048 by 2048.
 
-The command counts problems elsewhere in the pack but does not list them. Run `validate` for those. The exit code is 0 when the model passes, 1 when the game refuses it or a step failed, and 2 for a wrong command line.
+The command also runs the author checks `validate` runs on this item's model, such as `port_faces_inward` and `pips_named_port_missing`, even when other parts of the pack have problems. It counts those other problems but does not list them. Run `validate` for them. The exit code is 0 when the model passes, 1 when the game refuses it or a step failed, and 2 for a wrong command line.
+
+## bases
+
+`bases` lists the built-in hosts and switches a pack row can start from, and the shape a model drawn over each one must fit. Use the exact SKU name it prints as a row's `model`, and read the port and PSU counts before you build a model for it.
+
+```
+uptime-mod bases
+uptime-mod bases "ARM 1U Dual"
+uptime-mod bases --json "32×400G Spine"
+```
+
+With no SKU it prints a short table with one line for each host and switch: the name, the kind, the rack units, the numbered ports, the PSU inlets, the module slots and the port banks. With a SKU it prints that SKU in full. The name must match exactly, but an unquoted name given as several words is joined with spaces. An unknown name exits 2 and lists the SKUs whose names contain it, or points at the plain `bases` listing.
+
+`--json` prints the same facts as JSON: a list for the whole catalog, one object for a SKU. Each object has these fields:
+
+| Field | Meaning |
+|---|---|
+| `sku`, `kind` | The exact SKU name and `host` or `switch`. |
+| `rack_units` | The height in U. A desktop switch counts as 1U, as it does on a shelf in a rack. |
+| `depth_mm` | The depth a row declares to keep this base's shape, in whole millimetres. |
+| `row` | The row fields that keep this base's shape, spelled as a row writes them: `rack_units`, `depth_mm`, `psu_count`, `ports` or `port_groups`, `module_slots` and `arch`, `category`, `accelerator` on a host, `class`, `role`, `mlag` on a switch. Add an `id` and the base's `sku` as `model`, and the row loads with the base's shape. A field no row can declare, such as an unmanaged class, is left out. |
+| `envelope` | The slot a model must fit, in metres: `height_m`, `half_width_m` and `depth_m`. The same box `validate` and `model` check against. |
+| `physical_nics` | The data ports the box ships with. It excludes power inlets and module cage ports. |
+| `numbered_ports` | The ports the sidecar `ports` map must number, `"1"` up. It equals `physical_nics` on every built-in SKU, but the two are separate facts. |
+| `port_banks` | The banks in order, each with `media` (a row's spelling: `rj45`, `sfp_plus`, `qsfp_dd` and so on), `cage`, `speed_gbps`, `count`, and the `first` and `last` sidecar numbers it occupies. |
+| `named_ports` | The rear ports the game adds above the numbered set, which the sidecar `named_ports` map must hold: `Port_MlagKeepalive` on a switch that can peer, `Port_Stack_1` up on a stackable one. Empty on a host. |
+| `module_slots`, `module_cage_ports` | On a host, the NIC cages it takes and the ports they add. Those ports mint above the power inlets and are not numbered in the sidecar. On a switch, `module_slots` is the line-card bays of a modular chassis, and `module_cage_ports` is 0. |
+| `psu_inlets` | The PSUs, and so the entries in the sidecar `iec` list. |
+| `bays` | The module bays a sidecar `bays` map may draw, or none. |
+| `disk_bays`, `arch`, `accelerator`, `category` | Host only. Spelled as a row spells them: `arm64`, `gpu` or `none`, `compute_dense`. |
+| `stack_ports`, `class`, `role`, `mlag` | Switch only. `class` is `l2` or `l3` and `role` is `access`, `tor`, `leaf`, `aggregation` or `spine`; each is null when the base has a value no row can declare. |
+| `scalars` | The stats a row can override, with the base values. Money fields are in the engine's money minor units, as the row fields are. |
+
+## version
+
+`version` prints four labelled numbers: the game release this CLI belongs to, the Rust SDK crate release that reads the current mod API minor (the `uptime-mod` crate you depend on, not this CLI), the content schema and the mod API:
+
+```
+game release: <game release>
+Rust SDK crate: <!-- mod:crate -->0.11<!-- /mod:crate -->.x
+content schema: v1alpha1, minor <!-- mod:minor -->10<!-- /mod:minor -->
+mod API: v1alpha1, minor <!-- mod:minor -->10<!-- /mod:minor -->
+```
+
+`<game release>` stands for the release number of the game the CLI came with, such as `0.2.0`.
+
+`--version` and `-V` print the same text. The content schema and the mod API share one generation and one minor, which is the number a manifest's `api_minor` is checked against. Put this output in a bug report.

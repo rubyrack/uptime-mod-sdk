@@ -79,6 +79,8 @@ Packs that affect play mark the run. See [Script mods](SCRIPTS.md) for what that
 
 The game accepts an `api_minor` between two limits. The low limit is the latest minor that declared a break on data your pack uses: a scenario field its scenario files set, a removed scenario enum variant its scenario files name, or any break on the hardware, customer and service files or the manifest. The high limit is the minor this build serves. A pack outside that range is incompatible and the game says so by name. A pack built against an older minor still loads while no break on its data has landed since.
 
+A hardware row that sets a field added at minor <!-- mod:minor -->10<!-- /mod:minor -->, such as `name`, `rack_units` or `ports`, needs an `api_minor` of at least <!-- mod:minor -->10<!-- /mod:minor -->. The game does not check this when it loads your pack, but a game that serves an older minor refuses the field as unknown. `uptime-mod validate` reports it as `api_minor_too_low`, see [Hardware errors](#hardware-errors).
+
 The current minor is `<!-- mod:minor -->10<!-- /mod:minor -->`; minors <!-- mod:shipped -->0 to 10<!-- /mod:shipped --> have shipped. A scenario pack built against an older minor is refused by name when a later minor removed or renamed a scenario field or enum variant its files use. [Reference](REFERENCE.md#how-versions-work) lists each minor's breaks. While `v1alpha1` is a preview, a minor may contain a break. The ledgers in [Reference](REFERENCE.md) record every change.
 
 ## Hardware packs
@@ -92,9 +94,16 @@ The game refuses any other file under `hardware/` with the rule `content_categor
 
 ### The base-model rule
 
-A row names a built-in SKU in `model` and sets scalar stats only. It cannot set shape. Rack units, ports, NIC and PSU counts, bays, architecture, accelerator, category and switch role all come from the base model. Every row rejects unknown keys. A new SKU draws as its base model unless the pack ships a model for it, see [Equipment models](MODELS.md). An override always draws as the SKU it overrides.
+A row names a built-in SKU in `model`. That base supplies every field the row leaves out, so a row that sets only stats (the way packs worked before shapes) loads unchanged. A new row can also declare its own shape and kind: rack units, depth, power supplies, ports, module slots, architecture, accelerator and category on a host, and rack units, depth, power supplies, port groups, class, MLAG and role on a switch. Only some of these change what a model must draw, see [What a row's shape needs](#what-a-rows-shape-needs). Every row rejects unknown keys.
 
-Copy base SKU names exactly from the built-in catalog, for example `Balanced x86 1U`, `Compute 1U` and `16-port Access GbE`. The GPU host is `GPU 2× 2U` and the name contains the character `×`.
+Two things are different about a new look and a new shape, and the difference decides what you ship:
+
+- **A new look on a base.** The row keeps the base's shape and only changes stats, or draws its own model inside the base's slot with the base's port, power and bay counts. See [Equipment models](MODELS.md#a-new-look-or-a-new-shape).
+- **A new hardware shape.** The row declares a shape that differs from its base. The base model cannot draw it, so the row must ship its own model, or share another row's model with `art`. The pack is refused with `shape_needs_model` otherwise.
+
+An override row never sets shape. It replaces a built-in SKU's stats in place, keeps its shape and always draws as that SKU.
+
+Copy base SKU names exactly from the built-in catalog, for example `Balanced x86 1U`, `Compute 1U` and `16-port Access GbE`. The GPU host is `GPU 2× 2U` and the name contains the character `×`. Run [`uptime-mod bases`](CLI.md#bases) to list every base with its rack units, depth in millimetres, envelope, ports, power supplies and scalar defaults. Its `--json` output holds a `row` object per base, spelled as a row's fields, to paste into a row and keep the base's shape.
 
 ### Host rows
 
@@ -106,7 +115,19 @@ Copy base SKU names exactly from the built-in catalog, for example `Balanced x86
 | `vcpu`, `mem_mb`, `ssd_gb`, `ssd_iops`, `power_w` | Optional numbers. |
 | `capex`, `hourly_cost` | Optional money, see below. |
 | `mtbf_hours`, `generation_year` | Optional numbers. |
-| `accel_count`, `gpu_mem_mb_per_gpu` | Optional. Above zero only when the base model has an accelerator. |
+| `accel_count`, `gpu_mem_mb_per_gpu` | Optional. Above zero only when the row's resolved accelerator is not none. |
+| `name`, `description` | Optional. See [Names and descriptions](#names-and-descriptions). An absent name shows the SKU name, `<pack id>:<id>`. |
+| `art` | Optional, new rows only. Another new host of this pack whose model draws this one. See [Sharing a model](#sharing-a-model-with-art). |
+| `rack_units` | Optional, new rows only. 1 to 10. Absent is the base's. |
+| `depth_mm` | Optional, new rows only. 100 to 1070. The chassis depth, and the depth the rack fit checks. Absent is the base's. |
+| `psu_count` | Optional, new rows only. 1 to 8. One rear power inlet each. Absent is the base's. |
+| `ports` | Optional, new rows only. The numbered data ports, as 1 to 8 banks. See [Port banks](#port-banks). Absent is the base's banks. |
+| `module_slots` | Optional, new rows only. 0 to 4 cages that take a bought NIC module. `0` means a fixed factory port set with no NIC to buy. Absent is the base's. |
+| `arch` | Optional, new rows only. `x86_64`, `arm64`, `riscv` or `mainframe`. Absent is the base's. |
+| `category` | Optional, new rows only. `balanced`, `memory_opt`, `compute_dense`, `storage`, `gpu` or `network_appliance`. Absent is the base's. |
+| `accelerator` | Optional, new rows only. `none`, `gpu`, `tpu` or `fpga`. Absent is the base's. `none` clears `accel_count` and `gpu_mem_mb_per_gpu`. |
+
+The management or BMC port is not a data port. It stays separate from the numbered ports and a row does not list it.
 
 ### Switch rows
 
@@ -117,16 +138,209 @@ Copy base SKU names exactly from the built-in catalog, for example `Balanced x86
 | `overrides` | Optional. `base:<name>` to replace a built-in SKU. |
 | `capex`, `hourly_cost` | Optional money, see below. |
 | `power_w`, `fabric_capacity_gbps`, `pps_ceiling`, `mtbf_hours` | Optional numbers. |
+| `name`, `description` | Optional. See [Names and descriptions](#names-and-descriptions). An absent name shows the SKU name, `<pack id>:<id>`. |
+| `art` | Optional, new rows only. Another new switch of this pack whose model draws this one. See [Sharing a model](#sharing-a-model-with-art). |
+| `rack_units` | Optional, new rows only. 1 to 10. Absent is the base's. |
+| `depth_mm` | Optional, new rows only. 100 to 1070. The chassis depth. Absent is the base's. |
+| `psu_count` | Optional, new rows only. 1 to 8. One rear power inlet each. Absent is the base's. |
+| `port_groups` | Optional, new rows only. The numbered front ports as 1 to 8 banks. See [Port banks](#port-banks). Absent is the base's groups. |
+| `class` | Optional, new rows only. `l2` parks loops, `l3` also routes. Absent is the base's. |
+| `mlag` | Optional, new rows only. Whether two of these pair into one MLAG system. A pair needs a managed switch with no stack ports and at least two data ports, and adds the rear `Port_MlagKeepalive` jack, which the row's sidecar must hold in `named_ports`. Absent is the base's. |
+| `role` | Optional, new rows only. `access`, `tor`, `leaf`, `aggregation` or `spine`. A label for grouping and the shop. Absent is the base's. |
 
 Each number has a floor and a ceiling. The exact bounds are in `content.v1alpha1.schema.json`, described in [Reference](REFERENCE.md). A value outside them fails with the rule `min` or `max` and names the field.
 
 Money fields are whole numbers in minor units. One dollar is 100,000,000 units. The example hardware pack sets `capex` to `220000000000`, which is 2,200 dollars.
 
+### Port banks
+
+A host's `ports` and a switch's `port_groups` list banks. A bank is a run of identical data ports:
+
+```json
+{ "media": "sfp28", "speed_gbps": 25, "count": 4 }
+```
+
+| Field | Notes |
+|---|---|
+| `media` | The cage: `rj45`, `sfp_plus`, `sfp28`, `sfp56`, `sfp112`, `qsfp_plus`, `qsfp28`, `qsfp56` or `qsfp_dd`. |
+| `speed_gbps` | The line rate of every port in the bank, 1 to 400. At most what the cage carries: 10 for `rj45`, and the cage's own rate for the others. Over it fails with `port_speed_unsupported`. |
+| `count` | The ports in the bank, 1 to 255. |
+
+Ports are numbered from 1, bank by bank: with the banks `2x rj45` then `4x sfp28`, ports 1 and 2 are the copper ports and 3 to 6 the cages. A model's `.pips.json` numbers its `ports` the same way, see [Equipment models](MODELS.md#the-pipsjson-sidecar). A host may list up to 64 data ports in all, and a switch up to 128.
+
+A switch row that declares `port_groups` and no `fabric_capacity_gbps` gets a non-blocking fabric over its ports and a wire-speed packet ceiling. Set either field to choose your own. A modular chassis grows its ports from the cards seated in it, so `port_groups` on one fails with `modular_switch_ports`.
+
+A host's declared ports replace the base's numbered ports, and the NIC count and speed the game reads follow them. A bought NIC module adds its ports above the numbered ones, so `module_slots: 0` gives a host that only ever has the ports you listed.
+
+### Names and descriptions
+
+`name` and `description` set the text the game shows for the item: the shop card, the host console, the switch panel and the tooltip. A value is one of:
+
+- Plain text. A `name` is at most 48 bytes and a `description` at most 200. A value over its cap fails with `max`, a value with a control or invisible formatting character fails with `wrong_type`, and an empty value fails with `min`.
+- `@` and one of your own `en` locale keys, such as `@mod-com-example-my--hardware-agg24_desc`. The text then shows in the player's language like any other locale text. The key must be one of the pack's own: its prefix plus a name, see [The key prefix](#the-key-prefix), defined in one of your `locale/en/` files. A key that is not your pack's fails with `locale_key_not_namespaced`, and one with no `en` text with `locale_key_missing_en`. A key of another pack, a dependency's included, is not accepted. A pack that uses a key declares `"locale"` in `content`.
+- `@@` and plain text, for plain text that starts with `@`.
+
+The text a key resolves to obeys the same limits as plain text: at most 48 bytes for a `name`, 200 for a `description`, one line, and no control or invisible formatting character. The game loads a pack whose key text breaks them, so `uptime-mod validate` is what reports it, with the rules `max`, `wrong_type` and `min`. The check follows terms, messages and their attributes, and takes a select expression's variant that a term call's literal argument picks, else the default one; a `$variable`, a function call or a missing reference is known only in play, so text that holds one skips the `min` check and is judged on the rest.
+
+Commands and saves keep naming the item `<pack id>:<id>`; the name is only what the player reads. An item with no `name` shows its SKU name, `<pack id>:<id>`, and not the bare `id`. An override may set `name` and `description`, and then relabels the built-in SKU it replaces.
+
+### Sharing a model with art
+
+Two rows that look the same need one model, not two. A row's `art` names another new row of the same pack and family (a host names a host, a switch names a switch) whose three model files draw both:
+
+- The named row ships its own model. Naming a row that ships none fails with `art_has_no_model`.
+- The two rows resolve to the same shape: rack units, depth, port cages and order, power supplies, module bays, front drive bays, the MLAG jack and the stack ports. A row takes its drive bays from its base, so a host's base must have as many drive bays as the base of the row `art` names. Stats, names, prices, port speed and class may differ. A different shape fails with `art_shape_mismatch`.
+- A row that names `art` ships no model of its own. A row with its own files that also names `art` fails with `art_with_own_model`.
+- `art` names no other new row of the family in this pack: `art_unknown_item`. An override row may not set `art`.
+
+A row takes every field it leaves out from its `model`, the built-in base, and never from the row `art` names. `art` shares the drawing only: a row with `art` and no `power_w` gets the base's power, not the shared row's.
+
+The textures stay inside the model's GLB, so sharing copies nothing.
+
+### What a row's shape needs
+
+A new row whose resolved shape differs from its base's needs a model, from its own files or through `art`. Without one the pack fails with `shape_needs_model`, which names the three files to add. The shape is what the model draws: rack units, depth, port cages and order, power supplies, module bays, front drive bays (a host draws one drive per bay), the MLAG jack and the stack ports. Port speed, `arch`, `category`, `accelerator`, `class`, `role`, names, prices and every other stat are not shape: a row that changes only those keeps its base's shape and needs no model. A depth you copy from `uptime-mod bases` is the base's `depth_mm`, in whole millimetres, so declare that number to keep the base's shape.
+
+The model is checked against the row's resolved shape and not the base's. Its geometry must fit the slot the row's `rack_units` and `depth_mm` make, its `ports` must number exactly the row's data ports, its `iec` must hold one inlet per `psu_count`, and its `bays` must be empty or hold one frame per module slot. See [Equipment models](MODELS.md).
+
+### Worked example
+
+This pack adds a 3U host, a cheaper variant of it that shares its model, and a 1 Gbps L3 switch. `manifest.json`:
+
+<!-- worked-example: manifest.json -->
+```json
+{
+  "manifest_version": 1,
+  "id": "com.example.my-hardware",
+  "version": "1.0.0",
+  "api_version": "v1alpha1",
+  "api_minor": 10,
+  "game_version": ">=0.1.0, <0.3.0",
+  "kind": ["content"],
+  "content": ["hardware", "art", "locale"],
+  "affects_gameplay": true
+}
+```
+
+`hardware/hosts.json`:
+
+<!-- worked-example: hardware/hosts.json -->
+```json
+{
+  "hosts": [
+    {
+      "id": "rack3-edge",
+      "model": "Balanced x86 2U",
+      "name": "Edge Rack 3U",
+      "description": "Three rack units with fixed 2x1G and 4x25G data ports.",
+      "rack_units": 3,
+      "depth_mm": 800,
+      "psu_count": 2,
+      "ports": [
+        { "media": "rj45", "speed_gbps": 1, "count": 2 },
+        { "media": "sfp28", "speed_gbps": 25, "count": 4 }
+      ],
+      "module_slots": 0,
+      "vcpu": 64,
+      "mem_mb": 262144,
+      "power_w": 650,
+      "capex": 900000000000,
+      "hourly_cost": 40000000
+    },
+    {
+      "id": "rack3-edge-lite",
+      "model": "Balanced x86 2U",
+      "art": "rack3-edge",
+      "name": "Edge Rack 3U Lite",
+      "rack_units": 3,
+      "depth_mm": 800,
+      "psu_count": 2,
+      "ports": [
+        { "media": "rj45", "speed_gbps": 1, "count": 2 },
+        { "media": "sfp28", "speed_gbps": 25, "count": 4 }
+      ],
+      "module_slots": 0,
+      "vcpu": 32,
+      "mem_mb": 131072,
+      "capex": 500000000000
+    }
+  ]
+}
+```
+
+`hardware/switches.json`:
+
+<!-- worked-example: hardware/switches.json -->
+```json
+{
+  "switches": [
+    {
+      "id": "agg24",
+      "model": "24-port Access GbE",
+      "name": "Aggregation 24",
+      "description": "@mod-com-example-my--hardware-agg24_desc",
+      "rack_units": 1,
+      "depth_mm": 400,
+      "psu_count": 2,
+      "port_groups": [{ "media": "rj45", "speed_gbps": 1, "count": 24 }],
+      "class": "l3",
+      "mlag": true,
+      "role": "aggregation",
+      "capex": 90000000000
+    }
+  ]
+}
+```
+
+`locale/en/main.ftl`:
+
+<!-- worked-example: locale/en/main.ftl -->
+```
+mod-com-example-my--hardware-agg24_desc = A 24-port gigabit L3 switch with two power supplies. Two of them pair into one MLAG system.
+```
+
+What it declares:
+
+- `rack3-edge` is a 3U host with six numbered data ports: ports 1 and 2 are 1G copper and ports 3 to 6 are 25G SFP28 cages. `module_slots: 0` makes them its factory ports, with no NIC to buy. Its management port is separate and is not in `ports`. Every field left out, such as `ssd_gb` and `arch`, is `Balanced x86 2U`'s.
+- `rack3-edge-lite` declares the same shape and names `art`, so it ships no model of its own and the game draws it with `rack3-edge`'s. It names `art` for the drawing only, so every stat it leaves out, such as `power_w` and `hourly_cost`, is `Balanced x86 2U`'s and not `rack3-edge`'s. Its name and price are its own.
+- `agg24` is a 1U switch with two power supplies, 24 gigabit ports, L3 routing and MLAG, and a description that names its own locale text. Two of them pair, which adds the rear `Port_MlagKeepalive` jack. Its fabric is non-blocking over the 24 ports.
+
+The pack ships `art/models/rack3-edge_render.glb`, `rack3-edge_proxy.glb` and `rack3-edge.pips.json` for the host, and the three files named `agg24` for the switch, made as [Equipment models](MODELS.md) describes. The host's sidecar numbers `ports` 1 to 6 and holds two `iec` entries and no `bays`. The switch's numbers `ports` 1 to 24, holds two `iec` entries, and holds `Port_MlagKeepalive` in `named_ports`. `uptime-mod validate` accepts this pack once those files are in place, and it is the quickest way to check yours.
+
+### Hardware errors
+
+These rules apply to hardware rows, on top of the number bounds above:
+
+| Rule | Cause and fix |
+|---|---|
+| `shape_needs_model` | The row's resolved shape differs from its base and it has no model. Add the three model files named after the row, or set `art` to another row's, or remove the shape fields. |
+| `art_unknown_item` | `art` names no other new row of this pack and family. Fix the id, and check the row is a host for a host. |
+| `art_has_no_model` | The row `art` names ships no model. Add that row's three files. |
+| `art_with_own_model` | The row ships its own files and also sets `art`. Delete one of them. |
+| `art_shape_mismatch` | The two rows resolve to different shapes. Make rack units, depth, port cages, power supplies, module slots, drive bays (through the base), MLAG and stack ports match, or give the row its own model. Port speed and class may differ. |
+| `port_speed_unsupported` | A bank's `speed_gbps` is above what its cage carries. Lower the speed or pick a faster cage. |
+| `modular_switch_ports` | `port_groups` on a modular chassis. Remove it, a modular chassis takes its ports from cards. |
+| `mlag_unsupported` | A switch that is MLAG, by `mlag: true` or by its base, cannot run a pair: unmanaged, stackable, or with fewer than two data ports. It is also reported at `/port_groups` when a row leaves an MLAG base with fewer than two ports. Pick a managed base, or give it two data ports. |
+| `pips_named_port_missing` | A row that declares `mlag` ships a sidecar whose `named_ports` leaves out a rear port the switch has, such as `Port_MlagKeepalive`. Add it; `uptime-mod bases` lists the names. |
+| `gpu_memory_missing` | A GPU host with no `gpu_mem_mb_per_gpu`, from the row or its base. Set it. |
+| `override_field_forbidden` | A shape field, `art`, or a port bank on an override row. An override keeps its base's shape. Make it a new row. |
+
+`uptime-mod validate` and `uptime-mod model` add checks the game does not run. `model` runs the model checks on its own item even when the rest of the pack has other problems. The game still loads a pack that breaks them, because a refused pack would sell the hardware players own from it, so fix them before you publish:
+
+| Rule | Cause and fix |
+|---|---|
+| `pips_named_port_missing` | On a row that takes MLAG or stack ports from its base, the sidecar's `named_ports` leaves one out. Add it, so the game can draw the jack and its cable. |
+| `port_faces_inward` | A port's +Y axis does not point out of the panel it sits on. Rotate the node in your source and export again, see [Port orientation](MODELS.md#port-orientation). |
+| `gpu_without_accelerators` | A GPU host whose `accel_count` is 0. Set `accel_count` above zero. |
+| `gpu_host_undersized` | A GPU host whose vCPU or memory is below what its GPU slices draw. Raise `vcpu` or `mem_mb`. |
+| `api_minor_too_low` | A row sets a hardware field that minor <!-- mod:minor -->10<!-- /mod:minor --> added (`name`, `description`, `art`, `rack_units`, `depth_mm`, `psu_count`, `ports`, `port_groups`, `module_slots`, `arch`, `category`, `accelerator`, `class`, `mlag` or `role`) and the manifest declares a lower minor. Raise `api_minor` to at least that minor. An older game refuses these fields as `unknown_field`. |
+| `max`, `wrong_type`, `min` | On a `name` or `description` that is an `@` key: the key's `en` text is over 48 or 200 bytes, runs over more than one line or holds a control character, or is empty. Shorten the text. |
+
 ### Ids and overrides
 
 An item `id` matches `[a-z0-9][a-z0-9_-]{0,63}`. A new row becomes the SKU named `<pack id>:<id>`. Scenarios and `sku_gates` use that full name.
 
-A row with `"overrides": "base:<name>"` replaces that built-in SKU's stats in place and keeps its name. Three rules apply:
+A row with `"overrides": "base:<name>"` replaces that built-in SKU's stats in place and keeps its SKU name. It may also set `name` and `description`, which replace the text the game shows for the built-in SKU. Three rules apply:
 
 - The text after `base:` must name a built-in SKU of the same family.
 - The row's `model` must equal that same name.
@@ -393,6 +607,55 @@ A new host or switch can ship its own 3D model, drawn in the rack in place of it
 
 The game refuses a pack that depends on itself. A dependency must be installed, must match the range and must be able to load. The player must also select it. The game loads dependencies first. A dependency cycle makes every pack on the cycle incompatible. If a dependency cannot load, the packs that need it cannot load either, and the message carries the root cause.
 
+## Updating a pack that a saved world uses
+
+A save records each pack it was played with: the pack id, its `version`, and one content hash. The hash is one SHA-256 over the path and bytes of every file in the pack, in path order, except `uptime-package.json` and `workshop.json`. A change to any file changes it, `manifest.json` included. The save also records whether the pack changes gameplay.
+
+### Which version loads
+
+When a save loads, the installed copy of each pack must satisfy a caret range built from the version the save recorded, so a save at `0.5.0` needs `^0.5.0`. This is the same caret rule as a Cargo or npm range:
+
+| Saved version | Installed version | Loads |
+|---|---|---|
+| `0.5.0` | `0.5.3` | Yes |
+| `0.5.0` | `0.6.0` | No |
+| `1.2.0` | `1.9.0` | Yes |
+| `1.2.0` | `2.0.0` | No |
+| `0.0.3` | `0.0.4` | No |
+
+A pack that does not satisfy the range counts as not installed. What follows depends on the pack:
+
+- A pack that changes gameplay, such as hardware, scenarios, customers, events or services, is then missing, and the load is refused. The game names the missing pack ids, and the player installs a copy in range.
+- A pack that does not change gameplay, such as a locale or art-only pack, is dropped, and the world loads without it and with a warning.
+
+So a version bump that you want existing worlds to keep playing stays inside the caret range: `0.5.x` after `0.5.0`, and `1.x` after `1.0.0`. A bump past it, such as `0.5.0` to `0.6.0`, strands every world saved with the old version until the player installs a copy in range. The version a world loads with is then the installed one, and the world records that version for its next save.
+
+### The same version with changed files
+
+An installed copy in range whose hash differs from the one the save recorded still loads. The game plays the installed files, shows the player a warning that the pack has been updated since the save was made, and records the new hash in the world. A save from before hashes were kept has no hash to compare and loads with no warning.
+
+### What happens to hardware the player owns
+
+When the pack's hardware rows change between the save and the load, the game brings the player's owned items in line with the installed rows as the world loads:
+
+| What changed in the row | Owned items |
+|---|---|
+| A host's numbers: vCPU, memory, disk, IOPS, power or cost per hour | An owned host takes the new row, as long as the row is a drop-in and the host's own workloads still fit the new numbers. The price the player paid is kept as paid. |
+| A switch's numbers: power, cost per hour, fabric capacity, packet rate ceiling, mean time between failures or role | An owned switch takes the new row when the row is a drop-in for it. The price the player paid is kept as paid. |
+| A host's shape: rack height, chassis depth, architecture, accelerator, module slots, drive bays, power supply count or port banks | The owned host keeps the shape it was bought with. The game draws it with the row's own model while rack height, chassis depth, port media and their order, power supplies, drive bays and module slots are unchanged, so a change to architecture, accelerator or port speed alone keeps it. When any of those physical things changed, it draws with the look of the built-in model it was drawn by when that model still has the owned shape, and as a plain chassis otherwise. New purchases use the new row. |
+| A switch's shape: rack height or shelf footprint, port cages and their order, MLAG, module slots, stack ports, power supply count or chassis depth | The owned switch keeps the shape it was bought with, drawn the same way as a host's. New purchases use the new row. |
+| A switch's port speed, switch class or fan count, its shape unchanged | A class upgrade, to a class that does everything the old one does, with nothing else changed is a drop-in: the owned switch takes the new row. A port speed change, a class downgrade or a fan change leaves the owned copy as it was bought. New purchases use the new row. |
+| A different pack takes over a host's SKU name, and the row fits in place of the owned host (same rack height, chassis depth, module slots, power supplies and port cages; port speed may differ) | A drop-in row, which also matches port speeds, drive bays, architecture, accelerator and accelerator count, is taken by the owned host when the host's workloads fit it. A row that fits in place but is not a drop-in, or that the host's workloads do not fit, leaves the owned copy as it was bought. A row that does not fit in place removes the host and pays the player its resale value. |
+| A different pack takes over a switch's SKU name, and the row fits in place of the owned switch (same rack height, port cages, MLAG, module slots, stack ports and power supplies; port speed and class may differ) | A drop-in row, which also matches port speeds, fan count, chassis depth and shelf footprint and has a class that does everything the old one does, is taken by the owned switch. A row that fits in place but is not a drop-in, such as a port speed change or a class downgrade, leaves the owned copy as it was bought. |
+| A different pack takes over a switch's SKU name, and the row does not fit in place | The owned switch is removed and the player is paid its resale value. |
+| The row is gone, while the pack is still installed | The owned item is removed and the player is paid its resale value. A basket line or a box on its way for it is dropped too. |
+
+A host whose workloads would not fit the new numbers also keeps its old copy. Keep a SKU's shape fixed across versions. Remove a SKU only when you mean the player to sell it back.
+
+### Packs that carry models
+
+A hardware pack with models declares `"content": ["hardware", "art"]`. That makes it both a gameplay pack and a client-required pack. As a gameplay pack, a saved world refuses to load without it. As a client-required pack, a player joining a multiplayer world that uses it needs the same files, see [Multiplayer](MULTIPLAYER.md#which-packs-a-joiner-needs).
+
 ## Archive rules
 
 These rules apply to every file in a pack. The scan checks the pack folder against them before it reads any content.
@@ -402,8 +665,8 @@ These rules apply to every file in a pack. The scan checks the pack folder again
 - A path uses only `A-Z`, `a-z`, `0-9`, `.`, `_`, `-` and `/`.
 - A path is at most 240 bytes. It may not be empty, absolute or contain a backslash or a percent sign. It may not have a segment that is empty, is `.`, ends in a dot, or is made only of dots.
 - The part of a segment before its first dot may not be a Windows device name: `con`, `prn`, `aux`, `nul`, `com1` to `com9` or `lpt1` to `lpt9`. So the game refuses `con.txt` too.
-- A pack holds at most 4096 entries.
-- One file may not exceed 32 MiB, and all files together may not exceed 64 MiB. The game counts the bytes it reads, not the size a header claims.
+- A pack holds at most 8192 entries.
+- One file may not exceed 32 MiB, and all files together may not exceed 256 MiB. The game counts the bytes it reads, not the size a header claims.
 - The game refuses symlinks and special files. On unix it refuses a file with more than one name as well.
 - Two paths that differ only in letter case collide, and the game refuses them.
 - A file cannot also be a folder.
@@ -430,17 +693,19 @@ An invalid pack has bad files. Nothing from it loads. These rule codes mark it:
 | `unknown_sku` | A scenario names a SKU that exists nowhere. |
 | `unknown_archetype` | A scenario seeds a customer or prospect under an archetype that exists nowhere. |
 | `scenario_id_not_namespaced`, `scenario_config_key_forbidden`, `scenario_catalog_override_forbidden` | A scenario rule failed. |
-| `archetype_name_taken`, `override_field_forbidden` | A customer rule failed. See [Customer packs](#customer-packs). |
+| `archetype_name_taken`, `override_field_forbidden` | A customer rule failed, or a shape field was set on a hardware override. See [Customer packs](#customer-packs) and [Hardware errors](#hardware-errors). |
+| `shape_needs_model`, `art_unknown_item`, `art_has_no_model`, `art_with_own_model`, `art_shape_mismatch` | A hardware row's shape has no model to draw it, or its `art` is wrong. See [Hardware errors](#hardware-errors). |
+| `port_speed_unsupported`, `modular_switch_ports`, `mlag_unsupported`, `gpu_memory_missing` | A hardware row declares a port, switch or GPU setup the engine cannot run. See [Hardware errors](#hardware-errors). |
 | `event_text_not_owned`, `event_text_missing` | An event's text is not a key of the pack's own `en` text. See [Event packs](#event-packs). |
 | `service_name_taken`, `service_spread_unsupported`, `unknown_service` | A service rule failed. See [Service packs](#service-packs). |
 | `content_outside_declared_category`, `content_category_unsupported` | A file is in the wrong place, or in a category this build does not load. |
 | `locale_syntax`, `locale_key_not_namespaced`, `locale_key_missing_en` | A locale rule failed. See [Locale packs](#locale-packs). |
 | `model_orphan_item`, `model_missing_file`, `model_malformed`, `model_out_of_bounds`, `model_over_limit`, `model_external_uri`, `model_unsupported_feature`, `model_material_forbidden`, `model_bad_image`, `model_outside_envelope` | A model's GLB broke a rule. See [Limits and rules](MODELS.md#limits-and-rules). |
-| `pips_malformed`, `pips_over_limit`, `pips_port_mismatch`, `pips_iec_mismatch`, `pips_bay_mismatch`, `pips_bad_xform` | A model's `.pips.json` is malformed, too large, or does not match its base model. See [The .pips.json sidecar](MODELS.md#the-pipsjson-sidecar). |
+| `pips_malformed`, `pips_over_limit`, `pips_port_mismatch`, `pips_iec_mismatch`, `pips_bay_mismatch`, `pips_named_port_missing`, `pips_bad_xform` | A model's `.pips.json` is malformed, too large, or does not match the row's shape. See [The .pips.json sidecar](MODELS.md#the-pipsjson-sidecar). |
 | `client_pack_has_script` | A pack with `art` or `locale` content also carries a script. |
 
 An incompatible pack is well formed but cannot load here. The game marks it when its id is installed twice, its `game_version` range excludes this build, its `api_minor` is out of range, a dependency is missing or at the wrong version, or it sits on a cycle. The rule code is `incompatible`. The related selection errors are `mod_unavailable`, when a selected id is not installed or is invalid, and `runtime_unavailable`, when this build has no runtime for a script mod.
 
 ## The example packs
 
-`ModSDK/examples/com.uptime.example-hardware` carries two new host SKUs, one new switch SKU and one override. `ModSDK/examples/com.uptime.example-scenario` carries one scenario and depends on the hardware pack. `ModSDK/examples/com.uptime.example-locale` carries English and German text. `ModSDK/examples/com.uptime.example-customers` carries two new archetypes and one override. `ModSDK/examples/com.uptime.example-service` carries a locked `Cold Storage` offering over object storage and an archetype that buys it. `ModSDK/examples/com.uptime.example-events` carries two macro events and their English text. `ModSDK/examples/com.uptime.example-model` carries one switch SKU with its own model, the three files `uptime-mod model` writes. See [Equipment models](MODELS.md). Copy any of them as a starting point. The model files in that pack are game art and are not MIT: see `TERMS.md` in the SDK folder.
+`ModSDK/examples/com.uptime.example-hardware` carries two new host SKUs, one new switch SKU and one override. `ModSDK/examples/com.uptime.example-scenario` carries one scenario and depends on the hardware pack. `ModSDK/examples/com.uptime.example-locale` carries English and German text. `ModSDK/examples/com.uptime.example-customers` carries two new archetypes and one override. `ModSDK/examples/com.uptime.example-service` carries a locked `Cold Storage` offering over object storage and an archetype that buys it. `ModSDK/examples/com.uptime.example-events` carries two macro events and their English text. `ModSDK/examples/com.uptime.example-model` carries one switch SKU with its own model, the three files `uptime-mod model` writes. See [Equipment models](MODELS.md). Copy any of them as a starting point. For a host or switch with its own shape, start from the [worked example](#worked-example). The model files in that pack are game art and are not MIT: see `TERMS.md` in the SDK folder.

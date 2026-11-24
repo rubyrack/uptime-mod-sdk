@@ -59,7 +59,7 @@ Every later upload from that folder updates the same item. The id stays stable a
 
 `workshop.json` never goes into the package. The upload does record the item id in the package's `uptime-package.json`. That is how a player who is refused at a multiplayer join gets a Subscribe button for your pack. See [Multiplayer](MULTIPLAYER.md).
 
-Raise `version` in your manifest for each release. Players and the game tell two copies of a pack apart by its version and its hash.
+Raise `version` in your manifest for each release. Players and the game tell two copies of a pack apart by its version and its hash. A saved world keeps loading a newer copy only while it stays in the caret range of the version the world was saved with, and a multiplayer joiner is checked on the hash alone. See [Updating a pack that a saved world uses](CONTENT_PACKS.md#updating-a-pack-that-a-saved-world-uses) and [Multiplayer](MULTIPLAYER.md#which-packs-a-joiner-needs).
 
 ## What a player sees
 
