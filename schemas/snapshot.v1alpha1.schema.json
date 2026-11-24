@@ -157,7 +157,8 @@
           "type": "integer"
         },
         "indicator": {
-          "$ref": "#/components/schemas/IndicatorLed"
+          "$ref": "#/components/schemas/IndicatorLed",
+          "description": "The status lamp, one rule on every surface: `Off` when unpowered or\nPSU-dark; `Red` on a part fault or inside an outage window; `Amber` on\nfabric or inspection saturation, a SIEM that is not live, or a live SIEM\nwhile the estate drops events; else `Green`. Deep inspection being off\n(bypass) is NOT a dark lamp: that is `inspection_state`'s question."
         },
         "ingress_gbps": {
           "description": "Smoothed directional ingress in Gbps (traffic arriving from the\nWAN side). Mirror of `egress_gbps`.",
@@ -245,6 +246,17 @@
         "scrubbed_gbps": {
           "format": "double",
           "type": "number"
+        },
+        "siem": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/SiemBoxView",
+              "description": "This box's recorder state; `None` for every kind but a SIEM. The\nopened SIEM console reads its own status here rather than the estate\nfeed, which is live while ANY recorder is."
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "sku_name": {
           "type": "string"
@@ -3208,7 +3220,7 @@
         },
         "indicator": {
           "$ref": "#/components/schemas/IndicatorLed",
-          "description": "Status lamp, four-corner parity with Host / Switch / Appliance,\nwhich all already carry one. `Off` while unpowered; `Red` on any\ninstalled-part fault (`ComponentStatus::Failed`); otherwise the\nkind's existing health arms."
+          "description": "Status lamp, four-corner parity with Host / Switch / Appliance:\n`Off` while unpowered or PSU-dark; `Red` on any installed-part fault\n(`ComponentStatus::Failed`) or inside an outage window (`down_until`);\n`Amber` on fabric saturation; else `Green`."
         },
         "ingress_gbps": {
           "description": "Smoothed directional ingress (WAN-side inbound) in Gbps.",
@@ -7283,6 +7295,31 @@
       ],
       "type": "object"
     },
+    "SiemBoxView": {
+      "description": "One SIEM's recorder state (`Engine::siem_box_state`), on `ApplianceView`.\nEvery field moves at a discrete edge (cabling, power, an outage, a bond\nchange, the estate crossing its tap capacity), never with demand: the\naccepted share itself lives on `SiemLogsView::accepted_frac`.",
+      "properties": {
+        "dropping": {
+          "description": "Live, and the estate's live taps carry less than the ingest demand, so\nevents are being dropped (`SiemLogsView::accepted_frac` < 1).",
+          "type": "boolean"
+        },
+        "live": {
+          "description": "Racked, powered, past any outage window, and a LAN tap lands on an up\ndevice reachable from the internet edge.",
+          "type": "boolean"
+        },
+        "tap_capacity_gbps": {
+          "description": "What this box's taps carry, Gbps: a bond's mode-aware capacity, else\nthe best single live tap's negotiated rate. 0 when not live.",
+          "format": "int32",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "live",
+        "tap_capacity_gbps",
+        "dropping"
+      ],
+      "type": "object"
+    },
     "SpareCountView": {
       "properties": {
         "count": {
@@ -8460,6 +8497,6 @@
     }
   },
   "generation": "v1alpha1",
-  "minor": 9,
+  "minor": 10,
   "root": "ModSnapshot"
 }

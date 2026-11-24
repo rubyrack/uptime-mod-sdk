@@ -8,7 +8,7 @@ use serde::Deserialize;
 /// The mod API generation this module was generated from.
 pub const API_GENERATION: &str = "v1alpha1";
 /// The snapshot schema minor this module was generated from.
-pub const API_MINOR: u32 = 9;
+pub const API_MINOR: u32 = 10;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct ActiveAttackView {
@@ -101,6 +101,8 @@ pub struct ApplianceView {
     pub rack_id: u32,
     #[serde(default)]
     pub scrubbed_gbps: f64,
+    #[serde(default)]
+    pub siem: Option<SiemBoxView>,
     pub sku_name: String,
     pub start_u: u32,
     #[serde(default)]
@@ -2469,6 +2471,13 @@ pub struct ServiceSettingsView {
     #[serde(default)]
     pub network: Option<NetworkSettingsView>,
     pub vms: VmSettingsView,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct SiemBoxView {
+    pub dropping: bool,
+    pub live: bool,
+    pub tap_capacity_gbps: u32,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]

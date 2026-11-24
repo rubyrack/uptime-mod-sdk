@@ -37,7 +37,7 @@ Each subfolder is one pack. If the folder does not exist, create it. Restart the
   "id": "com.example.my-hardware",
   "version": "1.0.0",
   "api_version": "v1alpha1",
-  "api_minor": 3,
+  "api_minor": 10,
   "game_version": ">=0.1.0, <0.3.0",
   "kind": ["content"],
   "content": ["hardware"],
@@ -79,7 +79,7 @@ Packs that affect play mark the run. See [Script mods](SCRIPTS.md) for what that
 
 The game accepts an `api_minor` between two limits. The low limit is the latest minor that declared a break on data your pack uses: a scenario field its scenario files set, a removed scenario enum variant its scenario files name, or any break on the hardware, customer and service files or the manifest. The high limit is the minor this build serves. A pack outside that range is incompatible and the game says so by name. A pack built against an older minor still loads while no break on its data has landed since.
 
-The current minor is `3`; minors `0`, `1` and `2` have shipped. Minor 1 removed two scenario fields, `pricing.load_balancer.per_million_requests_microcents` and `tuning.eviction_refund_cap_months`. A minor-0 scenario pack that sets either one must be rebuilt against minor 1. Minor 3 removed the lose conditions `DataLossEvent` and `AuditFailure` from `rules.loses`. A scenario pack built against minor 2 or earlier that names either one must be rebuilt against minor 3. While `v1alpha1` is a preview, a minor may contain a break. The ledgers in [Reference](REFERENCE.md) record every change.
+The current minor is `<!-- mod:minor -->10<!-- /mod:minor -->`; minors <!-- mod:shipped -->0 to 10<!-- /mod:shipped --> have shipped. A scenario pack built against an older minor is refused by name when a later minor removed or renamed a scenario field or enum variant its files use. [Reference](REFERENCE.md#how-versions-work) lists each minor's breaks. While `v1alpha1` is a preview, a minor may contain a break. The ledgers in [Reference](REFERENCE.md) record every change.
 
 ## Hardware packs
 
