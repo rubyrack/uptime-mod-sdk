@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-cd7dfeef.js";
+            window.path_to_searchindex_js = "searchindex-0ca25aa3.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-5112729b.js"></script>
@@ -177,6 +177,16 @@
                         <h1 id="equipment-models"><a class="header" href="#equipment-models">Equipment models</a></h1>
 <p>A content pack can give a new host or switch its own 3D model. The rack draws that model in place of the base model the row starts from. This page covers the files, how to model and name the parts, the limits, the <code>.pips.json</code> sidecar field by field, and what happens when a model fails.</p>
 <p>A model is part of the <code>art</code> category, see <a href="CONTENT_PACKS.html#art">Art</a>. The example pack <code>com.uptime.example-model</code> carries one switch SKU with a model. Its manifest, hardware row and the three model files are the smallest complete case. The model files in it are game art and are not MIT: see <code>TERMS.md</code> in the SDK folder.</p>
+<h2 id="a-new-look-or-a-new-shape"><a class="header" href="#a-new-look-or-a-new-shape">A new look or a new shape</a></h2>
+<p>There are two different jobs, and they ask for different things.</p>
+<p><strong>A new look on a base.</strong> The row keeps the base’s shape and only changes stats, or you draw your own model for it. The model must match what the base has: the same cabled ports in the same cages, the same power supplies, the same module bays, and it must fit the base’s rack slot. A row that declares no shape field is a new look.</p>
+<p><strong>A new hardware shape.</strong> The row declares a shape field of its own: <code>rack_units</code>, <code>depth_mm</code>, <code>psu_count</code>, <code>ports</code> or <code>module_slots</code> on a host, or <code>rack_units</code>, <code>depth_mm</code>, <code>psu_count</code>, <code>port_groups</code> or <code>mlag</code> on a switch. When the result differs from the base’s, the base model cannot draw it and the pack needs a model for it. The shape is the rack height and depth, the port cages in order, the power supplies, the module bays, the front drive bays (one drawn drive per bay, taken from the base), the MLAG jack and the stack ports, so a host row on a base with other drive bays than the model it shares through <code>art</code> needs its own model. The other row fields (<code>arch</code>, <code>category</code>, <code>accelerator</code>, <code>class</code>, <code>role</code>, port speed, stats and text) are not shape and never need a model.</p>
+<ul>
+<li>A custom-shape model is validated against the row’s declared shape and not the base’s. The envelope comes from the row’s <code>rack_units</code> and <code>depth_mm</code>, <code>ports</code> numbers exactly the row’s data ports, <code>iec</code> holds one inlet per <code>psu_count</code>, and <code>bays</code> matches <code>module_slots</code>.</li>
+<li>A row with no model of its own can share another row’s through <code>art</code>, so a variant with different stats needs no files. A shared-art row needs no triplet of its own, and both rows must resolve to the same shape.</li>
+<li>A new shape with neither fails with <code>shape_needs_model</code>.</li>
+</ul>
+<p>The row fields and the error codes are in <a href="CONTENT_PACKS.html#hardware-packs">Hardware packs</a>. <a href="CONTENT_PACKS.html#worked-example">Worked example</a> shows a 3U host, a variant that shares its model and an MLAG switch.</p>
 <h2 id="the-three-files"><a class="header" href="#the-three-files">The three files</a></h2>
 <p>A model is three files in <code>art/models/</code>, all named after the item:</p>
 <pre><code>com.example.my-hardware/
@@ -198,7 +208,7 @@
 </tbody>
 </table>
 </div>
-<p>The manifest lists <code>"content": ["hardware", "art"]</code>. <code>&lt;item&gt;</code> is the <code>id</code> of a new host or switch row in the same pack. A model never changes what the hardware is. Ports, power supplies and bays always come from the base model, so the model must match their counts.</p>
+<p>The manifest lists <code>"content": ["hardware", "art"]</code>. <code>&lt;item&gt;</code> is the <code>id</code> of a new host or switch row in the same pack. A model never changes what the hardware is. Ports, power supplies and bays come from the row’s resolved shape: what the row declares, and the base’s for everything it leaves out. The model must match their counts.</p>
 <h2 id="making-the-files"><a class="header" href="#making-the-files">Making the files</a></h2>
 <p>Export one GLB from your modelling tool and run <a href="CLI.html#model"><code>uptime-mod model</code></a>:</p>
 <pre><code>uptime-mod model work/box.glb --proxy work/box_proxy.glb --pack com.example.my-hardware --item box
@@ -207,10 +217,11 @@
 <h2 id="authoring-conventions"><a class="header" href="#authoring-conventions">Authoring conventions</a></h2>
 <ul>
 <li>Units are metres and the up axis is Y. The glTF format already uses both. In Blender, export with Y up.</li>
-<li>The front face of the device is at Z = 0 and the body runs back along negative Z. Port jacks, bezels and the nameplate face positive Z.</li>
-<li>The model sits inside the base model’s rack slot. The slot’s width is a 19-inch rack face, centred on X = 0. Its height is the base model’s rack units at 44.5 mm each, starting at Y = 0. Its depth is the base model’s depth, measured from its shipped render model. When the base model has no measured depth, a host uses 0.740 m and a switch uses its chassis depth. The game allows a little more than the slot: 1 mm at each side, above and below, 15 mm in front for handles and bezels, and 25 mm behind for rear plugs.</li>
+<li>The front face of the device is at Z = 0 and the body runs back along negative Z. This places the model in its slot. It is not the rule for how a port is turned, see <a href="#port-orientation">Port orientation</a>.</li>
+<li>The model sits inside the row’s rack slot. The slot’s width is a 19-inch rack face, centred on X = 0. Its height is the row’s <code>rack_units</code> at 44.5 mm each, starting at Y = 0. Its depth is the row’s <code>depth_mm</code> when it declares one. Otherwise it is the base model’s depth, measured from its shipped render model, and when the base has no measured depth a host uses 0.740 m and a switch uses its chassis depth. A row that declares <code>rack_units</code> or <code>depth_mm</code> is checked against those values, so a 3U row with <code>depth_mm</code> 800 gets a slot 133.5 mm high and 0.800 m deep. The game allows a little more than the slot: 1 mm at each side, above and below, 15 mm in front for handles and bezels, and 25 mm behind for rear plugs.</li>
 <li>The render file has one mesh drawn by one node. Every drawn node of your source is placed in model space and merged into one primitive per material, so the material count is the primitive count. Keep the node and material counts low at the source.</li>
 <li>The game draws every light from the sidecar. A light is a mesh with <code>LED</code> in its node name. <code>uptime-mod model</code> leaves these meshes out of the render file and writes a sidecar entry for each, sized to the mesh’s box. The exception is a <code>LED_Link</code> or <code>LED_Activity</code> light that has no <code>Port_</code> node to bind to, or whose nearest port is a management pin or <code>Port_0</code>: the command drops it and prints a warning, see <a href="CLI.html#naming-the-nodes">Naming the nodes</a>. Give no material an emissive color.</li>
+<li>Number cabled ports from 1. A node named <code>Port_0</code> is not a port: the command writes it into <code>ports</code> under the key <code>"0"</code>, and the pack fails with <code>pips_port_mismatch</code>, because <code>ports</code> must hold exactly <code>"1"</code> up to the row’s cabled port count.</li>
 <li>Name the parts the generator reads: <code>Port_&lt;N&gt;</code> for cabled ports numbered from 1, <code>Port_&lt;name&gt;</code> for named ports, <code>LED_Link...</code> and <code>LED_Activity...</code> under a port, <code>Bay_&lt;N&gt;</code> for module bays, names ending <code>_IEC</code> or <code>AcInlet</code> for power inlets, <code>FanRotor...</code> for fans, and <code>Nameplate_Plate</code> for the name placard. The full table is in <a href="CLI.html#naming-the-nodes">Naming the nodes</a>.</li>
 <li>A default export from a modelling tool usually fails the limits below. It tends to give each object its own node and primitive, lists extensions the game does not load, and includes cameras or lights. Turn off cameras and lights in the exporter, apply modifiers, join objects that share a material, and keep textures inside the GLB.</li>
 </ul>
@@ -223,7 +234,8 @@
 </thead>
 <tbody>
 <tr><td>File name</td><td><code>&lt;item&gt;</code> is the id of a new host or switch row in the same pack. A model for any other id fails with <code>model_orphan_item</code>. So does a model for an override row.</td></tr>
-<tr><td>Files</td><td>An item ships all three files or none, or it fails with <code>model_missing_file</code>.</td></tr>
+<tr><td>Files</td><td>An item ships all three files or none, or it fails with <code>model_missing_file</code>. A row that names <code>art</code> ships none: the item it names does.</td></tr>
+<tr><td>Shape</td><td>A new row whose shape differs from its base needs its own model or <code>art</code>, or it fails with <code>shape_needs_model</code>. The shared model must draw the same shape as the row, or <code>art_shape_mismatch</code>. See <a href="#a-new-look-or-a-new-shape">A new look or a new shape</a>.</td></tr>
 <tr><td>Container</td><td>A GLB 2.0 file with one scene, one mesh and at most one buffer, which is the BIN chunk. Exactly one node draws the mesh.</td></tr>
 <tr><td>Data inside</td><td>Nothing loads by uri. A buffer or image that points at another file fails with <code>model_external_uri</code>.</td></tr>
 <tr><td>Counts</td><td>At most 32 nodes, 32 primitives, 32 materials and 4 images. A texture is a PNG of at most 2048 by 2048 pixels.</td></tr>
@@ -246,15 +258,15 @@
     { "kind": "port_link", "port": 1, "xform": [0.003, 0, 0, 0, 0.003, 0, 0, 0, 0.003, -0.2, 0.02, 0] },
     { "kind": "psu", "port": 1, "xform": [0.003, 0, 0, 0, 0.003, 0, 0, 0, 0.003, 0.2, 0.03, -0.1] }
   ],
-  "ports": { "1": [0.012, 0, 0, 0, 0.012, 0, 0, 0, 0.012, -0.2, 0.02, 0] },
-  "named_ports": { "Port_BMC": [0.012, 0, 0, 0, 0.012, 0, 0, 0, 0.012, -0.21, 0.02, 0] },
+  "ports": { "1": [0.012, 0, 0, 0, 0, 0.012, 0, -0.012, 0, -0.2, 0.02, 0] },
+  "named_ports": { "Port_BMC": [0.012, 0, 0, 0, 0, 0.012, 0, -0.012, 0, -0.21, 0.02, 0] },
   "fans": [],
   "iec": [[0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0.2, 0.02, -0.2]],
   "bays": {},
   "nameplate": [0.1, 0, 0, 0, 0.02, 0, 0, 0, 0.001, 0, 0.01, 0]
 }
 </code></pre>
-<p>This one is for a base model with one cabled port, one power supply and no module bays. Your counts come from your base model.</p>
+<p>This one is for a row with one cabled port, one power supply and no module bays. Your counts come from the row’s resolved shape: its declared <code>ports</code> or <code>port_groups</code>, <code>psu_count</code> and <code>module_slots</code>, and the base’s for any it leaves out. <code>uptime-mod bases</code> prints a base’s counts.</p>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -262,16 +274,16 @@
 </thead>
 <tbody>
 <tr><td><code>pips</code></td><td>A list of at most 256 status lights, see below.</td></tr>
-<tr><td><code>ports</code></td><td>An object from <code>"1"</code> up to the base model’s cabled port count to a transform. The keys must be exactly that set, or the file fails with <code>pips_port_mismatch</code>.</td></tr>
-<tr><td><code>named_ports</code></td><td>An object from a name to a transform, for ports outside the numbered set, such as <code>Port_BMC</code>. A light bound to one lights from the device port that carries that name, see <code>port_name</code> below. The name is <code>Port_</code> and then letters, digits or <code>_</code>, at most 64 bytes. It may be empty.</td></tr>
+<tr><td><code>ports</code></td><td>An object from <code>"1"</code> up to the row’s cabled port count to a transform. The keys must be exactly that set, or the file fails with <code>pips_port_mismatch</code>.</td></tr>
+<tr><td><code>named_ports</code></td><td>An object from a name to a transform, for ports outside the numbered set, such as <code>Port_BMC</code>. A light bound to one lights from the device port that carries that name, see <code>port_name</code> below. The name is <code>Port_</code> and then letters, digits or <code>_</code>, at most 64 bytes. It must hold the rear ports the game adds to the item: <code>Port_MlagKeepalive</code> on a switch that can pair, and <code>Port_Stack_1</code> up on a stackable one. <code>uptime-mod bases</code> lists them under <code>named_ports</code>. A row that declares <code>mlag</code> fails with <code>pips_named_port_missing</code> when one is left out; on a row that takes them from its base, only <code>uptime-mod validate</code> reports it. Otherwise it may be empty.</td></tr>
 <tr><td><code>fans</code></td><td>A list of at most 16 transforms, one for each fan blade. It may be empty.</td></tr>
-<tr><td><code>iec</code></td><td>A list of transforms, one power inlet for each power supply of the base model. Another count fails with <code>pips_iec_mismatch</code>.</td></tr>
-<tr><td><code>bays</code></td><td>An object from <code>"1"</code> up to the base model’s module bay count to a transform. It is empty, or holds exactly that set, or the file fails with <code>pips_bay_mismatch</code>.</td></tr>
+<tr><td><code>iec</code></td><td>A list of transforms, one power inlet for each power supply of the row. Another count fails with <code>pips_iec_mismatch</code>.</td></tr>
+<tr><td><code>bays</code></td><td>An object from <code>"1"</code> up to the row’s module bay count (its <code>module_slots</code>) to a transform. It is empty, or holds exactly that set, or the file fails with <code>pips_bay_mismatch</code>.</td></tr>
 <tr><td><code>nameplate</code></td><td>One transform for the name placard. Optional. Leave the key out for none.</td></tr>
 </tbody>
 </table>
 </div>
-<p>A cabled port is a numbered data port of the base model. A host counts the ports of all its port banks. A switch counts its <code>port_count</code>.</p>
+<p>A cabled port is a numbered data port of the row. A host counts the ports of all its port banks, which are the row’s <code>ports</code> or else the base’s. A switch counts the ports of its <code>port_groups</code>, or else its base’s <code>port_count</code>. The management port is not a cabled port.</p>
 <h3 id="pip-fields"><a class="header" href="#pip-fields">Pip fields</a></h3>
 <p>Each entry of <code>pips</code> is an object with these keys, and an unknown key fails.</p>
 <div class="table-wrapper">
@@ -297,6 +309,22 @@
 <li>The origin sits inside the rack slot, with the same slack as the geometry.</li>
 </ul>
 <p>The game checks the origin only. It does not check that the whole light or port fits.</p>
+<h3 id="port-orientation"><a class="header" href="#port-orientation">Port orientation</a></h3>
+<p>A port’s transform has one more rule that the numbers above do not state: <strong>the port’s local +Y axis points out of the panel the port sits in.</strong> That is the second basis column, the fourth to sixth numbers of <code>xform</code>. The game reads it in two places. The cable renderer takes it as the direction a cable leaves the jack, so a cable bends away from the panel and not into the chassis. The faceplate camera in the console groups the port axes by the face they point out of, which is the sign of each axis’s largest component, and frames the face with the most ports, using only that face’s ports. A tie, or a device with no ports, frames the front (+Z). A port whose +Y points along the panel, or into the chassis, draws its cables wrongly and can make the console frame the wrong side of the device.</p>
+<p>The jack can be any size and the other two columns can be any pair that completes a right-handed frame. Only +Y matters. Two examples, for a jack scaled by 0.012:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Port on</th><th>Faces</th><th>+Y column</th><th>Basis (x, y, z columns)</th></tr>
+</thead>
+<tbody>
+<tr><td>The front panel</td><td>+Z</td><td><code>[0, 0, 0.012]</code></td><td><code>0.012, 0, 0,  0, 0, 0.012,  0, -0.012, 0</code></td></tr>
+<tr><td>The rear panel</td><td>-Z</td><td><code>[0, 0, -0.012]</code></td><td><code>0.012, 0, 0,  0, 0, -0.012,  0, 0.012, 0</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>In a modelling tool this is the built-in convention: a <code>Port_&lt;N&gt;</code> node on the front face is rotated +90 degrees about X in Blender’s Z-up space, which exports to glTF as the quaternion <code>[0.7071, 0, 0, 0.7071]</code>, so its +Y points toward the aisle. A rear port is the same node rotated -90 degrees about X.</p>
+<p>A port in the front half of the render model’s depth is on the front panel, and one in the rear half is on the rear panel. Its +Y must point within 60 degrees of +Z on the front panel and of -Z on the rear one, wherever on the panel it sits. A port may sit on a side panel instead: it must be within 25 mm of that side’s bound in X (enough for a jack recessed behind a side rail, bezel or handle) and at least 1 mm nearer that bound than the front or rear one. A side port’s +Y points within 60 degrees of +X on the +X side and of -X on the -X side. <code>uptime-mod validate</code> and <code>uptime-mod model</code> reject a port whose +Y does not point out of the face it sits on. The check runs when you author the pack, and the game itself still loads a pack that has such a port, so the cables on it draw wrongly in play. Fix the node’s rotation in your source and export again, and do not correct it in the sidecar by hand.</p>
 <h3 id="what-the-sidecar-refuses"><a class="header" href="#what-the-sidecar-refuses">What the sidecar refuses</a></h3>
 <ul>
 <li>A JSON <code>null</code> anywhere, including <code>"nameplate": null</code>. Leave <code>nameplate</code> out instead. This fails as <code>pips_malformed</code>.</li>
@@ -309,7 +337,7 @@
 <p>The pack scan refuses a bad model and the whole pack with it, see <a href="CONTENT_PACKS.html#what-refuses-a-pack">What refuses a pack</a>. That is the normal failure and <code>uptime-mod validate</code> shows it.</p>
 <p>The client checks the bytes again when it loads a pack, and then imports them with the engine’s glTF importer. A model that fails the check or the import draws as its base model. The game shows a warning toast once for that item, “The model for X in the mod Y couldn’t be loaded, so it looks like the model it’s based on.” Every other item of the pack is unaffected.</p>
 <h2 id="without-a-model"><a class="header" href="#without-a-model">Without a model</a></h2>
-<p>A new SKU with no model files draws as its base model. An override of a built-in SKU always draws as that SKU. A pack with <code>art</code> content is client-required, so a player who joins a multiplayer world that uses it must have it installed. See <a href="MULTIPLAYER.html">Multiplayer</a>.</p>
+<p>A new SKU with no model files and no <code>art</code> draws as its base model, which is only allowed while its shape is the base’s. An override of a built-in SKU always draws as that SKU. A pack with <code>art</code> content is client-required, so a player who joins a multiplayer world that uses it must have it installed. See <a href="MULTIPLAYER.html">Multiplayer</a>.</p>
 
                     </main>
 

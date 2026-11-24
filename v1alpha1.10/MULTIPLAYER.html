@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-cd7dfeef.js";
+            window.path_to_searchindex_js = "searchindex-0ca25aa3.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-5112729b.js"></script>
@@ -187,12 +187,14 @@
 <tr><td>Hardware, scenarios or both</td><td>No. The world carries the catalog.</td></tr>
 <tr><td>A script mod</td><td>No. The script runs on the host.</td></tr>
 <tr><td>A script mod with panels, a HUD card, keys or toasts</td><td>No. They travel in the world’s data.</td></tr>
-<tr><td>Anything with <code>art</code> or <code>locale</code> content</td><td>Yes, at the same version as the host.</td></tr>
+<tr><td>Anything with <code>art</code> or <code>locale</code> content</td><td>Yes, with the same files as the host.</td></tr>
 </tbody>
 </table>
 </div>
 <p>The game loads two kinds of art file, a pack icon under <code>art/icons/</code> and an equipment model under <code>art/models/</code>, and Fluent text under <code>locale/</code>. See <a href="CONTENT_PACKS.html">Content packs</a> and <a href="MODELS.html">Equipment models</a>.</p>
-<p>The host’s world records each client-required pack with its version and hash. A joiner’s game states which of these packs it holds when it connects, and the host’s game compares. A copy that differs in a single file has a different hash and is refused.</p>
+<p>The host’s world records each client-required pack with its version and hash. A joiner’s game states which of these packs it holds when it connects, and the host’s game compares the hash and nothing else. The version is not compared on its own: a copy at the same version with one changed file has a different hash and is refused, and a copy at a different version always has a different hash too, since <code>manifest.json</code> is hashed. Only client-required packs are checked, so a gameplay-only pack never refuses a joiner.</p>
+<p>The hash covers every file of the pack except <code>uptime-package.json</code> and <code>workshop.json</code>, so a change to <code>manifest.json</code>, including a new <code>version</code>, changes it.</p>
+<p><strong>The host publishes a new hash only when it loads the world.</strong> The game reads the installed copy of each pack and records its version and hash when a world loads. If the host updates a pack in the middle of a session, the world still carries the old hash, and a joiner with the new copy is refused as a mismatch. The host loads the world again, and the world then records the new copy. A joiner has to hold that same copy, so tell players who host your mod to update it and reload before they invite anyone.</p>
 <h3 id="a-pack-cannot-carry-art-and-a-script"><a class="header" href="#a-pack-cannot-carry-art-and-a-script">A pack cannot carry art and a script</a></h3>
 <p>A pack that declares <code>art</code> or <code>locale</code> content cannot also be a script mod. The game refuses the manifest with the rule <code>client_pack_has_script</code>, and <code>uptime-mod validate</code> shows it. The game’s message says why: a pack that every player downloads cannot carry a script. Split the work into two packs. Make the script pack depend on the art pack if it needs the art.</p>
 <h2 id="when-a-joiner-is-refused"><a class="header" href="#when-a-joiner-is-refused">When a joiner is refused</a></h2>

@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-cd7dfeef.js";
+            window.path_to_searchindex_js = "searchindex-0ca25aa3.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-5112729b.js"></script>
@@ -215,7 +215,7 @@
 </code></pre>
 <p>Every later upload from that folder updates the same item. The id stays stable as long as <code>workshop.json</code> stays. Keep the file with your source and commit it. Do not edit it, and do not copy it to another folder you upload from: two folders with the same id update one item. The command refuses a file that is not a nonzero <code>item_id</code>. If you delete the file, the next upload makes a new item and the old one stays on the Workshop.</p>
 <p><code>workshop.json</code> never goes into the package. The upload does record the item id in the package’s <code>uptime-package.json</code>. That is how a player who is refused at a multiplayer join gets a Subscribe button for your pack. See <a href="MULTIPLAYER.html">Multiplayer</a>.</p>
-<p>Raise <code>version</code> in your manifest for each release. Players and the game tell two copies of a pack apart by its version and its hash.</p>
+<p>Raise <code>version</code> in your manifest for each release. Players and the game tell two copies of a pack apart by its version and its hash. A saved world keeps loading a newer copy only while it stays in the caret range of the version the world was saved with, and a multiplayer joiner is checked on the hash alone. See <a href="CONTENT_PACKS.html#updating-a-pack-that-a-saved-world-uses">Updating a pack that a saved world uses</a> and <a href="MULTIPLAYER.html#which-packs-a-joiner-needs">Multiplayer</a>.</p>
 <h2 id="what-a-player-sees"><a class="header" href="#what-a-player-sees">What a player sees</a></h2>
 <p>A player subscribes on the item’s Workshop page. Steam downloads the item. The game then lists it in the Mods panel with a Workshop badge, next to the packs from the local mods folder. A pack from the Workshop goes through the same checks as a local pack, so a pack that <code>validate</code> accepts loads, and one it refuses does not.</p>
 <p>A new item is listed <strong>off</strong>. Subscribing never turns a pack on. The player turns it on in the Mods panel, which is also where a pack that changes gameplay shows as one.</p>

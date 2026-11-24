@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-cd7dfeef.js";
+            window.path_to_searchindex_js = "searchindex-0ca25aa3.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-5112729b.js"></script>
@@ -185,6 +185,8 @@ uptime-mod run &lt;dir&gt; (--scenario &lt;id&gt; | --world &lt;save&gt;) --quan
 uptime-mod upload &lt;dir&gt; [--visibility private|friends|public]
                   [--change-note &lt;text&gt;] [--preview &lt;image&gt;] [--dry-run]
 uptime-mod model &lt;source.glb&gt; --proxy &lt;proxy.glb&gt; --pack &lt;dir&gt; --item &lt;item id&gt;
+uptime-mod bases [--json] [&lt;sku&gt;]
+uptime-mod version
 </code></pre>
 <p><code>uptime-mod --help</code> prints this usage with a line on each command, and <code>uptime-mod &lt;command&gt; --help</code> prints the same text.</p>
 <h2 id="exit-codes"><a class="header" href="#exit-codes">Exit codes</a></h2>
@@ -326,13 +328,54 @@ uptime-mod model &lt;source.glb&gt; --proxy &lt;proxy.glb&gt; --pack &lt;dir&gt;
   art/models/box_render.glb /materials the list has more than 32 entries
 box: 1 model problem(s)
 </code></pre>
-<p>A clean model prints <code>ok: the game's checks pass box's model</code>. The counts must match the base model the row names: the same number of cabled ports, one inlet per PSU, and no bays or the base model’s bays. The model must fit the base model’s rack slot, with at most 32 materials. <a href="MODELS.html">Equipment models</a> lists every limit and the <code>.pips.json</code> fields. A default export usually needs work before it passes:</p>
+<p>A clean model prints <code>ok: the game's checks pass box's model</code>. The counts must match the row’s resolved shape: the same number of cabled ports, one inlet per PSU, and no bays or one bay per module slot. The model must fit the rack slot the row’s <code>rack_units</code> and <code>depth_mm</code> make (the base’s when the row declares none), with at most 32 materials. <a href="MODELS.html">Equipment models</a> lists every limit and the <code>.pips.json</code> fields. A default export usually needs work before it passes:</p>
 <ul>
 <li>Join or reuse materials until there are 32 or fewer. The command merges by material, so the material count is the primitive count.</li>
 <li>The game draws the lights from the sidecar, so no material needs to glow. The game refuses a material that emits light or blends its alpha.</li>
 <li>A texture is a PNG inside the GLB, at most 2048 by 2048.</li>
 </ul>
-<p>The command counts problems elsewhere in the pack but does not list them. Run <code>validate</code> for those. The exit code is 0 when the model passes, 1 when the game refuses it or a step failed, and 2 for a wrong command line.</p>
+<p>The command also runs the author checks <code>validate</code> runs on this item’s model, such as <code>port_faces_inward</code> and <code>pips_named_port_missing</code>, even when other parts of the pack have problems. It counts those other problems but does not list them. Run <code>validate</code> for them. The exit code is 0 when the model passes, 1 when the game refuses it or a step failed, and 2 for a wrong command line.</p>
+<h2 id="bases"><a class="header" href="#bases">bases</a></h2>
+<p><code>bases</code> lists the built-in hosts and switches a pack row can start from, and the shape a model drawn over each one must fit. Use the exact SKU name it prints as a row’s <code>model</code>, and read the port and PSU counts before you build a model for it.</p>
+<pre><code>uptime-mod bases
+uptime-mod bases "ARM 1U Dual"
+uptime-mod bases --json "32×400G Spine"
+</code></pre>
+<p>With no SKU it prints a short table with one line for each host and switch: the name, the kind, the rack units, the numbered ports, the PSU inlets, the module slots and the port banks. With a SKU it prints that SKU in full. The name must match exactly, but an unquoted name given as several words is joined with spaces. An unknown name exits 2 and lists the SKUs whose names contain it, or points at the plain <code>bases</code> listing.</p>
+<p><code>--json</code> prints the same facts as JSON: a list for the whole catalog, one object for a SKU. Each object has these fields:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>sku</code>, <code>kind</code></td><td>The exact SKU name and <code>host</code> or <code>switch</code>.</td></tr>
+<tr><td><code>rack_units</code></td><td>The height in U. A desktop switch counts as 1U, as it does on a shelf in a rack.</td></tr>
+<tr><td><code>depth_mm</code></td><td>The depth a row declares to keep this base’s shape, in whole millimetres.</td></tr>
+<tr><td><code>row</code></td><td>The row fields that keep this base’s shape, spelled as a row writes them: <code>rack_units</code>, <code>depth_mm</code>, <code>psu_count</code>, <code>ports</code> or <code>port_groups</code>, <code>module_slots</code> and <code>arch</code>, <code>category</code>, <code>accelerator</code> on a host, <code>class</code>, <code>role</code>, <code>mlag</code> on a switch. Add an <code>id</code> and the base’s <code>sku</code> as <code>model</code>, and the row loads with the base’s shape. A field no row can declare, such as an unmanaged class, is left out.</td></tr>
+<tr><td><code>envelope</code></td><td>The slot a model must fit, in metres: <code>height_m</code>, <code>half_width_m</code> and <code>depth_m</code>. The same box <code>validate</code> and <code>model</code> check against.</td></tr>
+<tr><td><code>physical_nics</code></td><td>The data ports the box ships with. It excludes power inlets and module cage ports.</td></tr>
+<tr><td><code>numbered_ports</code></td><td>The ports the sidecar <code>ports</code> map must number, <code>"1"</code> up. It equals <code>physical_nics</code> on every built-in SKU, but the two are separate facts.</td></tr>
+<tr><td><code>port_banks</code></td><td>The banks in order, each with <code>media</code> (a row’s spelling: <code>rj45</code>, <code>sfp_plus</code>, <code>qsfp_dd</code> and so on), <code>cage</code>, <code>speed_gbps</code>, <code>count</code>, and the <code>first</code> and <code>last</code> sidecar numbers it occupies.</td></tr>
+<tr><td><code>named_ports</code></td><td>The rear ports the game adds above the numbered set, which the sidecar <code>named_ports</code> map must hold: <code>Port_MlagKeepalive</code> on a switch that can peer, <code>Port_Stack_1</code> up on a stackable one. Empty on a host.</td></tr>
+<tr><td><code>module_slots</code>, <code>module_cage_ports</code></td><td>On a host, the NIC cages it takes and the ports they add. Those ports mint above the power inlets and are not numbered in the sidecar. On a switch, <code>module_slots</code> is the line-card bays of a modular chassis, and <code>module_cage_ports</code> is 0.</td></tr>
+<tr><td><code>psu_inlets</code></td><td>The PSUs, and so the entries in the sidecar <code>iec</code> list.</td></tr>
+<tr><td><code>bays</code></td><td>The module bays a sidecar <code>bays</code> map may draw, or none.</td></tr>
+<tr><td><code>disk_bays</code>, <code>arch</code>, <code>accelerator</code>, <code>category</code></td><td>Host only. Spelled as a row spells them: <code>arm64</code>, <code>gpu</code> or <code>none</code>, <code>compute_dense</code>.</td></tr>
+<tr><td><code>stack_ports</code>, <code>class</code>, <code>role</code>, <code>mlag</code></td><td>Switch only. <code>class</code> is <code>l2</code> or <code>l3</code> and <code>role</code> is <code>access</code>, <code>tor</code>, <code>leaf</code>, <code>aggregation</code> or <code>spine</code>; each is null when the base has a value no row can declare.</td></tr>
+<tr><td><code>scalars</code></td><td>The stats a row can override, with the base values. Money fields are in the engine’s money minor units, as the row fields are.</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="version"><a class="header" href="#version">version</a></h2>
+<p><code>version</code> prints four labelled numbers: the game release this CLI belongs to, the Rust SDK crate release that reads the current mod API minor (the <code>uptime-mod</code> crate you depend on, not this CLI), the content schema and the mod API:</p>
+<pre><code>game release: &lt;game release&gt;
+Rust SDK crate: &lt;!-- mod:crate --&gt;0.11&lt;!-- /mod:crate --&gt;.x
+content schema: v1alpha1, minor &lt;!-- mod:minor --&gt;10&lt;!-- /mod:minor --&gt;
+mod API: v1alpha1, minor &lt;!-- mod:minor --&gt;10&lt;!-- /mod:minor --&gt;
+</code></pre>
+<p><code>&lt;game release&gt;</code> stands for the release number of the game the CLI came with, such as <code>0.2.0</code>.</p>
+<p><code>--version</code> and <code>-V</code> print the same text. The content schema and the mod API share one generation and one minor, which is the number a manifest’s <code>api_minor</code> is checked against. Put this output in a bug report.</p>
 
                     </main>
 
